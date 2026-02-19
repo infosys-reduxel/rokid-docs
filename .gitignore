@@ -1,0 +1,30 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Build artifacts
+*.class
+*.jar
+*.apk
+*.aab
+build/
+out/
+
+# Node (if docs tooling is added later)
+node_modules/
+
+# Temp files
+*.tmp
+*.bak
+*.log

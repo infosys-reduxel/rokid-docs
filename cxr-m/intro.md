@@ -1,0 +1,15 @@
+
+The Rokid CXR-M SDK is a developer toolkit provided by Rokid for developers to create mobile applications that work with Rokid Glasses.
+SDK and Glasses
+Drawing 1
+
+Rokid Glasses AI Process Interaction
+Developers can quickly integrate the AI ​​interaction flow defined by the YodaOS-Sprite operating system using the CXR-M SDK, and quickly complete custom AI and custom AI workflows.
+
+Rokid Glasses Hardware Information
+Developers can quickly obtain hardware information about Rokid Glasses using the CXR-M SDK.
+
+Rokid Glasses Assist Service
+Developers can use the CXR-M SDK to efficiently utilize services in Rokid Assist Service, including file transfer, audio recording, and photo taking capabilities.
+
+Tips: Rokid Assist Service is a series of services provided by Rokid based on YodaOS-Sprite. These services cannot be used in the CXR-M SDK if they are disabled.
