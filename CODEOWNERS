@@ -1,10 +1,10 @@
 # Default owner for everything in the repo
-* @revampedplant756
+* @buildwithfenna
 
 # SDK-specific docs
-/cxr-m/ @revampedplant756
-/cxr-s/ @revampedplant756
-/cxr-l/ @revampedplant756
+/cxr-m/ @buildwithfenna
+/cxr-s/ @buildwithfenna
+/cxr-l/ @buildwithfenna
 
 # YodaOS system docs
-/yodaos/docs/ @revampedplant756
+/yodaos/docs/ @buildwithfenna

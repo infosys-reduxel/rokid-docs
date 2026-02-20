@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/revampedplant756/rokid-docs/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/buildwithfenna/rokid-docs/pulls)
 
 Comprehensive technical documentation for the Rokid AR smart glasses ecosystem, covering the YodaOS operating system internals (built on Android 12/Qualcomm), hardware architecture, system services, and the CXR SDK suite (Mobile, On-Device, and Standalone) for developing companion and glasses-native applications.
 
