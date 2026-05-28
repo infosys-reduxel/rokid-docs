@@ -109,7 +109,8 @@ rokid-docs/
 │   └── data-structure.md           # Caps serialization format
 │
 ├── cxr-l/                          # CXR-L SDK documentation (Standalone)
-│   └── api-reference.md            # Complete API reference
+│   ├── api-reference.md            # Complete API reference
+│   └── release-notes.md            # SDK changelog
 │
 └── yodaos/                         # YodaOS platform documentation
     ├── docs/
@@ -332,8 +333,8 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:client-l:0.0.1` |
-| **Size** | 28 KB AAR |
+| **Maven Artifact** | `com.rokid.cxr:client-l:1.0.1` |
+| **Size** | TODO — verify AAR size for 1.0.1 (was 28 KB for 0.0.1) |
 | **Min SDK** | 28 |
 | **Target SDK** | 28 |
 | **Dependencies** | Kotlin stdlib 2.1.0, Gson 2.10.1 |
@@ -346,7 +347,7 @@ class CXRLink(context: Context) : ExternalAppClient(context)
 
 `CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
 
-> [Full API reference](cxr-l/api-reference.md)
+> [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 
 ### SDK Communication Architecture
 
@@ -452,6 +453,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | Mobile app development | [cxr-m/intro.md](cxr-m/intro.md) |
 | On-device app development | [cxr-s/brief.md](cxr-s/brief.md) |
 | Standalone app replacement | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
+| CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | Full CXR-M SDK API | [cxr-m/sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) |
 | Caps data format | [cxr-s/data-structure.md](cxr-s/data-structure.md) |
 | Firmware changelogs | [yodaos/DECOMPILED/vendor/firmware/](yodaos/DECOMPILED/vendor/firmware/) |
@@ -478,6 +480,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 
 **CXR-L SDK (Standalone)**
 1. [api-reference.md](cxr-l/api-reference.md) -- API reference
+2. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
 
 **YodaOS -- System**
 1. [overview.md](yodaos/docs/overview.md) -- Build info and architecture
