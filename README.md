@@ -97,6 +97,7 @@ rokid-docs/
 │   ├── get-device-status.md        # Querying device status
 │   ├── data-interaction.md         # Data interaction patterns
 │   ├── ai-integration.md           # AI integration with Sprite OS
+│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.1.0)
 │   └── sdk-decompiled-reference.md # Full decompiled SDK reference
 │
 ├── cxr-s/                          # CXR-S SDK documentation (On-device)
@@ -115,6 +116,7 @@ rokid-docs/
 └── yodaos/                         # YodaOS platform documentation
     ├── docs/
     │   ├── overview.md             # Build info, CPU, architecture
+    │   ├── sprite-overview.md      # YodaOS-Sprite developer-portal landing
     │   ├── apps/                   # System application docs
     │   ├── development/            # Development reference (HAL, permissions, etc.)
     │   ├── hardware/               # Hardware specifications
@@ -264,9 +266,11 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:client-m:1.0.8` |
+| **Maven Artifact** | `com.rokid.cxr:client-m:1.1.0` |
+| **Released** | 2026-04-01 |
 | **Min SDK** | 28 (Android 9) |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
+| **Distribution** | Not on the public developer site — contact `Glasses.BD@rokid.com` |
 
 **Capabilities:**
 - **AI Interaction** -- Integrate the AI workflow defined by YodaOS-Sprite (custom AI and custom AI workflows)
@@ -297,6 +301,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | [get-device-status.md](cxr-m/get-device-status.md) | Querying device status |
 | [data-interaction.md](cxr-m/data-interaction.md) | Data interaction patterns |
 | [ai-integration.md](cxr-m/ai-integration.md) | AI integration with Sprite OS |
+| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.1.0) |
 | [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) | Complete decompiled SDK reference (31 classes) |
 
 ### CXR-S SDK (On-Device)
@@ -454,6 +459,8 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | On-device app development | [cxr-s/brief.md](cxr-s/brief.md) |
 | Standalone app replacement | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
+| CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
+| YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
 | Full CXR-M SDK API | [cxr-m/sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) |
 | Caps data format | [cxr-s/data-structure.md](cxr-s/data-structure.md) |
 | Firmware changelogs | [yodaos/DECOMPILED/vendor/firmware/](yodaos/DECOMPILED/vendor/firmware/) |
@@ -467,7 +474,8 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 4. [get-device-status.md](cxr-m/get-device-status.md) -- Device status queries
 5. [data-interaction.md](cxr-m/data-interaction.md) -- Data interaction
 6. [ai-integration.md](cxr-m/ai-integration.md) -- AI integration
-7. [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) -- Full decompiled reference
+7. [release-notes.md](cxr-m/release-notes.md) -- SDK changelog
+8. [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) -- Full decompiled reference
 
 **CXR-S SDK (On-Device)**
 1. [brief.md](cxr-s/brief.md) -- SDK overview
@@ -484,10 +492,11 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 
 **YodaOS -- System**
 1. [overview.md](yodaos/docs/overview.md) -- Build info and architecture
-2. [boot-chain.md](yodaos/docs/system/boot-chain.md) -- Boot sequence
-3. [init-services.md](yodaos/docs/system/init-services.md) -- Init services
-4. [system-properties.md](yodaos/docs/system/system-properties.md) -- System properties
-5. [hardware-interaction.md](yodaos/docs/system/hardware-interaction.md) -- Hardware interaction
+2. [sprite-overview.md](yodaos/docs/sprite-overview.md) -- YodaOS-Sprite developer-portal landing
+3. [boot-chain.md](yodaos/docs/system/boot-chain.md) -- Boot sequence
+4. [init-services.md](yodaos/docs/system/init-services.md) -- Init services
+5. [system-properties.md](yodaos/docs/system/system-properties.md) -- System properties
+6. [hardware-interaction.md](yodaos/docs/system/hardware-interaction.md) -- Hardware interaction
 
 **YodaOS -- Hardware**
 1. [product-variants.md](yodaos/docs/hardware/product-variants.md) -- Product variants
