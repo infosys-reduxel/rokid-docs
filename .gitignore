@@ -28,3 +28,22 @@ node_modules/
 *.tmp
 *.bak
 *.log
+
+# Claude Code local settings (contains API keys — must never be committed)
+.claude/settings.local.json
+.claude/skills/
+
+# Firecrawl scratch output
+.firecrawl/
+
+# Skills CLI installs (third-party skill content, machine-specific)
+.agents/
+
+# baoyu-translate intermediates (analyses, drafts, prompts) — only commit final docs
+.baoyu-skills/**/translate/
+**/*-en/01-analysis.md
+**/*-en/02-prompt.md
+**/*-en/03-draft.md
+**/*-en/04-critique.md
+**/*-en/05-revision.md
+**/*-en/chunks/
