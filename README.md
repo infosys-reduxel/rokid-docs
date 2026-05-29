@@ -28,6 +28,7 @@ Comprehensive technical documentation for the Rokid AR smart glasses ecosystem, 
   - [CXR-S SDK (On-Device)](#cxr-s-sdk-on-device)
   - [CXR-L SDK (Standalone)](#cxr-l-sdk-standalone)
   - [SDK Communication Architecture](#sdk-communication-architecture)
+- [Bare-Metal Development](#bare-metal-development)
 - [Decompiled Sources](#decompiled-sources)
   - [Firmware](#firmware)
   - [System Applications](#decompiled-system-applications)
@@ -372,6 +373,29 @@ The three SDKs work together to form a complete communication stack:
 | **CXR-L to AI Service** | Android AIDL (IMediaStreamService) | On-device AI app integration |
 
 **Caps Serialization Format** -- The shared binary serialization format used across all SDKs, supporting: booleans, integers (int32/int64), floats (float/double), strings, binary blobs (byte[]), and nested Caps objects.
+
+---
+
+## Bare-Metal Development
+
+For apps that run directly on the glasses **without any CXR SDK** -- plain, side-loaded Android apps that handle their own input, audio, and camera. This is the track to use when you are *not* integrating with the on-device Rokid AI app or a mobile companion (for those, use the [CXR SDK Suite](#cxr-sdk-suite)).
+
+| Property | Value |
+|----------|-------|
+| **Target** | YodaOS-Sprite (Android 12, Go-edition) |
+| **Display viewport** | 480 × 640 px |
+| **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
+| **Doc version** | v0.0.1 (2026-03-01) |
+
+YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
+
+**Documentation:**
+
+| Document | Description |
+|----------|-------------|
+| [development-guide.md](cxr-baremetal/development-guide.md) | Reserved interactions, dev environment, and side-load workflow |
+| [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) | Hardware-button system Intents and the `BroadcastReceiver` pattern |
+| [audio-recording.md](cxr-baremetal/audio-recording.md) | 8-channel mic recording (`ChannelMask = 0x6000FC`, 16 kHz, 16-bit PCM) |
 
 ---
 
