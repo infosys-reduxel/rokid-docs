@@ -20,9 +20,32 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-05-28
-  last_known_version: CXR-L 1.0.1 (2026-05-07)
-  notes: React SPA. Map yields ~44 URLs (mostly /detail?appId=... AR Store entries). Doc surfaces are /sdk, /sprite, /master. /sprite scraped empty — needs firecrawl-interact for SPA hydration. /master describes YodaOS-Master (Station 2 / Station Pro), UXR3.0 + JSAR SDKs — uncovered locally.
+  last_checked: 2026-05-29
+  last_known_version: CXR-L 1.0.1 (2026-05-07 per landing page; Maven has 1.0.2)
+  notes: React SPA. Iframe-wraps developerdoc.rokid.com/{sdk,sprite}?lang=zh — that's where actual content renders. /sdk landing shows three sub-tabs (CXR-L / CXR-M / 眼镜端裸机开发) under YodaOS-Sprite top-tab. Landing-page versions lag Maven by 1 minor.
+
+- url: https://developerdoc.rokid.com
+  kind: developer-portal
+  covers: cxr-m, cxr-s, cxr-l, yodaos
+  monitor_id:
+  last_checked: 2026-05-29
+  last_known_version: CXR-L 1.0.1 (2026-05-07), CXR-M 1.1.0 (2026-04-01), 眼镜端裸机开发 0.0.1 (2026-03-01)
+  notes: The actual SDK landing page (iframe target of ar.rokid.com/sdk). Tabs scraped 2026-05-29 — CXR-L unchanged from 2026-05-28 capture. CTA "查看文档" buttons resolve to custom.rokid.com/prod/rokid_web/<workspaceHash>/pc/cn/<pageHash>.html. SPA — requires firecrawl-interact for tab clicks. Sister surface developerdoc.rokid.com/sprite renders YodaOS-Sprite open API/SDK index.
+
+- url: https://custom.rokid.com/prod/rokid_web/
+  kind: release-notes
+  covers: cxr-m, cxr-s, cxr-l
+  monitor_id:
+  last_checked: 2026-05-29
+  notes: |
+    Hosts the actual rendered SDK docs as JS-rendered single-page apps with per-doc left-nav. Workspace hashes:
+    - 57e35cd3ae294d16b1b8fc8dcbb1b7c7 = CXR-M / CXR-S / 眼镜端裸机开发 (shared)
+      - page 13083daf77dd40bf84cf5c59711e987a = Rokid Glasses 裸机开发指南 (landing)
+        siblings: 按键开发说明, 录音开发说明
+    - 84feb39f8ef141b0ad0326f902ab881f = CXR-L
+      - page 9adcfb07939846e5945e79dfbd923f63 = CXR-L SDK 简介 (landing)
+        nav: 简介 / 快速开始 / 开发流程与状态机 / 术语与缩写 / 功能开发 / 版本历史
+    Pages are JS-rendered — `firecrawl scrape --only-main-content` returns only "版本X.Y.Z\n文档". Must use firecrawl-interact for content extraction (expensive). Good monitor candidate to detect doc edits.
 
 - url: https://developer.rokid.com
   kind: developer-portal
@@ -35,8 +58,14 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-05-28
-  notes: Public Maven for CXR SDK JARs/AARs. Map returned 0 URLs (Maven exposes directory listings, not a link-graph). For change detection, scrape specific groupId paths (e.g. /com/rokid/cxr/client-l/, /client-m/, /cxr-service-bridge/) and diff against local docs' pinned versions. Local cxr-l references v0.0.1; upstream /sdk advertises v1.0.1.
+  last_checked: 2026-05-29
+  last_known_version: |
+    client-l 1.0.2 (release; aar 2026-05-19, metadata 2026-05-28)
+    client-m 1.2.1 (release; metadata 2026-04-17)
+    cxr-service-bridge 1.0 (release; metadata 2026-05-22; uses snapshot fingerprint 1.0-20260212.103714-88)
+    com/rokid/cxr/ group also contains: client, client-extend, sdk (unexamined — flag as discovery items)
+  notes: |
+    Public Maven for CXR SDK JARs/AARs. Direct browse path is https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/ (the /repository/ path returns "not browseable" page; use /service/rest/repository/browse/). maven-metadata.xml under each artifact gives <release>, <latest>, <lastUpdated>. Per-artifact dirs list all versions and their .aar/.pom upload times. **Maven versions lead the developerdoc.rokid.com SDK landing page by ~1 minor** as of 2026-05-29 (client-l Maven 1.0.2 vs landing 1.0.1; client-m Maven 1.2.1 vs landing 1.1.0). Use Maven as the canonical "what's actually shipped" source.
 
 - url: https://github.com/RokidGlass
   kind: github
