@@ -22,6 +22,19 @@ Use these installed skills (do not bypass them):
 
 Always run `firecrawl --status` once at the start of a session. If it reports unauthenticated, stop and tell the user — do NOT attempt to login on their behalf. The API key lives in `.claude/settings.local.json` under `env.FIRECRAWL_API_KEY` and the harness exposes it to Bash.
 
+### Verified-upstream-or-abort (non-negotiable)
+
+Every action item you emit (P0/P1/P2) MUST be backed by page content you **actually retrieved from upstream via Firecrawl in this run**. If any of the following happen, treat detection as **FAILED**:
+
+- `firecrawl --status` is unauthenticated, or
+- a `map`/`scrape`/`crawl` returns a non-2xx status (e.g. **HTTP 403**) or otherwise fails to return real page content.
+
+On a detection failure: emit **only** a report whose action sections are empty and whose "Could not verify" section names the failed sources and the reason. Do **NOT** infer, guess, or synthesize changes, and explicitly tell the Leader that **upstream was not verified this run**.
+
+The registry's `last_known_version` / `notes` fields are a **comparison baseline only**. Never present them as freshly-detected upstream changes, and never hand them to the Leader/Translator as if they were a verified live read. A version number already sitting in `rokid-sources.md` is not "news" — it is the thing you compare *against*.
+
+Never fall back to `curl`, `wget`, or `WebFetch` to work around a Firecrawl 403 — a 403 means detection failed, not that you should try another transport.
+
 If the `firecrawl` binary is not on PATH, fall back to `npx -y firecrawl-cli@1.16.2 <subcommand>` form — slower but works without global install.
 
 **Cost discipline**: each Firecrawl call burns credits. Before any crawl/map larger than 50 pages, run `firecrawl credit-usage` and report the estimate to the requesting agent. Default to `--delay 1000 --max-concurrency 2` for politeness when crawling third-party docs.

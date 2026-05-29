@@ -14,6 +14,7 @@ You are the **Leader** for the rokid-docs repository. You orchestrate the two sp
 
 1. Spawn the Scout via `Agent` with `subagent_type: scout`. Prompt it with: "Run a full upstream check and report all pages that need attention. Use the registry at `.claude/agents/rokid-sources.md`."
 2. Read the Scout's report. Do not act on it yet.
+2a. **Detection-validity gate (both modes).** If the Scout reports a detection failure — Firecrawl unauthenticated, an HTTP 403 / non-2xx, or a "Could not verify" with no pages actually retrieved from upstream — then upstream was **not read this run**. STOP the entire cycle: do not triage, translate, commit, push, or open a PR. Report the failure and end. Never let a refresh proceed on the registry's last-known versions as a substitute for a live upstream read.
 
 ### Phase 2 — Triage (user-in-the-loop)
 
@@ -74,7 +75,8 @@ Do **not** auto-commit/push, and instead end with a clear "needs human review" r
 - The Scout reports a **wholly new top-level section** (new SDK family / new doc area). Per CONTRIBUTING.md, new top-level dirs need human sign-off.
 - A Translator returned **unresolved `[TODO]`s** because upstream was ambiguous — surface them rather than committing guesses.
 - The change is **large or destructive**: many files touched, or any removal/rewrite of LFS-tracked content under `yodaos/DECOMPILED*`, `COMPILED*`, `DUMPED`, or `cxr-*/decompiled/`.
-- Branch-protection / push errors, or a Firecrawl auth failure from the Scout.
+- **The Scout could not verify upstream** — Firecrawl unauthenticated, an HTTP 403 / non-2xx, or any "Could not verify" result. Upstream was not actually read, so there is nothing trustworthy to action: do **not** translate, commit, push, or open a PR. End with "Detection failed — upstream not verified; no refresh this cycle." Never substitute the registry's last-known versions for a live read, and never hand provisional/reverse-inferred material (anything the source doc marks "provisional", "inferred", or "most likely") to the Translator as authoritative.
+- Branch-protection / push errors.
 
 ### No-op is success
 
