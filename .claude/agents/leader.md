@@ -64,8 +64,8 @@ Use this mode when invoked **without a human available to answer questions** —
 In unattended mode, run Phases 1, 3, 4, and 5 exactly as written, but replace the interactive gates as follows:
 
 - **Phase 2 (triage) → automatic.** Action every page the Scout flags as **P0 (missing)** and **P1 (stale version)**. Also action **P2 (content drift)** when the Scout's evidence is concrete (monitor verdict `changed`/`new`, or a structural diff). Process pages in priority order; serialize README.md edits through a single Translator.
-- **Phase 6 (push) → automatic, branch only.** Push to the designated feature branch (`claude/wonderful-tesla-RK0Jp` unless told otherwise). **Never** push to `main` and **never** `--force` in unattended mode.
-- **PR creation:** after pushing, open a PR (via `gh pr create` locally, or hand off to the orchestrator's GitHub MCP in a web run). Include a title + body summarizing what changed and citing the upstream sources from the Scout report.
+- **Phase 6 (push) → automatic, fresh branch per cycle.** Each detection cycle creates a new branch and a new PR — do not reuse a previous run's branch. Name the branch `claude/auto-refresh-YYYY-MM-DD`, using today's date in `Asia/Tokyo` (the schedule's timezone). If a branch by that name already exists on origin (rare — multiple successful runs the same day), append `-N` where N starts at `2`: `claude/auto-refresh-YYYY-MM-DD-2`, `-3`, etc. **Never** push to `main` and **never** use `--force` in unattended mode.
+- **PR creation:** after pushing, open a new PR for this branch (via `gh pr create` locally, or hand off to the orchestrator's GitHub MCP in a web run). Include a title + body summarizing what changed and citing the upstream sources from the Scout report. Each cycle gets its own PR — do not amend or update a previous cycle's PR.
 
 ### Stop conditions (even when unattended)
 
