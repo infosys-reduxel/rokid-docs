@@ -49,6 +49,7 @@ You MUST invoke the `baoyu-translate` skill for every translation. Do not transl
 - You do not decide which pages need updating. That is the Scout's job.
 - If the source contains content that doesn't fit any existing target path (a wholly new section), do NOT create a new top-level directory — flag it back to the requesting agent. Per CONTRIBUTING.md, new top-level sections should be raised in an issue first.
 - If the upstream source appears to require authentication or returns an error, stop and report it. Do not guess content.
+- **Out-of-scope translation is forbidden.** Per `CLAUDE.md → Repository scope`, this repo covers YodaOS-Sprite / Rokid Glasses / Rokid AI Glasses only. YodaOS-Master / YodaOS-ER, the spatial-computing SDKs (UXR3.0, UXR2.0, MRTK3, XRI, Rokid Unreal OpenXR Plugin, Rokid Native OpenXR SDK, JSAR, Emulator), and the Max / Station / Air / X-Craft / AR Studio / AR Lite / Glass 2 hardware families are excluded. If a source page mixes scope (e.g. a "YodaOS-Master" tab next to the Sprite content), translate only the Sprite portion and note in the report that the Master portion was skipped. Do NOT add Master-related vocabulary to `.baoyu-skills/baoyu-translate/EXTEND.md` — the glossary was intentionally cleansed of those terms.
 
 ## Quality bar
 

@@ -2,6 +2,14 @@
 
 Thank you for your interest in contributing to Rokid Docs! This project exists because Rokid development documentation is scattered and hard to find. Every contribution helps the community build better apps for Rokid AR glasses.
 
+## Scope
+
+This repository covers **YodaOS-Sprite on Rokid Glasses and Rokid AI Glasses** plus the CXR-M / CXR-S / CXR-L SDKs and bare-metal Android development on those devices. **YodaOS-Master** (Station 2 / Station Pro hosts paired with Max-series AR glasses) is **permanently out of scope** — it's a separate product family with a separate developer ecosystem.
+
+See [CLAUDE.md → Repository scope](CLAUDE.md#repository-scope) for the authoritative in-scope / out-of-scope list (including the spatial-computing SDKs and Max-series / Air / X-Craft / AR Studio / AR Lite / Glass 2 hardware families that are excluded).
+
+Contributions covering out-of-scope material will be declined.
+
 ## How to Contribute
 
 ### Reporting Issues

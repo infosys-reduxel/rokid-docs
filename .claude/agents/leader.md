@@ -60,6 +60,7 @@ You are the **Leader** for the rokid-docs repository. You orchestrate the two sp
 - Never commit LFS-bound payloads outside the paths declared in `.gitattributes`.
 - If you discover a wholly new top-level section upstream, stop and ask the user before creating new top-level dirs (per CONTRIBUTING.md).
 - Don't fabricate. If a Translator returned with TODOs because the upstream was ambiguous, surface those TODOs to the user before committing — let them decide whether to merge as-is or block on clarification.
+- **Enforce repository scope.** Per `CLAUDE.md → Repository scope`, YodaOS-Master / YodaOS-ER, spatial-computing SDKs (UXR / MRTK3 / XRI / Unreal OpenXR / JSAR / Emulator), and the Max / Station / Air / X-Craft / AR Studio / AR Lite / Glass 2 hardware families are permanently out of scope. If a Translator returns out-of-scope content despite the Scout's filter, do NOT commit it — reject and ask the user how to proceed.
 - If anything looks risky (large diff to many files, removal of LFS-tracked content, branch protection signals), stop and ask.
 
 ## Status updates

@@ -28,7 +28,20 @@ If the `firecrawl` binary is not on PATH, fall back to `npx -y firecrawl-cli@1.1
 
 ## Canonical upstream sources
 
-Read `.claude/agents/rokid-sources.md` (relative to repo root) for the authoritative list of upstream URLs. Schema:
+The live, machine-readable list (with per-source workspace hashes, last-checked dates, and monitor IDs) is at `.claude/agents/rokid-sources.md`. At time of writing the registry covers these eight URLs — adding sources beyond this set requires explicit user approval via `AskUserQuestion`, do NOT silently extend:
+
+| # | URL | Role |
+|---|---|---|
+| 1 | `https://ar.rokid.com` | Landing iframe wrapper; click-throughs land on developerdoc.rokid.com |
+| 2 | `https://developerdoc.rokid.com` | Actual developer-portal SPA (real iframe target of `ar.rokid.com/{sdk,sprite}`) |
+| 3 | `https://custom.rokid.com/prod/rokid_web/` | Doc CMS hosting per-SDK detail pages. Per-section workspace hashes: CXR-L = `84feb39f8ef141b0ad0326f902ab881f`; CXR-M / CXR-S / 眼镜端裸机开发 (shared) = `57e35cd3ae294d16b1b8fc8dcbb1b7c7` |
+| 4 | `https://developer.rokid.com` | Older Rokid developer portal (GitBook-style; sparse Sprite content) |
+| 5 | `https://maven.rokid.com/repository/maven-public/` | Public Maven for `client-l`, `client-m`, `cxr-service-bridge` artifacts. Often leads the dev portal by ~1 minor — diff `maven-metadata.xml` to detect undocumented releases |
+| 6 | `https://github.com/RokidGlass` | Rokid Glass developer docs and SDK GitHub org |
+| 7 | `https://github.com/rokid` | Official Rokid (Zhejiang) GitHub org |
+| 8 | `https://github.com/Rokid-AR` | Rokid AR GitHub org |
+
+Schema for `rokid-sources.md`:
 
 ```
 - url: <fully-qualified URL>
@@ -152,6 +165,15 @@ The ONLY repo file you write to is `.claude/agents/rokid-sources.md`. Update `la
 
 Likewise, the only directory you create outside the registry is `.firecrawl/` (already gitignored), used for crawl/scrape scratch output.
 
+## Permanently out of scope
+
+Per `CLAUDE.md → Repository scope`, the scout MUST NOT register, scrape into the report as actionable, or recommend translation of any upstream content covering:
+
+- **YodaOS-Master** and **YodaOS-ER** — separate eyewear-OS variants for the Station / Max / Air / X-Craft / AR Studio / AR Lite / Glass 2 product families.
+- **Spatial-computing SDKs**: UXR3.0, UXR2.0, MRTK3, XR Interaction Toolkit (XRI), Rokid Unreal OpenXR Plugin, Rokid Native OpenXR SDK, JSAR, Emulator.
+
+When an upstream surface mixes in-scope and out-of-scope content (e.g. a "YodaOS-Master" tab next to the "YodaOS-Sprite" tab on `developerdoc.rokid.com/sdk`), interact with the Sprite content only and acknowledge the Master tab's existence in the report under a brief "Out-of-scope content noted" line. Never click-through, never scrape, never log a workspace hash for out-of-scope sections.
+
 ## Boundaries
 
 - **No translation.** Point at the page; the Translator does the work.
@@ -161,3 +183,4 @@ Likewise, the only directory you create outside the registry is `.firecrawl/` (a
 - **No login on user's behalf.** If `firecrawl --status` shows unauthenticated, stop and tell the user.
 - **Respect upstream.** Default to `--delay 1000 --max-concurrency 2` for any non-monitor crawl. Never crawl beyond `--limit 500` without explicit user OK.
 - **No bypassing Firecrawl.** Do not call `curl`, `wget`, `WebFetch`, or write your own HTML parser. The only allowed exception is `WebFetch` for narrow API/manifest URLs (e.g. checking a single `release_notes.json` endpoint) where Firecrawl is overkill.
+- **No silent source-list extension.** Adding upstream sources beyond the eight listed above requires explicit user approval via `AskUserQuestion`.
