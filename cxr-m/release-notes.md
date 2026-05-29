@@ -8,11 +8,74 @@ Latest **publicly documented** release: **v1.1.0** (2026-04-01).
 
 ## Documentation gap (2026-05-29)
 
-Maven publishes `com.rokid.cxr:client-m:1.2.1` (lastUpdated 2026-04-17) and at least one intermediate 1.1.x / 1.2.0 build, but neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describe these releases — both stop at v1.1.0. The 1.1.x / 1.2.x changelogs are therefore unavailable to translate.
+Maven publishes `com.rokid.cxr:client-m:1.2.1` as the current `<release>` and `<latest>` tag (lastUpdated 2026-04-17). Both intermediate 1.1.1 and 1.2.1 are real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
 
-<!-- TODO: append v1.1.1 / v1.2.0 / v1.2.1 changelog entries once Rokid publishes them. -->
+The v1.2.1 and v1.1.1 sections below are **reverse-inferred from a binary diff** of the AARs against v1.1.0. They describe the *observable* public-API delta — names of new classes / methods / callbacks, breaking signature changes, JNI library size deltas — but they do not capture intent, deprecation notes, or behavioural changes that don't show up in the class file. Treat them as a best-effort developer aid until Rokid publishes the authoritative changelog.
+
+Method to reproduce (run any time):
+
+```sh
+# Download
+for V in 1.1.0 1.1.1 1.2.1; do
+  curl -O "https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/$V/client-m-$V.aar"
+done
+# Unpack AAR -> classes.jar -> .class files
+# Diff class lists and javap signatures across the three versions.
+```
+
+<!-- TODO: replace the inferred sections below with Rokid's official changelog when it is published. -->
 
 ## Changelog
+
+### v1.2.1 — uploaded 2026-03-26 (inferred from binary diff)
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from the public-API diff between `client-m:1.1.0` and `client-m:1.2.1` AARs (downloaded 2026-05-29 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/`).
+
+**Theme: multi-client Bluetooth support.**
+
+New classes:
+
+- `com.rokid.cxr.client.extend.callbacks.BluetoothClientsInfoCallback` — interface; `void onBtClientsInfo(List<BtClientInfo>)`.
+- `com.rokid.cxr.client.utils.ValueUtil.BtClientInfo` — data class with `String mac`, `String customInfo`, `ValueUtil.CxrStatus bluetoothStatus`.
+- `com.rokid.cxr.CXRSocketProtocol.ClientInfo` — data class with `String mac`, `String customInfo`, `int status`.
+- `com.rokid.cxr.CXRSocketProtocol.Parameter` — data class with `boolean async`, `String customInfo`.
+
+New methods on `CxrController`:
+
+- `void activeBluetoothConnect(String)` — activate a Bluetooth connection by client identifier.
+- `void fetchClientList()` — request the connected-client list asynchronously.
+- `List<BtClientInfo> getClientList(int)` — synchronous query.
+
+New callbacks on `CxrController`:
+
+- `void onStatusUpdateWithExtra(CxrStatus, CxrBluetoothErrorCode, String, String)` — richer status update than the existing `onStatusUpdate(...)`.
+- `void onBtClientsInfo(List<BtClientInfo>)` — receives the connected-client list.
+
+New native methods in `libcxr-sock-proto-jni.so`:
+
+- `nativeActive(long, String)`
+- `nativeGetClientList(long, int) → CXRSocketProtocol.ClientInfo[]`
+- `nativeFetchClientList(long)`
+
+The `libcxr-sock-proto-jni.so` library grew from 616,824 to 636,200 bytes (+3.1 %), consistent with the new native calls. `libcaps.so`, `libflora-cli.so`, `libmutils.so`, and `libcxr-bridge-jni.so` were not resized; `libcxr-bridge-jni.so` saw a 112-byte rebuild artifact.
+
+**Breaking changes vs v1.1.0** (consumer code will not compile against 1.2.1 without edits):
+
+- `CxrController.connectBluetooth(Context, String, String)` → `connectBluetooth(Context, String, String, String)`. The added 4th `String` is most likely a per-client `customInfo` identifier, matching the multi-client theme.
+- `CXRSocketProtocol.run(BluetoothSocket, UUID, Callback, boolean, boolean)` → `run(BluetoothSocket, Callback, Parameter)`. The `UUID` and the two `boolean` flags are now bundled into the new `Parameter` class.
+- `CXRSocketProtocol.setAuthPtr(long)` removed from the public surface — authentication state appears to be routed through `Parameter` or another internal path now.
+- Private native `CXRSocketProtocol.nativeClose(long)` removed; `nativeHandleReadPacket` lost one `long` parameter.
+
+**Unchanged across v1.1.0 → v1.2.1**: `AndroidManifest.xml`, `R.txt`, `proguard.txt`, POM dependency set (Retrofit 2.9.0 + converter-gson, OkHttp 4.9.3 + logging-interceptor, okio 2.8.0, Kotlin stdlib 2.1.0, Gson 2.10.1).
+
+### v1.1.1 — uploaded 2026-04-10 (inferred from binary diff)
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from the diff between `client-m:1.1.0` and `client-m:1.1.1` AARs. This artifact was uploaded *after* v1.2.1, indicating Rokid maintained the 1.1.x line in parallel with the 1.2.x line — likely a backport patch for consumers that had not migrated yet.
+
+- New: `WifiController.setWifiCallback(WifiController.Callback)` — register a Wi-Fi callback (a previously read-only state surface gained a subscription path).
+- New: a 3-argument overload `startUploadApk(String, String, ApkStatusCallback)` for the APK upload flow.
+- Internal obfuscated package layout was renamed from `a/`, `b/`, `c/` to `rapple/`, `rbanana/`, `rcherry/`. No public-API impact, but the ProGuard mapping is fresh — any tooling that relied on the old obfuscated paths will need to rebuild.
+- `AndroidManifest.xml`, `R.txt`, `proguard.txt`, and all JNI libraries are byte-identical to v1.1.0 — no native code changes.
 
 ### v1.1.0 — 2026-04-01
 
