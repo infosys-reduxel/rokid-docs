@@ -1,13 +1,18 @@
-Message Sending
+# Message Sending
+
 The CXR-S SDK provides two message-sending methods, allowing glasses-side applications to send data to connected mobile devices:
 
 Basic Message Sending: Sending structured data (in Caps format)
 Binary Message Sending: Sending structured data + binary content
-1. Basic Message Sending
-1.1 Interface Definition
-kotlin
 
+## 1. Basic Message Sending
+
+### 1.1 Interface Definition
+
+```kotlin
 int sendMessage(String name, Caps args);
+```
+
 Parameter Descriptions:
 
 name: Message name (must be agreed upon with the mobile end)
@@ -17,7 +22,10 @@ Return Values:
 0: Sending successful
 -1: Parameter error
 -3: Internal error
-1.2 Example Code
+
+### 1.2 Example Code
+
+```kotlin
 // Assuming CXRServiceBridge is initialized and available
 val cxrServiceBridge = CXRServiceBridge()
  
@@ -40,11 +48,16 @@ fun sendExampleMessage() {
         Log.d("send_message", "Send message error: $result")
     }
 }
-2. Binary Message Sending
-2.1 Interface Definition
-kotlin
+```
 
+## 2. Binary Message Sending
+
+### 2.1 Interface Definition
+
+```kotlin
 int sendMessage(String name, Caps args, byte[] data, int offset, int size);
+```
+
 Parameter Descriptions:
 
 name: Message name (must be agreed upon with the mobile end)
@@ -57,7 +70,10 @@ Return Values:
 0: Sending successful
 -1: Parameter error
 -3: Internal error
-2.2 Example Code
+
+### 2.2 Example Code
+
+```kotlin
 // Assuming CXRServiceBridge is initialized and available
 val cxrServiceBridge = CXRServiceBridge()
  
@@ -88,3 +104,4 @@ fun sendExampleMessage() {
         Log.d("send_message", "Send message error: $result")
     }
 }
+```

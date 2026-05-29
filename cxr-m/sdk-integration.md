@@ -1,7 +1,7 @@
-SDK Integration
+# SDK Integration
 This chapter uses Kotlin DSL (build.gradle.kts) as an example.
 
-Configure Maven repository
+## Configure Maven repository
 The CXR-M SDK uses Maven for online SDK package management.
 
 Maven repository address: (https://maven.rokid.com/repository/maven-public/)
@@ -10,6 +10,7 @@ Locate settings.gradle.kts and add a Maven repository in the `<maven_repository_
 
 image-20250311102401647
 
+```kotlin
 pluginManagement {
     repositories {
         google {
@@ -34,12 +35,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "CXR_MDocSample"
 include(":app")
+```
  
-Dependency import
+## Dependency import
 CXR-M SDK Package ("com.rokid.cxr:client-m:0.0.3-20250310.072635-3").
 
 Add the dependency to the `<dependency>` node in `build.gradle.kts` dependencies. Note: The SDK needs to have `minSdk` set to ≥ 28 .
 
+```kotlin
 //...Other Settings
 android {
 	//Other settings
@@ -54,8 +57,10 @@ dependencies {
     
     implementation("com.rokid.cxr:client-m:0.0.5-20250415.064355-3")
 }
+```
 Other dependencies (if there is a version conflict with existing versions in the project, please use the corresponding version from the SDK first):
 
+```kotlin
 implementation ("com.squareup.retrofit2:retrofit:2.9.0")
 implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 implementation ("com.squareup.okhttp3:okhttp:4.9.3")
@@ -63,12 +68,14 @@ implementation ("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 implementation ("com.squareup.okio:okio:2.8.0")
 implementation ("com.google.code.gson:gson:2.10.1")
 implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+```
 image-20250311105512744
 
-Permission Request
-1. Declare permissions
+## Permission Request
+### 1. Declare permissions
 The CXR-M SDK requires permissions for network, Wi-Fi, and Bluetooth (Bluetooth permission requires simultaneous application of the FINE_LOCATION permission). The following is the minimum set of permissions to request in AndroidManifest.xml:
 
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -90,10 +97,12 @@ The CXR-M SDK requires permissions for network, Wi-Fi, and Bluetooth (Bluetooth 
     </application>
 
 </manifest>
-2. Dynamically apply for permissions
+```
+### 2. Dynamically apply for permissions
 Before using the CXR-M SDK, please dynamically request the necessary permissions. Note that the SDK will be unavailable if permissions are insufficient. Here is a simple example:
 
 
+```kotlin
 class MainActivity : AppCompatActivity() {
     companion object {
         const val TAG = "MainActivity"
@@ -142,3 +151,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+```
