@@ -1,0 +1,71 @@
+name: Deploy Docs to GitHub Pages
+
+# Replaces GitHub's legacy "Deploy from a branch" pipeline (which pinned
+# deprecated actions/checkout and actions/upload-artifact versions) with an
+# Actions-based deploy we control. Keep the action versions below pinned to the
+# latest stable major release.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; don't cancel an in-progress run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          lfs: false # LFS binaries (firmware/decompiled dumps) are not served
+
+      - name: Fetch firmware changelogs (small LFS markdown linked from README)
+        run: git lfs pull --include="yodaos/DECOMPILED/vendor/firmware/*.md"
+
+      - name: Assemble site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          # Copy the docs site, excluding the large decompiled/firmware dumps,
+          # tooling configs, and VCS metadata.
+          rsync -a ./ _site/ \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.claude' \
+            --exclude='.agents' \
+            --exclude='.baoyu-skills' \
+            --exclude='node_modules' \
+            --exclude='yodaos/DECOMPILED' \
+            --exclude='yodaos/DECOMPILED-APPS' \
+            --exclude='yodaos/DUMPED' \
+            --exclude='yodaos/COMPILED*' \
+            --exclude='*/decompiled'
+          # Re-add only the firmware CHANGELOG markdown the README links to.
+          mkdir -p '_site/yodaos/DECOMPILED/vendor/firmware'
+          cp yodaos/DECOMPILED/vendor/firmware/*.md '_site/yodaos/DECOMPILED/vendor/firmware/' 2>/dev/null || true
+          echo "Assembled $(find _site -type f | wc -l) files into _site"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
