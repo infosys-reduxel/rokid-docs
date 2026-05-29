@@ -8,6 +8,26 @@ This is a **documentation-only repository** — Markdown plus Git LFS-tracked de
 
 The content is reverse-engineered/authored documentation for the **Rokid AR Glasses** platform — YodaOS (Android 12 / Qualcomm Neo) plus the **CXR SDK** suite. Treat the repo as a single source of truth that consolidates information otherwise scattered across Chinese-language sites, SDK JARs, and firmware dumps.
 
+## Repository scope
+
+This repository covers **YodaOS-Sprite on Rokid Glasses and Rokid AI Glasses** — the eyewear-OS variant for the lightweight, all-day-wear AR glasses line. The scope is intentional and binding: it controls what gets translated, committed, indexed in `README.md`, and added to the `baoyu-translate` glossary.
+
+**In scope**
+
+- YodaOS-Sprite — the eyewear OS itself (`yodaos/docs/`)
+- CXR-M / CXR-S / CXR-L SDKs — the companion-mobile, on-device, and standalone SDK lines used with Rokid Glasses (`cxr-m/`, `cxr-s/`, `cxr-l/`)
+- Bare-metal Android development on Rokid Glasses (`cxr-baremetal/`)
+- Hardware models on the Sprite line: Rokid Glasses (`RV101`, `RV102`, `RV203`, OEM variants) and Rokid AI Glasses
+
+**Permanently out of scope**
+
+- **YodaOS-Master** — Rokid's spatial-computing OS for Station 2 / Station Pro hosts paired with Max-series AR glasses. Different product family, different developer ecosystem.
+- **YodaOS-ER** — companion OS for the older Station + Air / Max / Max 2 family.
+- Spatial-computing SDKs: UXR3.0, UXR2.0, MRTK3, XR Interaction Toolkit (XRI), Rokid Unreal OpenXR Plugin, Rokid Native OpenXR SDK, JSAR, Emulator.
+- Hardware that targets the Master / ER families: Rokid Station 2 / Station Pro, Rokid Max / Max 2 / Max Pro, Rokid Air / Air Pro+, X-Craft, Rokid AR Studio, AR Lite, Glass 2.
+
+When upstream sources surface Master-related material (e.g. a "YodaOS-Master" tab on a multi-tab landing page), agents working in this repo **skip it and explicitly note that it was skipped** — do not translate, scrape into repo content, or commit it. The `.baoyu-skills/baoyu-translate/EXTEND.md` glossary intentionally contains no Master vocabulary; do not add it back. PRs that introduce out-of-scope content should be declined.
+
 ## Top-level layout
 
 The repo splits into two halves with very different handling:
