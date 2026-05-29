@@ -74,6 +74,7 @@
     - [TrustZone access](/yodaos/docs/vendor/trustzone-access.md)
 
 - **Project**
+  - [Sources & provenance](/SOURCES.md)
   - [Contributing](/CONTRIBUTING.md)
   - [Code of conduct](/CODE_OF_CONDUCT.md)
   - [Security policy](/SECURITY.md)

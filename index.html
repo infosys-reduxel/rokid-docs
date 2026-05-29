@@ -9,12 +9,75 @@
   <style>
     :root { --theme-color: #2c8c99; }
     .sidebar-nav > ul > li > strong { color: var(--theme-color); }
-    .app-name-link img { max-width: 120px; }
+
+    /* --- Code block: stronger contrast than the muted default vue theme --- */
+    .markdown-section pre,
+    .markdown-section pre[data-lang] {
+      background-color: #f6f8fa;
+      border: 1px solid #e1e4e8;
+    }
+    .markdown-section pre > code { color: #24292e; }
+
+    /* GitHub-light syntax palette (overrides the faint vue.css token colors) */
+    .markdown-section .token.comment,
+    .markdown-section .token.prolog,
+    .markdown-section .token.doctype,
+    .markdown-section .token.cdata        { color: #6a737d; font-style: italic; }
+    .markdown-section .token.keyword,
+    .markdown-section .token.atrule,
+    .markdown-section .token.important     { color: #d73a49; }
+    .markdown-section .token.string,
+    .markdown-section .token.char,
+    .markdown-section .token.attr-value,
+    .markdown-section .token.regex         { color: #032f62; }
+    .markdown-section .token.number,
+    .markdown-section .token.boolean,
+    .markdown-section .token.constant,
+    .markdown-section .token.symbol        { color: #005cc5; }
+    .markdown-section .token.function,
+    .markdown-section .token.class-name,
+    .markdown-section .token.generics      { color: #6f42c1; }
+    .markdown-section .token.tag,
+    .markdown-section .token.selector,
+    .markdown-section .token.builtin,
+    .markdown-section .token.namespace     { color: #22863a; }
+    .markdown-section .token.attr-name,
+    .markdown-section .token.property,
+    .markdown-section .token.variable      { color: #e36209; }
+    .markdown-section .token.operator,
+    .markdown-section .token.punctuation,
+    .markdown-section .token.entity        { color: #24292e; }
+
+    /* --- Per-page provenance footer injected by the plugin below --- */
+    .doc-provenance {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e1e4e8;
+      font-size: 0.82rem;
+      color: #6a737d;
+      line-height: 1.6;
+    }
+    .doc-provenance a { color: var(--theme-color); }
   </style>
 </head>
 <body>
   <div id="app">Loading documentation…</div>
   <script>
+    // Map a document path to its upstream provenance. Portal-level only —
+    // deep per-page URLs on Rokid's site are JS-generated hashes that are not
+    // stable, so we link the canonical upstream entry point and defer details
+    // to SOURCES.md rather than fabricate exact links.
+    function provenanceFor(file) {
+      var f = (file || '').replace(/^\//, '');
+      var sdkPortal = 'https://developerdoc.rokid.com/sdk?lang=zh';
+      if (f.indexOf('cxr-m/') === 0) return { label: 'Upstream: Rokid Developer Portal — CXR-M SDK', url: sdkPortal };
+      if (f.indexOf('cxr-s/') === 0) return { label: 'Upstream: Rokid Developer Portal — CXR-S SDK', url: sdkPortal };
+      if (f.indexOf('cxr-l/') === 0) return { label: 'Upstream: Rokid Developer Portal — CXR-L SDK', url: sdkPortal };
+      if (f.indexOf('baremetal/') === 0) return { label: 'Upstream: Rokid Developer Portal — 眼镜端裸机开发 (Baremetal)', url: sdkPortal };
+      if (f.indexOf('yodaos/') === 0) return { label: 'Source: reverse-engineered from YodaOS firmware (see fingerprint in overview)', url: 'https://developerdoc.rokid.com/sprite' };
+      return null;
+    }
+
     window.$docsify = {
       name: 'Rokid AR Glasses Docs',
       repo: 'https://github.com/infosys-reduxel/rokid-docs',
@@ -32,7 +95,28 @@
         placeholder: 'Search the docs…',
         noData: 'No results found.',
         depth: 4
-      }
+      },
+      plugins: [
+        // Append an upstream-source / provenance footer to every page.
+        function (hook, vm) {
+          hook.afterEach(function (html, next) {
+            var file = vm.route.file || '';
+            if (!file) { next(html); return; }
+            var gh = 'https://github.com/infosys-reduxel/rokid-docs/blob/main/' + file;
+            var prov = provenanceFor(file);
+            var parts = [];
+            if (prov) {
+              parts.push(prov.url
+                ? '<a href="' + prov.url + '" target="_blank" rel="noopener">' + prov.label + '</a>'
+                : prov.label);
+            }
+            parts.push('<a href="/#/SOURCES.md">Full provenance &amp; sources</a>');
+            parts.push('<a href="' + gh + '" target="_blank" rel="noopener">View page source on GitHub</a>');
+            var footer = '<div class="doc-provenance">📑 ' + parts.join(' &nbsp;·&nbsp; ') + '</div>';
+            next(html + footer);
+          });
+        }
+      ]
     };
   </script>
   <!-- Docsify core -->
@@ -46,5 +130,6 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-kotlin.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-markdown.min.js"></script>
 </body>
 </html>
