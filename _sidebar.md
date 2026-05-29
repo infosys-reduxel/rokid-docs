@@ -26,8 +26,10 @@
   - [API reference](/cxr-l/api-reference.md)
   - [Release notes](/cxr-l/release-notes.md)
 
-- **Baremetal**
-  - [Overview](/baremetal/README.md)
+- **Bare-Metal (no CXR SDK)**
+  - [Development guide](/cxr-baremetal/development-guide.md)
+  - [Button broadcasts](/cxr-baremetal/key-broadcasts.md)
+  - [Audio recording](/cxr-baremetal/audio-recording.md)
 
 - **YodaOS Platform**
   - [Overview](/yodaos/docs/overview.md)
