@@ -38,15 +38,14 @@ include(":app")
 ```
  
 ## Dependency import
+CXR-M SDK Package ("com.rokid.cxr:client-m:0.0.3-20250310.072635-3").
 
-CXR-M SDK Package. The latest publicly-documented release is **1.1.0**; Maven also publishes **1.2.1** (see [release-notes.md](release-notes.md) for the inferred 1.2.x changelog). Use `1.1.0` for the last release with an official Rokid changelog, or `1.2.1` for the newest published artifact.
-
-Add the dependency to the `dependencies` node in `build.gradle.kts`. Note: The SDK requires `minSdk` ≥ 28.
+Add the dependency to the `<dependency>` node in `build.gradle.kts` dependencies. Note: The SDK needs to have `minSdk` set to ≥ 28 .
 
 ```kotlin
 //...Other Settings
 android {
-    //Other settings
+	//Other settings
     defaultConfig {
         //other settings
         minSdk = 28
@@ -54,12 +53,9 @@ android {
     //Other settings
 }
 dependencies {
-    //....Others
-
-    // Latest publicly documented release:
-    implementation("com.rokid.cxr:client-m:1.1.0")
-    // Or, latest Maven artifact (no official changelog yet — see release-notes.md):
-    // implementation("com.rokid.cxr:client-m:1.2.1")
+	//....Others
+    
+    implementation("com.rokid.cxr:client-m:0.0.5-20250415.064355-3")
 }
 ```
 Other dependencies (if there is a version conflict with existing versions in the project, please use the corresponding version from the SDK first):
