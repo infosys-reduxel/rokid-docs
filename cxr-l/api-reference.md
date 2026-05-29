@@ -1,14 +1,13 @@
 # CXR-L SDK API Reference
 
-Decompiled from `com.rokid.cxr:client-l:1.0.1` AAR <!-- TODO: verify AAR size for 1.0.1 (was 28KB for 0.0.1) -->.
-
-See [release-notes.md](release-notes.md) for changelog.
+Decompiled from `com.rokid.cxr:client-l:1.0.1` AAR <!-- TODO: verify AAR size for 1.0.1 (was 28KB for 0.0.1) -->. **Maven now publishes 1.0.2 (uploaded 2026-05-19) but no public changelog has been released for it yet** — the dev portal still shows 1.0.1 as the current version. See [release-notes.md](release-notes.md) for changelog.
 
 ## Overview
 
 CXR-L is the glasses-side SDK for building standalone apps that replace the default Rokid apps entirely. It communicates with the Rokid AI app service (`com.rokid.sprite.aiapp`) via AIDL bound service.
 
-- **Maven**: `com.rokid.cxr:client-l:1.0.1`
+- **Maven (current decompile)**: `com.rokid.cxr:client-l:1.0.1`
+- **Maven (latest published, undocumented)**: `com.rokid.cxr:client-l:1.0.2` <!-- TODO: re-decompile against 1.0.2 once Rokid publishes its changelog -->.
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk**: 28, **targetSdk**: 28
 - **Dependencies**: `kotlin-stdlib:2.1.0`, `gson:2.10.1`
