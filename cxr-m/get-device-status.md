@@ -1,12 +1,16 @@
-Get device status
-Glasses status
+# Get device status
+
+## Glasses status
+
 Note: For information related to the hardware of the glasses, it is necessary to ensure that the Bluetooth channel between the mobile phone and the glasses is connected.
 
-1. Obtain eyeglass information
+## 1. Obtain eyeglass information
+
 It can be obtained through public ValueUtil.CxrStatus getGlassInfo(GlassInfoResultCallback var1)certain methods.
 
 Example:
 
+```kotlin
 private val glassesInfoCallback = object :GlassInfoResultCallback{
     override fun onGlassInfoResult(
         p0: ValueUtil.CxrStatus?,
@@ -22,11 +26,15 @@ private val glassesInfoCallback = object :GlassInfoResultCallback{
 fun getGlassesInfo(){
     CxrApi.getInstance().getGlassInfo(glassesInfoCallback)
 }
-2. Synchronize glasses time and time zone
+```
+
+## 2. Synchronize glasses time and time zone
+
 There are pbulic CxrStatus setGlassTime()ways to synchronize the time and time zone of your glasses.
 
 Example:
 
+```kotlin
 /**
  * Sync Time
  * @return CxrStatus: REQUEST_FAILED, REQUEST_SUCCEED, REQUEST_WAITING
@@ -38,11 +46,15 @@ Example:
 private fun setTime(): CxrStatus{
     return CxrApi.getInstance().setGlassTime()
 }
-3. Set the glasses brightness
+```
+
+## 3. Set the glasses brightness
+
 The brightness of the glasses can public CxrStatus setGlassBrightness(int value)be set. The brightness value ranges from [0, 15]. After successful setting, the setting result can be obtained through the callback BrightnessUpdateListenerof the set interface fun onBrightnessUpdate(p0: String?). Additionally, if the brightness information is manually modified on the glasses side, it can also be listened for in the callback.
 
 Example:
 
+```kotlin
 fun setGlassesBrightness(@IntRange(0,15) brightness: Int): ValueUtil.CxrStatus? {
     return CxrApi.getInstance().setGlassBrightness(brightness)
 }
@@ -59,9 +71,13 @@ fun setGlassesListener(set: Boolean){
     else
         CxrApi.getInstance().setBrightnessUpdateListener(null)
 }
-4. Adjust the glasses volume
+```
+
+## 4. Adjust the glasses volume
+
 The volume of the glasses can public CxrStatus setGlassVolume(int value)be set. The volume value ranges from [0, 15]. After successful setting, the setting result can be obtained through the callback VolumeUpdateListenerof the set interface fun onVolumeUpdated(p0: String?). Additionally, if the volume is manually changed on the glasses, it can also be listened to in the callback.
 
+```kotlin
  fun setGlassesVolume(@IntRange(0,15) volume: Int): ValueUtil.CxrStatus? {
     return CxrApi.getInstance().setGlassVolume(volume)
 }
@@ -78,9 +94,13 @@ fun setGlassesVolumeListener(set: Boolean){
     else
         CxrApi.getInstance().setVolumeUpdateListener(null)
 }
-5. Monitoring glasses battery level changes
+```
+
+## 5. Monitoring glasses battery level changes
+
 The battery level change can be obtained by setting the callback function BatteryLevelUpdateListenerof the interface .fun onBatteryLevelUpdated(p0: String?)
 
+```kotlin
 private val glassesBatteryLevelUpdateListener = object : BatteryLevelUpdateListener{
     override fun onBatteryLevelUpdated(p0: String?) {
         Log.i("GlassesInfo", "onBatteryLevelUpdated: $p0")
@@ -93,3 +113,4 @@ fun setGlassesBatteryLevelListener(set: Boolean){
     else
         CxrApi.getInstance().setBatteryLevelUpdateListener(null)
 }
+```

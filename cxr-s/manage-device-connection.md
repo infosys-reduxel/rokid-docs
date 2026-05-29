@@ -1,9 +1,10 @@
-Manage Device Connection
+# Manage Device Connection
 Before reading this chapter, please ensure that you have thoroughly understood the content of the “SDK Import” chapter.
 
-Monitor Mobile Connection Status
+## Monitor Mobile Connection Status
 The CXR-S SDK can monitor the connection status from the mobile end by setting up a StatusListener.
 
+```kotlin
 private val TAG = "StatusListener"
 private val cxrBridge = CXRServiceBridge()
 // Connection status listener
@@ -26,6 +27,8 @@ private val statusListener by lazy {
 fun setStatusListener() {
     cxrBridge.setStatusListener(statusListener)
 }
+```
+
 Parameter Descriptions:
 
 name: Device name

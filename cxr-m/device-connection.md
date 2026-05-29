@@ -1,10 +1,14 @@
-Device connection
+# Device connection
+
 Before reading this chapter, please note that you have already understood the content of the "SDK Import" chapter.
 
-Bluetooth connection
-1. Find Bluetooth devices
+## Bluetooth connection
+
+## 1. Find Bluetooth devices
+
 Device discovery is performed via the Android standard Bluetooth interface. Here is a simple example:
 
+```kotlin
 package com.rokid.cxrandroiddocsample.helpers
 
 //imports
@@ -287,13 +291,17 @@ class BluetoothHelper(
     }
 
 }
-2. Initialize and connect Bluetooth
+```
+
+## 2. Initialize and connect Bluetooth
+
 Device initialization and connection are controlled through the CxrApi class in the CXR_M SDK.
 
 Method for initializing the Bluetooth module public void initBluetooth(Context context, BluetoothDevice devcie, CxrBluetoothCallback callback):
 
 Here is a simple usage example:
 
+```kotlin
 // bluetooth status callback
 private val bluetoothStatusCallback = object : BluetoothStatusCallback {
     override fun onConnectionInfo(p0: String?, p1: String?) {
@@ -319,6 +327,8 @@ private val bluetoothStatusCallback = object : BluetoothStatusCallback {
 fun connectToRokidGlasses(context: Context, device: BluetoothDevice) {
     CxrApi.getInstance().initBluetooth(context, device, bluetoothStatusCallback)
 }
+```
+
 This BluetoothStatusCallbackincludes a Bluetooth information monitoring interface.
 
 in:
@@ -328,7 +338,9 @@ fun onDisconnected()Callback when Bluetooth connection is lost
 fun onConnectionInfo(p0: String?, p1: String?)Device information update interface
 p0Device UUID
 p1Device MAC address
-3. Obtain the Bluetooth communication module connection status
+
+## 3. Obtain the Bluetooth communication module connection status
+
 The current connection status of the Bluetooth communication module can be obtained through public boolean isBluetoothConnected()certain methods.
 
 Return value:
@@ -337,35 +349,49 @@ trueBluetooth communication module is connected.
 falseBluetooth module not connected
 A simple example is as follows:
 
+```kotlin
 /**
  *  Get Bluetooth Connection Status
  */
 fun getConnectionStatus(): Boolean {
     return CxrApi.getInstance().isBluetoothConnected
 }
-4. Deinitialize Bluetooth
+```
+
+## 4. Deinitialize Bluetooth
+
 Yes, it's possible public void deinitBluetooth().
 
 A simple example is as follows:
 
+```kotlin
 private fun deInit() {
     CxrApi.getInstance().deinitBluetooth()
 }
-5. Bluetooth Reconnection
+```
+
+## 5. Bluetooth Reconnection
+
 public void connectBluetooth(Context var1, String var2, String var3, BluetoothStatusCallback var4)Bluetooth reconnection can be achieved through certain methods.
 
 in:
 
 var2UUID
 var3Mac address
+
+```kotlin
 @SuppressLint("MissingPermission")
 fun reconnectRokidGlasses(context: Context, uuid: String, macAddress: String) {
     CxrApi.getInstance().connectBluetooth(context, uuid, macAddress, bluetoothStatusCallback)
 }
-Wi-Fi connection
+```
+
+## Wi-Fi connection
+
 Note: Please complete the Bluetooth connection before using the Wi-Fi module. Also, the Wi-Fi module is a high-power module; please only turn it on when necessary.
 
-1. Initialize the Wi-Fi communication module
+## 1. Initialize the Wi-Fi communication module
+
 Use public ValueUtil.CxrStatus initWifi(WifiStatusCallback var1)the initial Wi-Fi communication module.
 
 inWifiStatusCallback
@@ -375,6 +401,7 @@ onDisconnectedCallback when disconnection
 onFailedCallback when connection fails
 Code example:
 
+```kotlin
 /**
  * Wifi Callback
  */
@@ -396,7 +423,10 @@ private val wifiCallback: WifiStatusCallback = object : WifiStatusCallback {
 fun connectWifi(): ValueUtil.CxrStatus? {
     return CxrApi.getInstance().initWifi(wifiCallback)
 }
-2. Obtain the Wi-Fi communication module connection status
+```
+
+## 2. Obtain the Wi-Fi communication module connection status
+
 public boolean isWifiConnected()The connection status of the current Wi-Fi communication module can be obtained through certain methods.
 
 Return value:
@@ -405,6 +435,7 @@ trueWi-Fi communication module is connected.
 falseWi-Fi communication module not connected
 A simple example is as follows:
 
+```kotlin
 /**
  * Get Wifi Connection Status
  * @return true: Connected, false: Disconnected
@@ -412,14 +443,19 @@ A simple example is as follows:
 private fun getWifiConnection(): Boolean{
     return CxrApi.getInstance().isWifiConnected
 }
-3. Deinitialize the Wi-Fi communication module
+```
+
+## 3. Deinitialize the Wi-Fi communication module
+
 Yes, it's possible public void deinitWifi().
 
 A simple example is as follows:
 
+```kotlin
 /**
  * Deinit Wifi
  */
 private fun deinitWifi(){
     CxrApi.getInstance().deinitWifi()
 }
+```
