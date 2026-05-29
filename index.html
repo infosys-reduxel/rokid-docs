@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rokid AR Glasses Platform Documentation</title>
+  <meta name="description" content="Community-maintained documentation for the Rokid AR Glasses platform — YodaOS and the CXR SDK suite (Mobile, On-Device, Standalone)." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/vue.css" />
+  <style>
+    :root { --theme-color: #2c8c99; }
+    .sidebar-nav > ul > li > strong { color: var(--theme-color); }
+    .app-name-link img { max-width: 120px; }
+  </style>
+</head>
+<body>
+  <div id="app">Loading documentation…</div>
+  <script>
+    window.$docsify = {
+      name: 'Rokid AR Glasses Docs',
+      repo: 'https://github.com/infosys-reduxel/rokid-docs',
+      homepage: 'README.md',
+      loadSidebar: true,
+      subMaxLevel: 2,
+      relativePath: true,
+      auto2top: true,
+      maxLevel: 4,
+      // Always use the root _sidebar.md, even on deeply nested pages.
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
+      search: {
+        placeholder: 'Search the docs…',
+        noData: 'No results found.',
+        depth: 4
+      }
+    };
+  </script>
+  <!-- Docsify core -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- Full-text search -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <!-- Copy-to-clipboard for code blocks -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+  <!-- Syntax highlighting for the languages used across the docs -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-kotlin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+</body>
+</html>
