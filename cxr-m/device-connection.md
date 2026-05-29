@@ -372,17 +372,40 @@ private fun deInit() {
 
 ## 5. Bluetooth Reconnection
 
-public void connectBluetooth(Context var1, String var2, String var3, BluetoothStatusCallback var4)Bluetooth reconnection can be achieved through certain methods.
+Bluetooth reconnection is achieved via `connectBluetooth`. The signature changed in v1.2.1:
 
-in:
+**v1.1.0 and earlier:**
+```
+public void connectBluetooth(Context context, String uuid, String macAddress, BluetoothStatusCallback callback)
+```
 
-var2UUID
-var3Mac address
+**v1.2.1+ (breaking change):** A fourth `String customInfo` parameter was added:
+```
+public void connectBluetooth(Context context, String uuid, String macAddress, String customInfo, BluetoothStatusCallback callback)
+```
+
+The `customInfo` parameter is a per-client identifier used for multi-client Bluetooth support. Pass an empty string `""` if not required.
+
+Parameters:
+- `uuid` — Device UUID
+- `macAddress` — Device MAC address
+- `customInfo` — (v1.2.1+) per-client custom identifier string
+
+Example (v1.1.0):
 
 ```kotlin
 @SuppressLint("MissingPermission")
 fun reconnectRokidGlasses(context: Context, uuid: String, macAddress: String) {
     CxrApi.getInstance().connectBluetooth(context, uuid, macAddress, bluetoothStatusCallback)
+}
+```
+
+Example (v1.2.1+):
+
+```kotlin
+@SuppressLint("MissingPermission")
+fun reconnectRokidGlasses(context: Context, uuid: String, macAddress: String) {
+    CxrApi.getInstance().connectBluetooth(context, uuid, macAddress, "", bluetoothStatusCallback)
 }
 ```
 

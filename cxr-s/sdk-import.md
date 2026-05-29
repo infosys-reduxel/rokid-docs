@@ -36,13 +36,15 @@ dependencyResolutionManagement {
  
 rootProject.name = "CXRServiceDemo"
 include(":app")
-Dependency Import
-CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45”).
+## Dependency Import
 
-Add the dependency in the dependencies node of the build.gradle.kts file.
+CXR-S SDK Package. The current Maven release is **`com.rokid.cxr:cxr-service-bridge:1.0`** (snapshot fingerprint `1.0-20260212.103714-88`, metadata last updated 2026-05-22).
 
-Note: The SDK requires setting minSdk ≥ 28.
+Add the dependency in the `dependencies` node of the `build.gradle.kts` file.
 
+Note: The SDK requires setting `minSdk` ≥ 28.
+
+```kotlin
 //...Other Settings
 android {
     //...Other Settings
@@ -50,10 +52,10 @@ android {
         //...Other Settings
         minSdk = 28
     }
-   //...Other Settings
-    
+    //...Other Settings
 }
 dependencies {
-   //...Other Settings
-    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45")
+    //...Other Settings
+    implementation(“com.rokid.cxr:cxr-service-bridge:1.0-20260212.103714-88”)
 }
+```
