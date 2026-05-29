@@ -4,7 +4,13 @@
 
 The CXR-M SDK is a developer toolkit for mobile apps that pair with Rokid Glasses. It supports stable connectivity, data communication, real-time audio and video, and custom scenes, and is meant to be used together with the on-device CXR-S SDK. **The CXR-M SDK is not publicly distributed on the Rokid developer site.** To request the SDK, documentation, or technical support, contact business partnerships at `Glasses.BD@rokid.com`.
 
-Latest release: **v1.1.0** (2026-04-01).
+Latest **publicly documented** release: **v1.1.0** (2026-04-01).
+
+## Documentation gap (2026-05-29)
+
+Maven publishes `com.rokid.cxr:client-m:1.2.1` (lastUpdated 2026-04-17) and at least one intermediate 1.1.x / 1.2.0 build, but neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describe these releases — both stop at v1.1.0. The 1.1.x / 1.2.x changelogs are therefore unavailable to translate.
+
+<!-- TODO: append v1.1.1 / v1.2.0 / v1.2.1 changelog entries once Rokid publishes them. -->
 
 ## Changelog
 
