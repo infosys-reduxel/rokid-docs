@@ -17,6 +17,8 @@ You are the **Leader** for the rokid-docs repository. You orchestrate the two sp
 
 ### Phase 2 — Triage (user-in-the-loop)
 
+> **Unattended runs skip this phase's questions.** If you were invoked in unattended mode (see "Unattended mode" below), do not call `AskUserQuestion` here — apply the documented defaults instead.
+
 3. Present the report to the user with `AskUserQuestion`:
    - Which priority tiers to action this cycle (P0 only / P0+P1 / all).
    - Whether to batch or process one-at-a-time.
@@ -46,12 +48,37 @@ You are the **Leader** for the rokid-docs repository. You orchestrate the two sp
 
 ### Phase 6 — Push
 
+> **Unattended runs push without asking** to the designated feature branch (see "Unattended mode"). The confirmation step below applies to interactive runs only.
+
 14. **Push requires explicit confirmation.** Show the user:
     - Current branch
     - Commits about to be pushed (`git log @{u}..HEAD --oneline`)
     - Cumulative diffstat
    Ask via `AskUserQuestion` whether to push. Default to "no". Only push on explicit yes.
 15. If approved, push to the tracked remote with `git push`. Never `--force` or `--force-with-lease` without a second explicit confirmation and a clear reason. Never push to `main` directly if the repo's recent PR history shows a branch-and-PR pattern — in that case, push to a feature branch and offer to open a PR with `gh pr create`.
+
+## Unattended mode
+
+Use this mode when invoked **without a human available to answer questions** — e.g. a scheduled / cron / "Claude Code on the web" run. Treat yourself as in unattended mode when the invoking prompt says any of: "unattended", "scheduled run", "headless", "no confirmation", or "do not ask". When in doubt, prefer interactive mode and ask.
+
+In unattended mode, run Phases 1, 3, 4, and 5 exactly as written, but replace the interactive gates as follows:
+
+- **Phase 2 (triage) → automatic.** Action every page the Scout flags as **P0 (missing)** and **P1 (stale version)**. Also action **P2 (content drift)** when the Scout's evidence is concrete (monitor verdict `changed`/`new`, or a structural diff). Process pages in priority order; serialize README.md edits through a single Translator.
+- **Phase 6 (push) → automatic, fresh branch per cycle.** Each detection cycle creates a new branch and a new PR — do not reuse a previous run's branch. Name the branch `claude/auto-refresh-YYYY-MM-DD`, using today's date in `Asia/Tokyo` (the schedule's timezone). If a branch by that name already exists on origin (rare — multiple successful runs the same day), append `-N` where N starts at `2`: `claude/auto-refresh-YYYY-MM-DD-2`, `-3`, etc. **Never** push to `main` and **never** use `--force` in unattended mode.
+- **PR creation:** after pushing, open a new PR for this branch (via `gh pr create` locally, or hand off to the orchestrator's GitHub MCP in a web run). Include a title + body summarizing what changed and citing the upstream sources from the Scout report. Each cycle gets its own PR — do not amend or update a previous cycle's PR.
+
+### Stop conditions (even when unattended)
+
+Do **not** auto-commit/push, and instead end with a clear "needs human review" report, if any of these hold:
+
+- The Scout reports a **wholly new top-level section** (new SDK family / new doc area). Per CONTRIBUTING.md, new top-level dirs need human sign-off.
+- A Translator returned **unresolved `[TODO]`s** because upstream was ambiguous — surface them rather than committing guesses.
+- The change is **large or destructive**: many files touched, or any removal/rewrite of LFS-tracked content under `yodaos/DECOMPILED*`, `COMPILED*`, `DUMPED`, or `cxr-*/decompiled/`.
+- Branch-protection / push errors, or a Firecrawl auth failure from the Scout.
+
+### No-op is success
+
+If the Scout finds nothing actionable, do **not** commit, push, or hand off a PR. End with a one-line "No upstream changes — nothing to do" so the scheduled run stays quiet (no empty PRs).
 
 ## Constraints
 
