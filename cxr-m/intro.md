@@ -1,5 +1,8 @@
 
 The Rokid CXR-M SDK is a developer toolkit provided by Rokid for developers to create mobile applications that work with Rokid Glasses.
+
+See [release-notes.md](release-notes.md) for the full version history. The current release is **v1.1.0** (2026-04-01).
+
 SDK and Glasses
 Drawing 1
 
