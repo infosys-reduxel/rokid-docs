@@ -113,6 +113,11 @@ rokid-docs/
 │   ├── api-reference.md            # Complete API reference
 │   └── release-notes.md            # SDK changelog
 │
+├── cxr-baremetal/                  # Bare-metal Android dev on Rokid Glasses (no CXR SDK)
+│   ├── development-guide.md        # Reserved interactions + dev environment
+│   ├── key-broadcasts.md           # Hardware-button Intent broadcasts
+│   └── audio-recording.md          # 8-channel mic recording (ChannelMask 0x6000FC)
+│
 └── yodaos/                         # YodaOS platform documentation
     ├── docs/
     │   ├── overview.md             # Build info, CPU, architecture
@@ -266,8 +271,8 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:client-m:1.1.0` |
-| **Released** | 2026-04-01 |
+| **Maven Artifact (documented)** | `com.rokid.cxr:client-m:1.1.0` (2026-04-01) |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.1` (2026-04-17) |
 | **Min SDK** | 28 (Android 9) |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 | **Distribution** | Not on the public developer site — contact `Glasses.BD@rokid.com` |
@@ -338,7 +343,8 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:client-l:1.0.1` |
+| **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-l:1.0.2` (2026-05-19) |
 | **Size** | TODO — verify AAR size for 1.0.1 (was 28 KB for 0.0.1) |
 | **Min SDK** | 28 |
 | **Target SDK** | 28 |
@@ -461,6 +467,9 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
+| Bare-metal Android dev on Glasses | [cxr-baremetal/development-guide.md](cxr-baremetal/development-guide.md) |
+| Hardware-button broadcast Intents | [cxr-baremetal/key-broadcasts.md](cxr-baremetal/key-broadcasts.md) |
+| 8-channel mic recording on Glasses | [cxr-baremetal/audio-recording.md](cxr-baremetal/audio-recording.md) |
 | Full CXR-M SDK API | [cxr-m/sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) |
 | Caps data format | [cxr-s/data-structure.md](cxr-s/data-structure.md) |
 | Firmware changelogs | [yodaos/DECOMPILED/vendor/firmware/](yodaos/DECOMPILED/vendor/firmware/) |
@@ -489,6 +498,11 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 **CXR-L SDK (Standalone)**
 1. [api-reference.md](cxr-l/api-reference.md) -- API reference
 2. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
+
+**Bare-metal Android Development on Rokid Glasses**
+1. [development-guide.md](cxr-baremetal/development-guide.md) -- Reserved interactions + dev environment + side-load workflow
+2. [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) -- Hardware-button system Intents and `BroadcastReceiver` pattern
+3. [audio-recording.md](cxr-baremetal/audio-recording.md) -- 8-channel mic recording (`ChannelMask = 0x6000FC`)
 
 **YodaOS -- System**
 1. [overview.md](yodaos/docs/overview.md) -- Build info and architecture
