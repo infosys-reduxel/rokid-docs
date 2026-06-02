@@ -1,15 +1,18 @@
-SDK Import
-This chapter takes the use of Kotlin DSL (build.gradle.kts) as an example
+# SDK Import
 
-Configure Maven Repository
-The CXR-S SDK utilizes Maven for online management of SDK packages.
+_Source: https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/ (Chinese, fetched 2026-05-29). Version pin updated to match Maven `cxr-service-bridge` metadata (last updated 2026-05-22)._
 
-Maven repository address: (“https://maven.rokid.com/repository/maven-public/”)
+This chapter uses Kotlin DSL (`build.gradle.kts`) as an example.
 
-Locate the settings.gradle.kts file and add the Maven repository to the repositories section within the dependencyResolutionManagement node.
+## Configure Maven Repository
 
+The CXR-S SDK uses Maven for online SDK package management.
 
+Maven repository address: `https://maven.rokid.com/repository/maven-public/`
 
+Locate `settings.gradle.kts` and add the Maven repository to the `repositories` section inside the `dependencyResolutionManagement` node.
+
+```kotlin
 pluginManagement {
     repositories {
         google {
@@ -33,27 +36,33 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
- 
+
 rootProject.name = "CXRServiceDemo"
 include(":app")
-Dependency Import
-CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45”).
+```
 
-Add the dependency in the dependencies node of the build.gradle.kts file.
+## Dependency Import
 
-Note: The SDK requires setting minSdk ≥ 28.
+CXR-S SDK package: `com.rokid.cxr:cxr-service-bridge:1.0-20260212.103714-88`
 
-//...Other Settings
+> **Note:** This is a SNAPSHOT build. The `<release>` and `<latest>` tags in the Maven metadata point to `1.0-20260212.103714-88` (metadata `lastUpdated` 2026-05-22). There is no stable `1.0` release artifact — always use the latest SNAPSHOT coordinate above.
+
+Add the dependency in the `dependencies` node of `build.gradle.kts`.
+
+> **Note:** The SDK requires `minSdk` ≥ 28.
+
+```kotlin
+// ...Other Settings
 android {
-    //...Other Settings
+    // ...Other Settings
     defaultConfig {
-        //...Other Settings
+        // ...Other Settings
         minSdk = 28
     }
-   //...Other Settings
-    
+    // ...Other Settings
 }
 dependencies {
-   //...Other Settings
-    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45")
+    // ...Other Settings
+    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20260212.103714-88")
 }
+```
