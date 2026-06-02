@@ -345,8 +345,8 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-l:1.0.2` (2026-05-19) |
-| **Size** | TODO — verify AAR size for 1.0.1 (was 28 KB for 0.0.1) |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-l:1.0.3` (2026-06-02) |
+| **Size** | 65,494 bytes (1.0.3 AAR); 57,145 bytes (1.0.2 AAR) |
 | **Min SDK** | 28 |
 | **Target SDK** | 28 |
 | **Dependencies** | Kotlin stdlib 2.1.0, Gson 2.10.1 |
