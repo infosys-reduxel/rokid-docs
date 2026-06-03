@@ -1,17 +1,18 @@
 # CXR-L SDK API Reference
 
-Decompiled from `com.rokid.cxr:client-l:1.0.1` AAR <!-- TODO: verify AAR size for 1.0.1 (was 28KB for 0.0.1) -->. **Maven now publishes 1.0.2 (uploaded 2026-05-19) but no public changelog has been released for it yet** — the dev portal still shows 1.0.1 as the current version. See [release-notes.md](release-notes.md) for changelog.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline — they are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs (see [release-notes.md](release-notes.md) for full details). The developer portal at `custom.rokid.com` still shows version 1.0.1 as of 2026-06-03.
 
 ## Overview
 
-CXR-L is the glasses-side SDK for building standalone apps that replace the default Rokid apps entirely. It communicates with the Rokid AI app service (`com.rokid.sprite.aiapp`) via AIDL bound service.
+CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
-- **Maven (current decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest published, undocumented)**: `com.rokid.cxr:client-l:1.0.2` <!-- TODO: re-decompile against 1.0.2 once Rokid publishes its changelog -->.
+- **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
+- **Maven (latest published)**: `com.rokid.cxr:client-l:1.0.3` (2026-06-02; provisional changelog — see [release-notes.md](release-notes.md))
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk**: 28, **targetSdk**: 28
-- **Dependencies**: `kotlin-stdlib:2.1.0`, `gson:2.10.1`
+- **Dependencies (1.0.3)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
+- **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
 
 ## Class Hierarchy
 
@@ -43,12 +44,13 @@ Constructor takes an Android `Context`. All public methods are inherited from `E
 
 ### Callback Registration
 
-| Method | Signature | Returns |
-|--------|-----------|---------|
-| `setCXRLinkCallBack` | `(cb: ICXRLConnectCbk)` | `Unit` |
-| `setCXRImageCbk` | `(cb: IImageStreamCbk)` | `Unit` |
-| `setCXRAudioCbk` | `(cb: IAudioStreamCbk)` | `Unit` |
-| `setCXRCustomViewCbk` | `(cb: ICustomViewCbk)` | `Unit` |
+| Method | Signature | Returns | Notes |
+|--------|-----------|---------|-------|
+| `setCXRLinkCallBack` | `(cb: ICXRLConnectCbk)` | `Unit` | v1.0.1+ |
+| `setCXRImageCbk` | `(cb: IImageStreamCbk)` | `Unit` | v1.0.1+ |
+| `setCXRAudioCbk` | `(cb: IAudioStreamCbk)` | `Unit` | v1.0.1+ |
+| `setCXRCustomViewCbk` | `(cb: ICustomViewCbk)` | `Unit` | v1.0.1+ |
+| `setCXRLinkCbk` | `(cb: ICXRLinkCbk)` | `Unit` | v1.0.3+; replaces `setCXRLinkCallBack` for device-state callbacks |
 
 ### Camera / Image
 
@@ -65,6 +67,8 @@ Constructor takes an Android `Context`. All public methods are inherited from `E
 
 ### Custom View (Display Rendering)
 
+Used in the `CUSTOMVIEW` session type. Scene is ready when `openCustomView` succeeds and the glasses have acknowledged the view open event.
+
 | Method | Signature | Returns | Description |
 |--------|-----------|---------|-------------|
 | `openCustomView` | `(data: String)` | `Boolean` | Open a custom view with JSON data. |
@@ -74,6 +78,20 @@ Constructor takes an Android `Context`. All public methods are inherited from `E
 | `getCurrentCustomViewData` | `()` | `String` | Get the JSON data of the current custom view. |
 | `setIcons` | `(iconsJson: String)` | `Boolean` | Set display icons (JSON array of `IconInfo`). |
 | `getCurrentIcons` | `()` | `String` | Get current icons JSON. |
+
+### Custom App Management (CUSTOMAPP session)
+
+Used in the `CUSTOMAPP` session type. The target glasses-side app must be installed and in the foreground before using audio, photo, or custom command capabilities.
+
+> **Added in v1.0.3 (provisional — reconstructed from binary diff).** Exact method signatures may differ from official documentation when it is published.
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `openApp` | `(packageName: String)` | `Boolean` | Launch the specified app on the glasses (brings it to foreground). |
+| `stopApp` | `(packageName: String)` | `Boolean` | Stop the running app on the glasses. |
+| `isInstalled` | `(packageName: String)` | `Boolean` | Check whether a package is installed on the glasses. |
+| `installApp` | `(apkPath: String, packageName: String)` | `Boolean` | Upload and install an APK on the glasses. |
+| `uninstallApp` | `(packageName: String)` | `Boolean` | Uninstall a package from the glasses. |
 
 ### Service Info
 
@@ -131,6 +149,25 @@ interface ICustomViewCbk {
 }
 ```
 
+### ICXRLinkCbk (v1.0.3+)
+
+> **Provisional — reconstructed from binary diff of 1.0.3 AAR.** Adding this interface to your class is a **breaking change**: any class implementing it must provide all three methods.
+
+```kotlin
+package com.rokid.cxr.link.callbacks
+
+interface ICXRLinkCbk {
+    /** Fired when the SDK receives a device-state update from the glasses. */
+    fun onGlassDeviceInfo(info: GlassInfo)
+
+    /** Fired when the glasses detect a wearing / not-wearing transition. */
+    fun onGlassWearingStatus(isWearing: Boolean)
+
+    /** Fired when an in-progress AI session on the glasses is interrupted. */
+    fun onGlassAiInterrupt(interrupted: Boolean)
+}
+```
+
 ## AIDL Service Interface (IMediaStreamService)
 
 The underlying bound service used internally by `ExternalAppClient`. These are the raw AIDL methods:
@@ -169,6 +206,25 @@ interface IMediaStreamService {
 ```
 
 ## Utility Classes
+
+### GlassInfo (v1.0.3+)
+
+> **Provisional — reconstructed from binary diff of 1.0.3 AAR.**
+
+```kotlin
+package com.rokid.cxr.link.utils
+
+data class GlassInfo(
+    val deviceName: String,     // Advertised Bluetooth device name
+    val batteryLevel: Int,      // Battery level (0–100)
+    val sound: Int,             // Current speaker volume level
+    val brightness: Int,        // Display brightness level
+    val systemVersion: String,  // Glasses firmware / OS version string
+    val ischarging: Boolean,    // Whether the glasses are on charge
+    val sn: String,             // Device serial number
+    val wearingStatus: String   // Wearing-state descriptor (raw; see ICXRLinkCbk.onGlassWearingStatus)
+)
+```
 
 ### IconInfo
 
@@ -239,15 +295,30 @@ cxrLink.takePhoto(1920, 1080, 0)
 cxrLink.disconnect()
 ```
 
+## Session Types and Capability Matrix
+
+The SDK operates in one of two session modes set before calling `connect`. Capabilities differ by session:
+
+| Session / State | Audio | Photo | Custom Command |
+|-----------------|-------|-------|----------------|
+| Unauthenticated / no token | No | No | No |
+| Authenticated but not connected | No | No | No |
+| Connected but scene not ready (View not opened / app not launched) | No | No | No |
+| `CUSTOMVIEW` + custom view opened | Yes | Yes | No |
+| `CUSTOMAPP` + glasses-side app opened | Yes | Yes | Yes (requires same `CXRLink` instance) |
+
+> Source: `custom.rokid.com` CXR-L SDK intro page (Chinese), fetched 2026-06-03.
+
 ## Notes
 
 1. CXR-L does NOT access hardware directly. It communicates with the Rokid AI app's service via AIDL bound service.
 2. Image capture is async: call `takePhoto()`, receive bytes in `IImageStreamCbk.onImageReceived()`.
 3. Custom views use JSON strings for data, rendered by the Rokid system.
-4. No continuous camera stream API exists -- only `takePhoto` for snapshots and the image callback for receiving frames.
-5. Authorization flow requires the Rokid companion app (`com.rokid.sprite.aiapp`) to be installed on the glasses. Min version code: 100000.
+4. No continuous camera stream API exists — only `takePhoto` for snapshots and the image callback for receiving frames.
+5. Authorization flow requires the Rokid companion app (`com.rokid.sprite.aiapp` or `com.rokid.sprite.global.aiapp`) to be installed on the glasses. Min version code: 100000.
 6. The third parameter in `takePhoto` is quality (default 80), not format. Width defaults to 1920, height to 1080.
 7. Audio streaming supports codec type selection via `startAudioStream(codecType)`. Codec values are undocumented.
-8. `connect()` takes a token string (not a package name). The target package is hardcoded to `com.rokid.sprite.aiapp`.
+8. `connect()` takes a token string (not a package name). From v1.0.3, the SDK queries both `com.rokid.sprite.aiapp` and `com.rokid.sprite.global.aiapp` to handle different hardware variants or regions.
 9. `AuthorizationHelper.isRequiredRokidAppInstalled()` checks that `com.rokid.sprite.aiapp` versionCode >= 100000.
-10. Decompiled source is available in `rokid-docs/cxr-l/decompiled/`.
+10. Decompiled source is available in `cxr-l/decompiled/`.
+11. v1.0.3 downgraded `kotlin-stdlib` from `2.1.0` to `1.6.0` as a runtime dependency. If your app targets Kotlin 2.x, declare your own explicit `kotlin-stdlib` dependency to avoid being silently downgraded by dependency resolution.
