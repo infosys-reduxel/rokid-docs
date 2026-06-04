@@ -98,7 +98,7 @@ rokid-docs/
 │   ├── get-device-status.md        # Querying device status
 │   ├── data-interaction.md         # Data interaction patterns
 │   ├── ai-integration.md           # AI integration with Sprite OS
-│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.1.0)
+│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.2.1)
 │   └── sdk-decompiled-reference.md # Full decompiled SDK reference
 │
 ├── cxr-s/                          # CXR-S SDK documentation (On-device)
@@ -307,7 +307,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | [get-device-status.md](cxr-m/get-device-status.md) | Querying device status |
 | [data-interaction.md](cxr-m/data-interaction.md) | Data interaction patterns |
 | [ai-integration.md](cxr-m/ai-integration.md) | AI integration with Sprite OS |
-| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.1.0) |
+| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.2.1) |
 | [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) | Complete decompiled SDK reference (31 classes) |
 
 ### CXR-S SDK (On-Device)
@@ -316,7 +316,7 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0-SNAPSHOT` |
+| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**

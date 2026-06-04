@@ -25,6 +25,19 @@ YodaOS-Sprite is a smart-glasses operating system purpose-built for all-day wear
 | **Microphone** | 4-mic directional array |
 | **Speaker** | 2 high-quality ultra-linear speakers |
 | **Camera** | SONY IMX681 — 12 MP, 3024 × 4032 px, aperture F/2.25, FOV D: 109 ° |
+| **Camera indicator light** | Supported |
+| **P-sensor** | Supported |
+| **IMU** | 6-axis IMU |
+| **Audio PA** | Supported |
+| **Interaction** | Function key × 1, touchpad × 1 |
+| **Charging contacts** | 5 V / 1 A |
+| **Wear detection** | Supported |
+| **Optics design** | Micro LED + glass diffractive waveguide |
+| **Light engine** | Binocular single green |
+| **FOV (display)** | 30 ° |
+| **Convergence distance** | Infinity |
+| **Brightness** | 1500 nits |
+| **Resolution (display)** | 480 × 640 px |
 
 ## Developer Toolkit
 
@@ -74,7 +87,7 @@ For additional questions, see the Rokid Developer Forum. <!-- TODO: source did n
 
 ## Notes
 
-- **Source**: https://ar.rokid.com/sprite — the page is a single-page application that loads developer content from `https://developerdoc.rokid.com/sprite?lang=zh` in an iframe. Initially captured on 2026-05-29; device specifications table added 2026-06-03 from the "View specifications" (查看配置) panel, which is now rendered inline.
+- **Source**: https://ar.rokid.com/sprite — the page is a single-page application that loads developer content from `https://developerdoc.rokid.com/sprite?lang=zh` in an iframe. Initially captured on 2026-05-29; device specifications table added 2026-06-03 from the "View specifications" (查看配置) panel; optical display specs (FOV, brightness, resolution, optics design, etc.) added 2026-06-04 from the same panel, which renders additional rows on the current live page.
 - **Scope**: This document covers the **YodaOS-Sprite** tab only — the OS that runs on Rokid Glasses and Rokid AI Glasses. A separate "YodaOS-Master" tab exists on the upstream page but is out of scope for this repository.
 - **Known TODO links**:
   - Rokid Developer Forum — URL not provided by source.
