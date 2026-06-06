@@ -47,11 +47,26 @@ The AAR's `<queries>` block now also declares `com.rokid.sprite.global.aiapp` (i
 
 > **Note on kotlin-stdlib downgrade.** The Kotlin stdlib runtime dependency was downgraded from 2.1.0 to 1.6.0. Apps that relied on the transitive Kotlin 2.x stdlib should declare their own `kotlin-stdlib` dependency at the desired version to avoid being silently downgraded by dependency resolution.
 
-## v1.0.2 — published 2026-05-19 (undocumented)
+## v1.0.2 — published 2026-05-20
 
-`com.rokid.cxr:client-l:1.0.2` was uploaded to Maven on 2026-05-19 and finalized in the repository index on 2026-05-28, but as of 2026-06-02 Rokid has not yet published a changelog for it on the developer portal or on its `custom.rokid.com` doc site. The POM declares the same dependency set as 1.0.1 (`cxr-service-bridge 1.0-20260212.103714-88`, `kotlin-stdlib 2.1.0`, `gson 2.10.1`). Features below remain those of 1.0.1 until Rokid publishes the 1.0.2 changelog.
+> Source: official changelog at `https://developerdoc.rokid.com/sdk` (CXR-L tab, fetched 2026-06-06).
 
-<!-- TODO: append the v1.0.2 feature list once it is published upstream. -->
+`com.rokid.cxr:client-l:1.0.2` was uploaded to Maven on 2026-05-19. Rokid published the official changelog on 2026-05-20.
+
+**Android changes:**
+
+1. Android `client-l` upgraded to 1.0.2.
+2. **Auth API change:** `requestAuthorization` now requires a `GlassPermission` array (e.g. microphone, camera, media). If the user has already authorized, the call can return a `Pair` synchronously — parse the token directly from that.
+3. **`sendCustomCmd` enhancement:** now accepts a `Caps` object directly (in addition to the existing form).
+4. `CXRLSample` updated to reflect the above API changes.
+
+**iOS changes (RGCxrClient 1.0.2):**
+
+5. iOS `RGCxrClient` upgraded to 1.0.2 via CocoaPods; requires the Rokid specs source to be configured in your `Podfile`.
+6. App startup: `CxrClient.initialize(mode:options:)` now explicitly distinguishes `customApp` / `customView` session modes.
+7. Auth scopes changed from string constants to SDK permission enums (e.g. `.microphone`).
+8. Most capability APIs now return `RGCxrClientError?` synchronously. `sendCustomCmd` sends without a completion callback; subscribe to events via `notifyEventPublisher`.
+9. `ios_cxr_l_sample` updated to reflect the above API changes.
 
 ## v1.0.1 — 2026-05-07
 

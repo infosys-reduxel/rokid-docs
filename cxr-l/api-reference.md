@@ -1,16 +1,18 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline — they are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs (see [release-notes.md](release-notes.md) for full details). The developer portal at `custom.rokid.com` still shows version 1.0.1 as of 2026-06-03.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest published)**: `com.rokid.cxr:client-l:1.0.3` (2026-06-02; provisional changelog — see [release-notes.md](release-notes.md))
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.3` (2026-06-02)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
-- **minSdk**: 28, **targetSdk**: 28
+- **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
+- **targetSdk**: 28
 - **Dependencies (1.0.3)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
+- **Companion app requirement (1.0.3)**: Rokid AI App (domestic) ≥ 1.7.14
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
 
@@ -318,7 +320,37 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 5. Authorization flow requires the Rokid companion app (`com.rokid.sprite.aiapp` or `com.rokid.sprite.global.aiapp`) to be installed on the glasses. Min version code: 100000.
 6. The third parameter in `takePhoto` is quality (default 80), not format. Width defaults to 1920, height to 1080.
 7. Audio streaming supports codec type selection via `startAudioStream(codecType)`. Codec values are undocumented.
-8. `connect()` takes a token string (not a package name). From v1.0.3, the SDK queries both `com.rokid.sprite.aiapp` and `com.rokid.sprite.global.aiapp` to handle different hardware variants or regions.
+8. `connect()` takes a token string (not a package name). From v1.0.3, the SDK queries both `com.rokid.sprite.aiapp` and `com.rokid.sprite.global.aiapp` to handle different hardware variants or regions (domestic vs. overseas "Hi Rokid" app).
 9. `AuthorizationHelper.isRequiredRokidAppInstalled()` checks that `com.rokid.sprite.aiapp` versionCode >= 100000.
 10. Decompiled source is available in `cxr-l/decompiled/`.
 11. v1.0.3 downgraded `kotlin-stdlib` from `2.1.0` to `1.6.0` as a runtime dependency. If your app targets Kotlin 2.x, declare your own explicit `kotlin-stdlib` dependency to avoid being silently downgraded by dependency resolution.
+
+## Notable API changes (v1.0.2 / v1.0.3)
+
+> Source: official Rokid changelogs at `https://developerdoc.rokid.com/sdk` (fetched 2026-06-06). The class inventory above is the 1.0.1 baseline; the changes below layer on top.
+
+### v1.0.2 breaking changes (Android)
+
+- **`AuthorizationHelper.requestAuthorization` signature changed.** Now requires a `GlassPermission[]` array declaring the permissions the app needs (e.g. microphone, camera, media). If the user has already authorized all requested permissions, the call can return a `Pair<resultCode, Intent>` synchronously — parse the token from that directly instead of waiting for `onActivityResult`.
+- **`sendCustomCmd` now accepts `Caps` directly.** The existing byte-array overload remains; the new `sendCustomCmd(caps: Caps)` overload removes the manual serialization step.
+
+### v1.0.3 additions (Android)
+
+- **`minSdk` raised to 31.** Apps targeting `minSdk < 31` must update their `build.gradle` before upgrading to 1.0.3.
+- **Required companion app version raised.** `com.rokid.sprite.aiapp` (Rokid AI App, domestic) must be ≥ 1.7.14.
+- **`com.rokid.sprite.global.aiapp` added to `<queries>`.** The SDK now binds to either package name, enabling use with the overseas "Hi Rokid" app variant without code changes.
+- **`ICXRLinkCbk` gains three new methods** (see `ICXRLinkCbk (v1.0.3+)` above; implementing classes must add stubs):
+  - `onGlassDeviceInfo(info: GlassInfo)` — structured device-state snapshot.
+  - `onGlassWearingStatus(isWearing: Boolean)` — wearing / not-wearing transition events.
+  - `onGlassAiInterrupt(interrupted: Boolean)` — AI session interrupted by a system event.
+- **Session architecture (CUSTOMVIEW / CUSTOMAPP)** — see the Session Types and Capability Matrix section above.
+- **Kotlin stdlib downgraded to 1.6.0** in the POM (from 2.1.0 in 1.0.2). If your app depends on Kotlin 2.x transitively, declare your own `kotlin-stdlib` dependency at the desired version.
+
+### v1.0.3 additions (iOS — RGCxrClient, CocoaPods)
+
+- `CxrClient.initialize(mode:options:)` now takes a mode parameter distinguishing `customApp` / `customView`.
+- Auth scopes use SDK permission enums (e.g. `.microphone`) instead of string constants.
+- Most capability APIs return `RGCxrClientError?` synchronously.
+- `sendCustomCmd` sends without a callback; subscribe to incoming events via `notifyEventPublisher`.
+
+> iOS documentation and sample (`ios_cxr_l_sample`) remain at v1.0.1 as of 2026-06-06; the Android and iOS doc chapters version independently.
