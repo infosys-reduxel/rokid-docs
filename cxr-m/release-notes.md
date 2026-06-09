@@ -8,24 +8,72 @@ Latest **publicly documented** release: **v1.1.0** (2026-04-01).
 
 ## Documentation gap (2026-05-29)
 
-Maven publishes `com.rokid.cxr:client-m:1.2.1` as the current `<release>` and `<latest>` tag (lastUpdated 2026-04-17). Both intermediate 1.1.1 and 1.2.1 are real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
+Maven publishes `com.rokid.cxr:client-m:1.2.2` as the current `<release>` and `<latest>` tag (lastUpdated 2026-06-08). Intermediate releases 1.1.1, 1.2.1, and 1.2.2 are all real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
 
-The v1.2.1 and v1.1.1 sections below are **reverse-inferred from a binary diff** of the AARs against v1.1.0. They describe the *observable* public-API delta — names of new classes / methods / callbacks, breaking signature changes, JNI library size deltas — but they do not capture intent, deprecation notes, or behavioural changes that don't show up in the class file. Treat them as a best-effort developer aid until Rokid publishes the authoritative changelog.
+The v1.2.2, v1.2.1, and v1.1.1 sections below are **reverse-inferred from binary diffs** of the AARs. They describe the *observable* public-API delta — names of new classes / methods / callbacks, breaking signature changes, JNI library size deltas — but they do not capture intent, deprecation notes, or behavioural changes that don't show up in the class file. Treat them as a best-effort developer aid until Rokid publishes the authoritative changelog.
 
 Method to reproduce (run any time):
 
 ```sh
 # Download
-for V in 1.1.0 1.1.1 1.2.1; do
+for V in 1.1.0 1.1.1 1.2.1 1.2.2; do
   curl -O "https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/$V/client-m-$V.aar"
 done
 # Unpack AAR -> classes.jar -> .class files
-# Diff class lists and javap signatures across the three versions.
+# Diff class lists and javap signatures across the versions.
 ```
 
 <!-- TODO: replace the inferred sections below with Rokid's official changelog when it is published. -->
 
 ## Changelog
+
+### v1.2.2 — uploaded 2026-06-08 (inferred from binary diff)
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from the public-API diff between `client-m:1.2.1` and `client-m:1.2.2` AARs (downloaded 2026-06-09 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/`). AAR size: 1,225,276 bytes (+0.5 % vs 1.2.1).
+
+**Theme: structured audio-record parameters and multi-client disconnect.**
+
+**New class:**
+
+- `com.rokid.cxr.CXRSocketProtocol$AudioRecordParam` — parameter object replacing the raw `int` denoise-mode flag in `openAudioRecord`.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `denoiseMode` | `int` | Denoise algorithm mode (was the bare `int` in 1.2.1) |
+  | `rokidDtlnAEC` | `boolean` | Enable Rokid DTLN acoustic echo cancellation |
+  | `rokidBF` | `boolean` | Enable Rokid beamforming |
+
+  Constructors: `AudioRecordParam()` (defaults) and `AudioRecordParam(int, boolean, boolean)`.
+
+**API changes (breaking for callers of `openAudioRecord`):**
+
+- `CXRSocketProtocol.openAudioRecord(int, int, String, int)` → `openAudioRecord(int, int, String, AudioRecordParam)`. The bare `int` denoise-mode argument is replaced by the new `AudioRecordParam` object.
+- `CxrController.openAudioRecord(int, int, String, int)` → `openAudioRecord(int, int, String, AudioRecordParam)` (same substitution at the controller layer).
+- `CxrApi.openAudioRecord(int, int, String, int)` → `openAudioRecord(int, int, String, AudioRecordParam)` (same at the public API layer).
+
+> **Migrating from 1.2.1:** replace any `openAudioRecord(sampleRate, channelCount, tag, denoiseMode)` call with `openAudioRecord(sampleRate, channelCount, tag, new AudioRecordParam(denoiseMode, false, false))` to preserve previous behaviour. Set `rokidDtlnAEC` or `rokidBF` to `true` to opt into the new processing modes.
+
+**New methods:**
+
+- `CXRSocketProtocol.removeClient(String mac, int type)` — disconnect a specific connected client by MAC and connection type.
+- `CxrController.removeClient(String mac, int type)` — same at the controller layer.
+- `CxrApi.removeBluetoothClient(String mac)` — convenience wrapper on the public API surface.
+
+**Obfuscated package rename (no public-API impact):**
+
+The internal obfuscated packages were renamed from `a/`, `b/`, `c/` to `rapple/`, `rbanana/`, `rcherry/`. No public class names changed. Any tooling that relied on the old obfuscated class paths will need to rebuild.
+
+**JNI library deltas (arm64-v8a):**
+
+| Library | v1.2.1 | v1.2.2 | Delta |
+|---------|--------|--------|-------|
+| `libcxr-bridge-jni.so` | 112,672 B | 116,488 B | +3.4 % |
+| `libcxr-sock-proto-jni.so` | 636,200 B | 641,320 B | +0.8 % |
+| `libflora-cli.so` | 157,224 B | 157,280 B | +0.04 % |
+| `libcaps.so` | 106,640 B | 106,640 B | unchanged |
+| `libmutils.so` | 432,360 B | 432,360 B | unchanged |
+
+**Unchanged vs v1.2.1:** `AndroidManifest.xml`, `R.txt`, `proguard.txt`, POM dependency set (Retrofit 2.9.0, OkHttp 4.9.3, Kotlin 2.1.0, Gson 2.10.1).
 
 ### v1.2.1 — uploaded 2026-03-26 (inferred from binary diff)
 

@@ -98,7 +98,7 @@ rokid-docs/
 │   ├── get-device-status.md        # Querying device status
 │   ├── data-interaction.md         # Data interaction patterns
 │   ├── ai-integration.md           # AI integration with Sprite OS
-│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.2.1)
+│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.2.2)
 │   └── sdk-decompiled-reference.md # Full decompiled SDK reference
 │
 ├── cxr-s/                          # CXR-S SDK documentation (On-device)
@@ -273,7 +273,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (documented)** | `com.rokid.cxr:client-m:1.1.0` (2026-04-01) |
-| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.1` (2026-04-17) |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.2` (2026-06-08) |
 | **Min SDK** | 28 (Android 9) |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 | **Distribution** | Not on the public developer site — contact `Glasses.BD@rokid.com` |
@@ -307,7 +307,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | [get-device-status.md](cxr-m/get-device-status.md) | Querying device status |
 | [data-interaction.md](cxr-m/data-interaction.md) | Data interaction patterns |
 | [ai-integration.md](cxr-m/ai-integration.md) | AI integration with Sprite OS |
-| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.2.1) |
+| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.2.2) |
 | [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) | Complete decompiled SDK reference (31 classes) |
 
 ### CXR-S SDK (On-Device)

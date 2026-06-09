@@ -58,14 +58,14 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-02
+  last_checked: 2026-06-09
   last_known_version: |
     client-l 1.0.3 (release; aar 2026-06-02, metadata 2026-06-01T11:28:41Z)
-    client-m 1.2.1 (release; metadata 2026-04-17)
+    client-m 1.2.2 (release; metadata 2026-06-08T03:02:11Z)
     cxr-service-bridge 1.0 (release; metadata 2026-05-22; uses snapshot fingerprint 1.0-20260522.063600-105 in 1.0.3)
     com/rokid/cxr/ group also contains: client, client-extend, sdk (unexamined — flag as discovery items)
   notes: |
-    Public Maven for CXR SDK JARs/AARs. Direct browse path is https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/ (the /repository/ path returns "not browseable" page; use /service/rest/repository/browse/). maven-metadata.xml under each artifact gives <release>, <latest>, <lastUpdated>. Per-artifact dirs list all versions and their .aar/.pom upload times. **Maven versions lead the developerdoc.rokid.com SDK landing page by ~1 minor** as of 2026-05-29 (client-l Maven 1.0.2 vs landing 1.0.1; client-m Maven 1.2.1 vs landing 1.1.0). Use Maven as the canonical "what's actually shipped" source.
+    Public Maven for CXR SDK JARs/AARs. Direct browse path is https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/ (the /repository/ path returns "not browseable" page; use /service/rest/repository/browse/). maven-metadata.xml under each artifact gives <release>, <latest>, <lastUpdated>. Per-artifact dirs list all versions and their .aar/.pom upload times. **Maven versions lead the developerdoc.rokid.com SDK landing page by ~1 minor** as of 2026-06-09 (client-l Maven 1.0.3 vs landing 1.0.1; client-m Maven 1.2.2 vs landing 1.1.0). Use Maven as the canonical "what's actually shipped" source.
 
 - url: https://github.com/RokidGlass
   kind: github
