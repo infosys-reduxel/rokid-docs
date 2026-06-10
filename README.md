@@ -98,7 +98,7 @@ rokid-docs/
 │   ├── get-device-status.md        # Querying device status
 │   ├── data-interaction.md         # Data interaction patterns
 │   ├── ai-integration.md           # AI integration with Sprite OS
-│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.1.0)
+│   ├── release-notes.md            # SDK changelog (v1.0.1 -> v1.2.2)
 │   └── sdk-decompiled-reference.md # Full decompiled SDK reference
 │
 ├── cxr-s/                          # CXR-S SDK documentation (On-device)
@@ -273,7 +273,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (documented)** | `com.rokid.cxr:client-m:1.1.0` (2026-04-01) |
-| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.1` (2026-04-17) |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.2` (2026-06-09) |
 | **Min SDK** | 28 (Android 9) |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 | **Distribution** | Not on the public developer site — contact `Glasses.BD@rokid.com` |
@@ -307,7 +307,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | [get-device-status.md](cxr-m/get-device-status.md) | Querying device status |
 | [data-interaction.md](cxr-m/data-interaction.md) | Data interaction patterns |
 | [ai-integration.md](cxr-m/ai-integration.md) | AI integration with Sprite OS |
-| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.1.0) |
+| [release-notes.md](cxr-m/release-notes.md) | SDK changelog (v1.0.1 → v1.2.2) |
 | [sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) | Complete decompiled SDK reference (31 classes) |
 
 ### CXR-S SDK (On-Device)
@@ -316,7 +316,7 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0-SNAPSHOT` |
+| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**
@@ -345,11 +345,11 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-l:1.0.3` (2026-06-02) |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.3` (2026-06-02) |
 | **Size** | 65,494 bytes (1.0.3 AAR); 57,145 bytes (1.0.2 AAR) |
-| **Min SDK** | 28 |
+| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
 | **Target SDK** | 28 |
-| **Dependencies** | Kotlin stdlib 2.1.0, Gson 2.10.1 |
+| **Dependencies (1.0.3)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
 **Entry Point:**
