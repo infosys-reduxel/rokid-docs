@@ -273,7 +273,7 @@ The **CXR-M SDK** is a developer toolkit for building **mobile companion applica
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (documented)** | `com.rokid.cxr:client-m:1.1.0` (2026-04-01) |
-| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.2` (2026-06-08) |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:client-m:1.2.2` (2026-06-09) |
 | **Min SDK** | 28 (Android 9) |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 | **Distribution** | Not on the public developer site — contact `Glasses.BD@rokid.com` |

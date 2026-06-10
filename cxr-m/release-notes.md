@@ -8,7 +8,7 @@ Latest **publicly documented** release: **v1.1.0** (2026-04-01).
 
 ## Documentation gap (2026-05-29)
 
-Maven publishes `com.rokid.cxr:client-m:1.2.2` as the current `<release>` and `<latest>` tag (lastUpdated 2026-06-08). Intermediate releases 1.1.1, 1.2.1, and 1.2.2 are all real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
+Maven publishes `com.rokid.cxr:client-m:1.2.2` as the current `<release>` and `<latest>` tag (lastUpdated 2026-06-09). Intermediate releases 1.1.1, 1.2.1, and 1.2.2 are all real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
 
 The v1.2.2, v1.2.1, and v1.1.1 sections below are **reverse-inferred from binary diffs** of the AARs. They describe the *observable* public-API delta — names of new classes / methods / callbacks, breaking signature changes, JNI library size deltas — but they do not capture intent, deprecation notes, or behavioural changes that don't show up in the class file. Treat them as a best-effort developer aid until Rokid publishes the authoritative changelog.
 
@@ -27,7 +27,7 @@ done
 
 ## Changelog
 
-### v1.2.2 — uploaded 2026-06-08 (inferred from binary diff)
+### v1.2.2 — uploaded 2026-06-09 (inferred from binary diff)
 
 > **Provisional — not an official Rokid changelog.** Reconstructed from the public-API diff between `client-m:1.2.1` and `client-m:1.2.2` AARs (downloaded 2026-06-09 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/`). AAR size: 1,225,276 bytes (+0.5 % vs 1.2.1).
 
