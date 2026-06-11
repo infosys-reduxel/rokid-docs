@@ -1,14 +1,26 @@
 # CXR-L SDK Release Notes
 
-_Source: https://ar.rokid.com/sdk (Chinese, fetched 2026-05-28; rechecked 2026-06-02)._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog)._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
-## v1.0.3 — published 2026-06-02 (undocumented)
+## v1.0.3 — published 2026-06-02
 
-> **Provisional — not an official Rokid changelog.** `com.rokid.cxr:client-l:1.0.3` was uploaded to Maven on 2026-06-02 (AAR date: Tue Jun 02 03:00:04 UTC 2026, size: 65,494 bytes vs 57,145 bytes for 1.0.2, +14.6 %). Rokid has not yet published a changelog on the developer portal or on its `custom.rokid.com` doc site as of 2026-06-02. The entries below are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs (downloaded from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`).
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L tab, fetched 2026-06-11).
 
-**Theme: device-state callbacks and wearing-detection.**
+`com.rokid.cxr:client-l:1.0.3` was uploaded to Maven on 2026-06-02 (AAR size: 65,494 bytes vs 57,145 bytes for 1.0.2, +14.6 %).
+
+**Official changelog:**
+
+1. Android `client-l` upgraded to 1.0.3.
+2. Required companion app: when integrating `client-l:1.0.3`, Rokid AI App (China mainland) must be ≥ 1.7.14.
+3. Documentation v1.0.3 rewritten from a developer-integration perspective, with unified "session construction" (会话构建) terminology throughout.
+4. Android on-device Custom View chapter supplemented with a CustomView JSON Schema (LinearLayout, TextView, ImageView, RelativeLayout).
+5. On-device CXR-S integration documentation merged into the CXR-L doc: SDK import, custom app integration, custom commands, key and broadcast chapters.
+6. New reference sample apps published with OSS download archive: mobile-side `RenewCXRLSample` (`com.rokid.renewcxrlsample`) and glasses-side `CXRSWithCXRLSample` (`com.rokid.cxrswithcxrl`).
+7. iOS documentation and sample remain at v1.0.1 — the version of iOS-specific chapters follows each platform chapter's own timeline.
+
+**Additional technical findings (binary diff of v1.0.2 → v1.0.3 AAR):**
 
 **New class:**
 
