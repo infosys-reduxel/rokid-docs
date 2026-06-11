@@ -37,7 +37,7 @@ dependencyResolutionManagement {
 rootProject.name = "CXRServiceDemo"
 include(":app")
 Dependency Import
-CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45”).
+CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105”).
 
 Add the dependency in the dependencies node of the build.gradle.kts file.
 
@@ -55,5 +55,5 @@ android {
 }
 dependencies {
    //...Other Settings
-    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20250519.061355-45")
+    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105")
 }
