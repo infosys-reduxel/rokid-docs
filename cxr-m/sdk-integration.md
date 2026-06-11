@@ -38,7 +38,7 @@ include(":app")
 ```
  
 ## Dependency import
-CXR-M SDK Package ("com.rokid.cxr:client-m:0.0.3-20250310.072635-3").
+CXR-M SDK Package ("com.rokid.cxr:client-m:1.2.2").
 
 Add the dependency to the `<dependency>` node in `build.gradle.kts` dependencies. Note: The SDK needs to have `minSdk` set to ≥ 28 .
 
@@ -55,7 +55,7 @@ android {
 dependencies {
 	//....Others
     
-    implementation("com.rokid.cxr:client-m:0.0.5-20250415.064355-3")
+    implementation("com.rokid.cxr:client-m:1.2.2")
 }
 ```
 Other dependencies (if there is a version conflict with existing versions in the project, please use the corresponding version from the SDK first):

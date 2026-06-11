@@ -337,6 +337,7 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 | [message-subscription.md](cxr-s/message-subscription.md) | Receiving messages |
 | [message-sending.md](cxr-s/message-sending.md) | Sending messages |
 | [data-structure.md](cxr-s/data-structure.md) | Caps serialization format |
+| [design-spec.md](cxr-s/design-spec.md) | UI design specs (480 × 640 px viewport, Android Go constraints) |
 
 ### CXR-L SDK (Standalone)
 
@@ -518,6 +519,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 5. [message-subscription.md](cxr-s/message-subscription.md) -- Receiving messages
 6. [message-sending.md](cxr-s/message-sending.md) -- Sending messages
 7. [data-structure.md](cxr-s/data-structure.md) -- Caps data structure
+8. [design-spec.md](cxr-s/design-spec.md) -- UI design specs (480 × 640 px viewport, Android Go constraints)
 
 **CXR-L SDK (Standalone)**
 1. [api-reference.md](cxr-l/api-reference.md) -- API reference
