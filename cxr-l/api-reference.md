@@ -71,10 +71,12 @@ Constructor takes an Android `Context`. All public methods are inherited from `E
 
 Used in the `CUSTOMVIEW` session type. Scene is ready when `openCustomView` succeeds and the glasses have acknowledged the view open event.
 
+The `data` parameter of `openCustomView` and `updateCustomView` is a JSON string conforming to the **CustomView JSON Schema** added in v1.0.3. The schema supports at minimum the following layout/widget types: `LinearLayout`, `TextView`, `ImageView`, `RelativeLayout`. Source: official v1.0.3 changelog at `https://developerdoc.rokid.com/sdk`. The full field-level schema definition (required attributes, nesting rules, value ranges) is documented in the upstream portal (`custom.rokid.com` CXR-L workspace) but could not be retrieved due to JS rendering; check the portal directly for the complete schema.
+
 | Method | Signature | Returns | Description |
 |--------|-----------|---------|-------------|
-| `openCustomView` | `(data: String)` | `Boolean` | Open a custom view with JSON data. |
-| `updateCustomView` | `(data: String)` | `Boolean` | Update the currently open custom view. |
+| `openCustomView` | `(data: String)` | `Boolean` | Open a custom view with JSON data (see CustomView JSON Schema above). |
+| `updateCustomView` | `(data: String)` | `Boolean` | Update the currently open custom view. Accepts the same JSON Schema as `openCustomView`. |
 | `closeCustomView` | `()` | `Boolean` | Close the custom view. |
 | `isCustomViewOpened` | `()` | `Boolean` | Check if a custom view is currently active. |
 | `getCurrentCustomViewData` | `()` | `String` | Get the JSON data of the current custom view. |
