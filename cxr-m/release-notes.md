@@ -10,6 +10,8 @@ Latest **publicly documented** release: **v1.1.0** (2026-04-01).
 
 Maven publishes `com.rokid.cxr:client-m:1.2.2` as the current `<release>` and `<latest>` tag (lastUpdated 2026-06-09). Intermediate releases 1.1.1, 1.2.1, and 1.2.2 are all real, downloadable artifacts. Neither the dev portal at `https://ar.rokid.com/sdk` nor the canonical doc site at `https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/...` describes any release beyond v1.1.0.
 
+Maven metadata (verified 2026-06-12 via `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-m/maven-metadata.xml`) lists the full release version history as: **0.0.8, 1.0.1, 1.0.2, 1.0.3, 1.0.4, 1.0.8, 1.0.9, 1.1.0, 1.1.1, 1.2.1, 1.2.2**. The following versions are confirmed real downloadable artifacts but have no local changelog entry and no official Rokid changelog: **v0.0.8** (first stable pre-1.x artifact), **v1.0.2**, **v1.0.3** (between v1.0.1 and v1.0.4), and **v1.0.8** (between v1.0.4 and v1.0.9). Binary-diff documentation for these versions is a future TODO.
+
 The v1.2.2, v1.2.1, and v1.1.1 sections below are **reverse-inferred from binary diffs** of the AARs. They describe the *observable* public-API delta — names of new classes / methods / callbacks, breaking signature changes, JNI library size deltas — but they do not capture intent, deprecation notes, or behavioural changes that don't show up in the class file. Treat them as a best-effort developer aid until Rokid publishes the authoritative changelog.
 
 Method to reproduce (run any time):
