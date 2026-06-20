@@ -7,7 +7,7 @@ Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (n
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.3` (2026-06-02)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-19; provisional — no official changelog yet)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: 28

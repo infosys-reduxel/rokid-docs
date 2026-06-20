@@ -1,8 +1,19 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog)._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). Version 1.0.4 section is provisional — based on Maven metadata only; Rokid has not yet published an official changelog for 1.0.4 as of 2026-06-20._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.0.4 — published 2026-06-19 (provisional)
+
+> **Provisional entry.** `com.rokid.cxr:client-l:1.0.4` was uploaded to Maven on 2026-06-19 (`lastUpdated 20260618075010`). As of 2026-06-20 Rokid has not published an official changelog; the developer portal (`developerdoc.rokid.com/sdk`) still displays v1.0.3. This entry will be updated once the official changelog is available.
+
+- **Maven coordinates**: `com.rokid.cxr:client-l:1.0.4`
+- **Maven repository**: `https://maven.rokid.com/repository/maven-public/`
+- **AAR size**: 70,543 bytes (vs 65,494 bytes for v1.0.3, +7.7%)
+- **Upload date**: 2026-06-19
+
+A 7.7% increase in AAR size relative to v1.0.3 indicates non-trivial changes. A full API-level changelog will be added here once Rokid publishes it or once a binary diff of the 1.0.3 → 1.0.4 AARs is performed.
 
 ## v1.0.3 — published 2026-06-02
 
