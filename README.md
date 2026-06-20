@@ -488,7 +488,8 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | Android permissions | [yodaos/docs/development/permissions.md](yodaos/docs/development/permissions.md) |
 | Mobile app development | [cxr-m/intro.md](cxr-m/intro.md) |
 | On-device app development | [cxr-s/brief.md](cxr-s/brief.md) |
-| Standalone app replacement | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
+| Standalone app replacement (CXR-L overview) | [cxr-l/intro.md](cxr-l/intro.md) |
+| Standalone app replacement (CXR-L API) | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
@@ -522,8 +523,9 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 8. [design-spec.md](cxr-s/design-spec.md) -- UI design specs (480 × 640 px viewport, Android Go constraints)
 
 **CXR-L SDK (Standalone)**
-1. [api-reference.md](cxr-l/api-reference.md) -- API reference
-2. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
+1. [intro.md](cxr-l/intro.md) -- SDK introduction: positioning, core capabilities, prerequisite matrix, sample projects
+2. [api-reference.md](cxr-l/api-reference.md) -- API reference
+3. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
 
 **Bare-metal Android Development on Rokid Glasses**
 1. [development-guide.md](cxr-baremetal/development-guide.md) -- Reserved interactions + dev environment + side-load workflow
