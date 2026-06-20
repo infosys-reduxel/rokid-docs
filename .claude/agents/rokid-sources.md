@@ -47,9 +47,12 @@ Scout reads this file to know which upstream documentation sources to monitor. L
       - documentId=4e088caa11e84b97b381a145bbb93379 = CXR-M SDK接入 (WAS: version 0.0.5-SNAPSHOT; REMOVED 2026-06-18 — Aliyun OSS returns NoSuchKey; page removed or migrated)
       - page 2786298057084a82b170bf725aef6b5d = 设计规范 (version 1.0 placeholder; no useful content)
     - 84feb39f8ef141b0ad0326f902ab881f = CXR-L
-      - page 9adcfb07939846e5945e79dfbd923f63 = CXR-L SDK 简介 (landing; JS-rendered)
+      - page 9adcfb07939846e5945e79dfbd923f63 = CXR-L SDK 简介 (简介/intro; FULL CONTENT accessible via .html URL — 80+ lines; capabilities table, prerequisite table, availability matrix, sample refs)
         nav: 简介 / 快速开始 / 开发流程与状态机 / 术语与缩写 / 功能开发 / 版本历史
-    DETECTION STATUS 2026-06-20: All custom.rokid.com parameterized URLs (with ?workspaceId=…&pageId=…) return HTTP 415 (Unsupported Media Type / application/octet-stream). The base URL https://custom.rokid.com/prod/rokid_web/ also returns HTTP 415. Pages are JS-rendered and Firecrawl cannot render them. Cannot verify content via Firecrawl — use developerdoc.rokid.com/sdk as the accessible mirror. Good monitor candidate for future setup.
+        static .html URL: https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/9adcfb07939846e5945e79dfbd923f63.html
+        page IDs for nav siblings (快速开始 etc.) not yet resolved — run map/crawl from .html root to discover
+    URL FORMAT: query-parameter form (?workspaceId=…&pageId=…) returns HTTP 415. Use static .html paths: /prod/rokid_web/{workspaceId}/pc/cn/{pageId}.html → HTTP 200 with full content.
+    New workspace 323825adf4914c21be8a0d5fe7b8a9e5 appeared in map — confirmed nav/landing scaffold only (links to ar.rokid.com, developerdoc), not an SDK doc area.
 
 - url: https://developer.rokid.com
   kind: developer-portal
