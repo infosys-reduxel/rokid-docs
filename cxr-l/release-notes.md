@@ -6,9 +6,77 @@ The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios o
 
 ## v1.0.4 — published 2026-06-19
 
-> Source: Maven Central metadata for `com.rokid.cxr:client-l:1.0.4` (fetched 2026-06-21). The official Rokid changelog at `https://developerdoc.rokid.com/sdk` has **not yet been updated** for v1.0.4 as of this writing.
+> Source: binary diff of `com.rokid.cxr:client-l:1.0.3` → `1.0.4` AARs (performed 2026-06-21). The official Rokid changelog at `https://developerdoc.rokid.com/sdk` has **not yet been updated** for v1.0.4 as of this writing; this entry is **inferred from the binary diff** and will be superseded once Rokid publishes the official changelog.
 
-`com.rokid.cxr:client-l:1.0.4` was uploaded to Maven on 2026-06-18–19 (AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3, +7.7%). No binary diff has been performed this cycle. The official changelog is pending portal publication; this entry will be updated once Rokid publishes it.
+`com.rokid.cxr:client-l:1.0.4` was uploaded to Maven on 2026-06-18–19 (AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3, +7.7%).
+
+**New classes:**
+
+| Class | Package | Kind | Description |
+|-------|---------|------|-------------|
+| `ICXRSessionCbk` | `com.rokid.cxr.link.callbacks` | interface | Callback for session lifecycle state transitions |
+| `CXRSessionReason` | `com.rokid.cxr.link.utils` (nested in `CxrDefs`) | enum | Reasons behind a session state change |
+| `CXRSessionState` | `com.rokid.cxr.link.utils` (nested in `CxrDefs`) | enum | Session lifecycle state values |
+
+**`ICXRSessionCbk` — new callback interface:**
+
+```java
+package com.rokid.cxr.link.callbacks;
+
+public interface ICXRSessionCbk {
+    void onSessionAvailable(CxrDefs.CXRSessionReason reason);
+    void onSessionStart(CxrDefs.CXRSessionReason reason);
+    void onSessionPause(CxrDefs.CXRSessionReason reason);
+    void onSessionUnavailable(CxrDefs.CXRSessionReason reason);
+}
+```
+
+**`CxrDefs.CXRSessionReason` — new enum:**
+
+| Value | Description |
+|-------|-------------|
+| `SESSION_GLASS_READY` | Glasses entered ready state |
+| `SESSION_GLASS_IDLE` | Glasses entered idle state |
+| `SESSION_LINK_CONNECT` | Link connected |
+| `SESSION_LINK_DISCONNECT` | Link disconnected |
+| `SESSION_SCREEN_OFF` | Glasses screen turned off |
+| `SESSION_AI_START` | AI assistant started |
+| `SESSION_AI_STOP` | AI assistant stopped |
+| `SESSION_SCENE_TAKEOVER` | Scene takeover occurred |
+| `SESSION_OTHER` | Other reason |
+
+**`CxrDefs.CXRSessionState` — new enum:**
+
+| Value | Description |
+|-------|-------------|
+| `SessionAvailable` | Session is available |
+| `SessionStart` | Session has started |
+| `SessionPause` | Session is paused |
+| `SessionUnavailable` | Session is unavailable |
+
+**New methods on `ExternalAppClient`:**
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `configCXRSession` | `(session: CxrDefs.CXRSession, cbk: ICXRSessionCbk)` | `Boolean` | Configure the active CXR session and register a callback for session state transitions |
+| `configCXRSession` | `(session: CxrDefs.CXRSession)` | `Boolean` | Configure the active CXR session without a callback |
+| `getCXRSessionState` | `()` | `CxrDefs.CXRSessionState` | Query the current session lifecycle state |
+| `setGlassBrightness` | `(brightness: Int)` | `Boolean` | Set the glasses display brightness |
+| `setGlassVolume` | `(volume: Int)` | `Boolean` | Set the glasses speaker volume |
+
+**Internal changes (not public API):**
+
+- `ExternalAppClient` gains a new `String[]` field `SCENES_TAKEOVER` and a `GlassInfo` cached-state field.
+- Session state is now tracked as a `CXRSessionState` enum field inside `ExternalAppClient`.
+- The registered `ICXRSessionCbk` is stored as a field in `ExternalAppClient`.
+
+**AndroidManifest change:**
+
+The `targetSdkVersion` attribute has been removed from the AAR's `<uses-sdk>` element (only `minSdkVersion="28"` remains). This is a packaging-level change; the effective `targetSdk` is controlled by the host application's own manifest.
+
+**Dependency changes vs v1.0.3:**
+
+POM dependencies are unchanged: `cxr-service-bridge:1.0-20260522.063600-105`, `kotlin-stdlib:1.6.0`, `gson:2.10.1`.
 
 ## v1.0.3 — published 2026-06-02
 
@@ -19,14 +87,14 @@ The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios o
 **Official changelog:**
 
 1. Android `client-l` upgraded to 1.0.3.
-2. Required companion app: when integrating `client-l:1.0.3`, Rokid AI App (China mainland) must be ≥ 1.7.14.
+2. Required companion app: when integrating `client-l:1.0.3`, Rokid AI App (China mainland) must be >= 1.7.14.
 3. Documentation v1.0.3 rewritten from a developer-integration perspective, with unified "session construction" (会话构建) terminology throughout.
 4. Android on-device Custom View chapter supplemented with a CustomView JSON Schema (LinearLayout, TextView, ImageView, RelativeLayout).
 5. On-device CXR-S integration documentation merged into the CXR-L doc: SDK import, custom app integration, custom commands, key and broadcast chapters.
 6. New reference sample apps published with OSS download archive: mobile-side `RenewCXRLSample` (`com.rokid.renewcxrlsample`) and glasses-side `CXRSWithCXRLSample` (`com.rokid.cxrswithcxrl`).
 7. iOS documentation and sample remain at v1.0.1 — the version of iOS-specific chapters follows each platform chapter's own timeline.
 
-**Additional technical findings (binary diff of v1.0.2 → v1.0.3 AAR):**
+**Additional technical findings (binary diff of v1.0.2 -> v1.0.3 AAR):**
 
 **New class:**
 
@@ -35,7 +103,7 @@ The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios o
   | Field | Type | Description |
   |-------|------|-------------|
   | `deviceName` | `String` | Advertised Bluetooth device name |
-  | `batteryLevel` | `int` | Battery level (0–100) |
+  | `batteryLevel` | `int` | Battery level (0-100) |
   | `sound` | `int` | Current speaker volume level |
   | `brightness` | `int` | Display brightness level |
   | `systemVersion` | `String` | Glasses firmware / OS version string |

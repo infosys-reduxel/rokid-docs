@@ -1,6 +1,6 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 additions (session lifecycle APIs, brightness/volume controls) are inferred from a binary diff of the 1.0.3 and 1.0.4 AARs (performed 2026-06-21); the official Rokid changelog for v1.0.4 had not been published as of that date. See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
@@ -10,8 +10,8 @@ CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rok
 - **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-19)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
-- **targetSdk**: 28
-- **Dependencies (1.0.3)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
+- **targetSdk**: controlled by host application (v1.0.4 removed `targetSdkVersion` from AAR manifest; earlier versions: 28)
+- **Dependencies (1.0.3–1.0.4)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
 - **Companion app requirement (1.0.3)**: Rokid AI App (domestic) ≥ 1.7.14
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
@@ -95,6 +95,25 @@ Used in the `CUSTOMAPP` session type. The target glasses-side app must be instal
 | `installApp` | `(apkPath: String, packageName: String)` | `Boolean` | Upload and install an APK on the glasses. |
 | `uninstallApp` | `(packageName: String)` | `Boolean` | Uninstall a package from the glasses. |
 
+### Session Management (v1.0.4+)
+
+> **Inferred from binary diff of 1.0.3 → 1.0.4 AARs (2026-06-21).** The official Rokid changelog for v1.0.4 had not been published as of that date.
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `configCXRSession` | `(session: CxrDefs.CXRSession, cbk: ICXRSessionCbk)` | `Boolean` | Configure the active CXR session and register a callback for session state transitions |
+| `configCXRSession` | `(session: CxrDefs.CXRSession)` | `Boolean` | Configure the active CXR session without a session-lifecycle callback |
+| `getCXRSessionState` | `()` | `CxrDefs.CXRSessionState` | Query the current session lifecycle state |
+
+### Glasses Hardware Controls (v1.0.4+)
+
+> **Inferred from binary diff of 1.0.3 → 1.0.4 AARs (2026-06-21).**
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `setGlassBrightness` | `(brightness: Int)` | `Boolean` | Set the glasses display brightness |
+| `setGlassVolume` | `(volume: Int)` | `Boolean` | Set the glasses speaker volume |
+
 ### Service Info
 
 | Method | Signature | Returns |
@@ -167,8 +186,50 @@ interface ICXRLinkCbk {
 
     /** Fired when an in-progress AI session on the glasses is interrupted. */
     fun onGlassAiInterrupt(interrupted: Boolean)
+
+    /** Fired when the on-device AI assistant starts. (v1.0.3+) */
+    fun onGlassAiAssistStart()
+
+    /** Fired when the on-device AI assistant stops. (v1.0.3+) */
+    fun onGlassAiAssistStop()
 }
 ```
+
+### ICXRSessionCbk (v1.0.4+)
+
+> **Inferred from binary diff of 1.0.3 → 1.0.4 AARs (2026-06-21).** Use with `configCXRSession(session, cbk)` to receive fine-grained session lifecycle events.
+
+```kotlin
+package com.rokid.cxr.link.callbacks
+
+interface ICXRSessionCbk {
+    /** Session became available — the glasses are ready to accept commands. */
+    fun onSessionAvailable(reason: CxrDefs.CXRSessionReason)
+
+    /** Session started — the CXR session is now active. */
+    fun onSessionStart(reason: CxrDefs.CXRSessionReason)
+
+    /** Session was paused — e.g. screen off or AI assistant started. */
+    fun onSessionPause(reason: CxrDefs.CXRSessionReason)
+
+    /** Session became unavailable — link disconnected or glasses idle. */
+    fun onSessionUnavailable(reason: CxrDefs.CXRSessionReason)
+}
+```
+
+`CxrDefs.CXRSessionReason` values passed to the callbacks:
+
+| Value | Trigger |
+|-------|---------|
+| `SESSION_GLASS_READY` | Glasses entered ready state |
+| `SESSION_GLASS_IDLE` | Glasses entered idle state |
+| `SESSION_LINK_CONNECT` | BT/WiFi link connected |
+| `SESSION_LINK_DISCONNECT` | BT/WiFi link disconnected |
+| `SESSION_SCREEN_OFF` | Glasses display turned off |
+| `SESSION_AI_START` | On-device AI assistant started |
+| `SESSION_AI_STOP` | On-device AI assistant stopped |
+| `SESSION_SCENE_TAKEOVER` | Another scene took over the glasses UI |
+| `SESSION_OTHER` | Other / unclassified reason |
 
 ## AIDL Service Interface (IMediaStreamService)
 
@@ -226,6 +287,43 @@ data class GlassInfo(
     val sn: String,             // Device serial number
     val wearingStatus: String   // Wearing-state descriptor (raw; see ICXRLinkCbk.onGlassWearingStatus)
 )
+```
+
+### CxrDefs (v1.0.4+: CXRSessionState, CXRSessionReason)
+
+> **Inferred from binary diff of 1.0.3 → 1.0.4 AARs (2026-06-21).**
+
+```kotlin
+package com.rokid.cxr.link.utils
+
+object CxrDefs {
+    // Session types (all versions)
+    enum class CXRSessionType { NONE, CUSTOMVIEW, CUSTOMAPP }
+
+    // Session lifecycle state (v1.0.4+)
+    enum class CXRSessionState {
+        SessionAvailable,
+        SessionStart,
+        SessionPause,
+        SessionUnavailable
+    }
+
+    // Reason for a session state transition (v1.0.4+)
+    enum class CXRSessionReason {
+        SESSION_GLASS_READY,
+        SESSION_GLASS_IDLE,
+        SESSION_LINK_CONNECT,
+        SESSION_LINK_DISCONNECT,
+        SESSION_SCREEN_OFF,
+        SESSION_AI_START,
+        SESSION_AI_STOP,
+        SESSION_SCENE_TAKEOVER,
+        SESSION_OTHER
+    }
+
+    // Session descriptor (all versions)
+    class CXRSession(val sessionType: CXRSessionType, val customAppPackageName: String? = null)
+}
 ```
 
 ### IconInfo
@@ -325,7 +423,7 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 10. Decompiled source is available in `cxr-l/decompiled/`.
 11. v1.0.3 downgraded `kotlin-stdlib` from `2.1.0` to `1.6.0` as a runtime dependency. If your app targets Kotlin 2.x, declare your own explicit `kotlin-stdlib` dependency to avoid being silently downgraded by dependency resolution.
 
-## Notable API changes (v1.0.2 / v1.0.3)
+## Notable API changes (v1.0.2 / v1.0.3 / v1.0.4)
 
 > Source: official Rokid changelogs at `https://developerdoc.rokid.com/sdk` (fetched 2026-06-06). The class inventory above is the 1.0.1 baseline; the changes below layer on top.
 
@@ -354,3 +452,12 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 - `sendCustomCmd` sends without a callback; subscribe to incoming events via `notifyEventPublisher`.
 
 > iOS documentation and sample (`ios_cxr_l_sample`) remain at v1.0.1 as of 2026-06-06; the Android and iOS doc chapters version independently.
+
+### v1.0.4 additions (inferred from binary diff — no official changelog as of 2026-06-21)
+
+- **New session lifecycle callback (`ICXRSessionCbk`).** Pass an `ICXRSessionCbk` instance to the new `configCXRSession(session, cbk)` overload to receive `onSessionAvailable`, `onSessionStart`, `onSessionPause`, and `onSessionUnavailable` events, each carrying a `CXRSessionReason` enum value.
+- **`getCXRSessionState()` — new polling method.** Returns the current `CxrDefs.CXRSessionState` synchronously.
+- **`setGlassBrightness(Int)` and `setGlassVolume(Int)`.** New direct-control methods for display brightness and speaker volume. Return `Boolean` indicating success.
+- **`configCXRSession(session)` retained.** The existing single-argument overload is unchanged; callers that do not need session lifecycle events require no migration.
+- **`targetSdkVersion` removed from AAR manifest.** The library manifest no longer specifies `targetSdkVersion`; the host application's manifest governs. No code change required.
+- **No dependency changes.** POM is identical to v1.0.3.
