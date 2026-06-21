@@ -4,6 +4,12 @@ _Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; offici
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
+## v1.0.4 — published 2026-06-19
+
+> Source: Maven Central metadata for `com.rokid.cxr:client-l:1.0.4` (fetched 2026-06-21). The official Rokid changelog at `https://developerdoc.rokid.com/sdk` has **not yet been updated** for v1.0.4 as of this writing.
+
+`com.rokid.cxr:client-l:1.0.4` was uploaded to Maven on 2026-06-18–19 (AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3, +7.7%). No binary diff has been performed this cycle. The official changelog is pending portal publication; this entry will be updated once Rokid publishes it.
+
 ## v1.0.3 — published 2026-06-02
 
 > Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L tab, fetched 2026-06-11).
