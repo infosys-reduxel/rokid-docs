@@ -64,19 +64,19 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-24
+  last_checked: 2026-06-25
   notes: Verified org (id 57519491). Only 2 public repos: UXR-docs (out-of-scope spatial computing SDK, archived) and glass2-docs (out-of-scope Glass 2, last updated May 2023). No in-scope Sprite/AR Glasses content. No action items.
 
 - url: https://github.com/rokid
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-24
-  notes: Verified org (id 19773259). Official "Rokid" org. 73 public repos; checked 2026-06-22 — no new in-scope repos. Most recently updated in-scope candidates: glass-docs (last commit Apr 2023, old Glass 1/Glass 2 era). docs repo (last commit Mar 2026) covers Speech/HomeBase platform — not AR Glasses / Sprite. No actionable content for this repo.
+  last_checked: 2026-06-25
+  notes: Verified org (id 19773259). Official "Rokid" org. 73 public repos; checked 2026-06-25 — no new in-scope repos. Most recently updated in-scope candidates: glass-docs (last commit Apr 2023, old Glass 1/Glass 2 era). docs repo (last commit Mar 2026) covers Speech/HomeBase platform — not AR Glasses / Sprite. armazpro-module-sdk-sample (last push Mar 2026) is UXR3.0-based (out of scope). No actionable content.
 
 - url: https://github.com/Rokid-AR
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-24
-  notes: Verified org (id 25831739). Now shows 2 public repos (previously 1 confirmed): BroadcastServiceDemo (last commit Feb 2017) and openCV3_demo (last commit Feb 2017). Both are 9-year-old OpenCV samples with no Rokid Glasses / Sprite relevance. No actionable content.
+  last_checked: 2026-06-25
+  notes: Verified org (id 25831739). Confirmed 2 public repos (re-verified 2026-06-25): BroadcastServiceDemo (pushed 2017-06-19) and openCV3_demo (pushed 2017-02-17). Both are 9-year-old OpenCV samples with no Rokid Glasses / Sprite relevance. No actionable content.
