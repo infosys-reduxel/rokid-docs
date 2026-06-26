@@ -1,10 +1,12 @@
 # YodaOS-Sprite
 
-> Source: https://developerdoc.rokid.com/sprite (rendered SPA, Chinese, fetched 2026-06-08)
+> Source: https://developerdoc.rokid.com/sprite (rendered SPA, Chinese, fetched 2026-06-08); hardware-family wording updated from ar.rokid.com and developer.rokid.com (2026-06-26).
 
 ## About YodaOS-Sprite
 
 YodaOS-Sprite is a smart-glasses operating system purpose-built for all-day wear. Through end-to-end optimization across chip, drivers, system, applications, and product scenarios, it strikes a balance between battery life, performance, and functionality. The system is built around a philosophy of unobtrusive design — letting the technology fade into the background so the glasses feel like a seamless extension of daily life.
+
+YodaOS-Sprite runs on **Rokid Glasses** and **Bolon AI Glasses** (OEM variants sharing the same SoC and software stack). For the full hardware model list see [hardware/product-variants.md](hardware/product-variants.md).
 
 ## Device Specifications — Rokid Glasses
 
