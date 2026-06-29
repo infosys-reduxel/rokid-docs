@@ -58,8 +58,8 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-11
-  notes: Legacy Rokid developer portal (mostly Speech/HomeBase GitBook). Scrape 2026-06-11 returns only SVG/logo (heavily JS-rendered). Map returned only 1 URL. Real surface is developer.rokid.com/docs/rokid-homebase-docs/v2/. Low coverage overlap with this repo's AR-focused scope; keep for periodic checks via monitor.
+  last_checked: 2026-06-29
+  notes: As of 2026-06-29, developer.rokid.com redirects to open.rokid.com (confirmed identical content to ar.rokid.com redirect). Legacy Speech/HomeBase GitBook content may still be at developer.rokid.com/docs/rokid-homebase-docs/v2/. No in-scope Sprite/AR Glasses content surfaced. Low priority.
 
 - url: https://maven.rokid.com/repository/maven-public/
   kind: sdk-maven
@@ -85,22 +85,22 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-11
+  last_checked: 2026-06-29
   notes: Verified org (id 57519491). "Rokid Glass Developer Docs and SDK". Only 2 public repos: UXR-docs (out-of-scope spatial computing SDK) and glass2-docs (out-of-scope Glass 2 / older hardware). No in-scope Sprite/AR Glasses content. No action items.
 
 - url: https://github.com/rokid
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-11
-  notes: Verified org (id 19773259). Official "Rokid" org. Checked 2026-06-11 — relevant repos: glass-docs (last commit 2020-07-13, old Glass 1/Glass 2 era content, not Sprite), UXR-docs (out of scope). Mostly Speech/OpenVoice/CloudApp repos. No in-scope Sprite/AR Glasses content found. Low priority.
+  last_checked: 2026-06-29
+  notes: Verified org (id 19773259). Official "Rokid" org. Checked 2026-06-29 — relevant repos: glass-docs (last commit 2020-07-13, old Glass 1/Glass 2 era content, not Sprite), UXR-docs (out of scope). Mostly Speech/OpenVoice/CloudApp repos. No in-scope Sprite/AR Glasses content found. Low priority.
 
 - url: https://github.com/Rokid-AR
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-11
-  notes: Verified org (id 25831739). Only 2 public repos: BroadcastServiceDemo (last commit 2017-06-19 — a 9-year-old OpenCV sample with no Rokid Glasses relevance) and repo listing showed no new repos as of 2026-06-11. No actionable content for this repo. May have private repos not visible.
+  last_checked: 2026-06-29
+  notes: Verified org (id 25831739). Map returned empty links array (0 URLs) on 2026-06-29 check. Previously confirmed 2 inactive repos (BroadcastServiceDemo from 2017). No actionable content. May have private repos not visible.
 
 ## New sources discovered (pending user approval to add to registry)
 
