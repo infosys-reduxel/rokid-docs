@@ -20,7 +20,7 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-06-28
+  last_checked: 2026-06-30
   last_known_version: CXR-L 1.0.3 (portal still shows 1.0.3 as of 2026-06-28; Maven has 1.0.4)
   notes: |
     React SPA. As of 2026-06-28 the /sdk route now renders the open.rokid.com developer
@@ -33,7 +33,7 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-06-28
+  last_checked: 2026-06-30
   last_known_version: CXR-L 1.0.3 (2026-06-02), CXR-M 1.1.0 (portal lags Maven 1.2.2), 眼镜端裸机开发 0.0.1 (2026-03-01)
   notes: |
     SDK landing page scraped 2026-06-28. /sdk still shows CXR-L 1.0.3 changelog; /sprite
@@ -45,7 +45,7 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: release-notes
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-28
+  last_checked: 2026-06-30
   notes: |
     BROKEN as of 2026-06-28. Both previously valid workspace hashes return OSS NoSuchKey:
     - 57e35cd3ae294d16b1b8fc8dcbb1b7c7 (CXR-M / CXR-S / 眼镜端裸机开发): NoSuchKey 6A408F766EB57F3436AE9E82
@@ -58,14 +58,14 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-29
+  last_checked: 2026-06-30
   notes: As of 2026-06-29, developer.rokid.com redirects to open.rokid.com (confirmed identical content to ar.rokid.com redirect). Legacy Speech/HomeBase GitBook content may still be at developer.rokid.com/docs/rokid-homebase-docs/v2/. No in-scope Sprite/AR Glasses content surfaced. Low priority.
 
 - url: https://maven.rokid.com/repository/maven-public/
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-28
+  last_checked: 2026-06-30
   last_known_version: |
     client-l 1.0.4 (release; metadata lastUpdated 20260625070819 — new release 1.0.4 found 2026-06-28; portal still shows 1.0.3, official changelog not yet published)
     client-m 1.2.2 (release; metadata lastUpdated 20260608030211 — unchanged)
@@ -85,21 +85,21 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-29
+  last_checked: 2026-06-30
   notes: Verified org (id 57519491). "Rokid Glass Developer Docs and SDK". Only 2 public repos: UXR-docs (out-of-scope spatial computing SDK) and glass2-docs (out-of-scope Glass 2 / older hardware). No in-scope Sprite/AR Glasses content. No action items.
 
 - url: https://github.com/rokid
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-29
+  last_checked: 2026-06-30
   notes: Verified org (id 19773259). Official "Rokid" org. Checked 2026-06-29 — relevant repos: glass-docs (last commit 2020-07-13, old Glass 1/Glass 2 era content, not Sprite), UXR-docs (out of scope). Mostly Speech/OpenVoice/CloudApp repos. No in-scope Sprite/AR Glasses content found. Low priority.
 
 - url: https://github.com/Rokid-AR
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-29
+  last_checked: 2026-06-30
   notes: Verified org (id 25831739). Map returned empty links array (0 URLs) on 2026-06-29 check. Previously confirmed 2 inactive repos (BroadcastServiceDemo from 2017). No actionable content. May have private repos not visible.
 
 ## New sources discovered (pending user approval to add to registry)
