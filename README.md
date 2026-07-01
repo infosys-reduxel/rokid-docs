@@ -346,11 +346,11 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.3` (2026-06-02) |
-| **Size** | 65,494 bytes (1.0.3 AAR); 57,145 bytes (1.0.2 AAR) |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
+| **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
-| **Target SDK** | 28 |
-| **Dependencies (1.0.3)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
+| **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
+| **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
 **Entry Point:**
@@ -488,7 +488,8 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | Android permissions | [yodaos/docs/development/permissions.md](yodaos/docs/development/permissions.md) |
 | Mobile app development | [cxr-m/intro.md](cxr-m/intro.md) |
 | On-device app development | [cxr-s/brief.md](cxr-s/brief.md) |
-| Standalone app replacement | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
+| Standalone app replacement (CXR-L overview) | [cxr-l/intro.md](cxr-l/intro.md) |
+| Standalone app replacement (CXR-L API) | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
@@ -522,8 +523,9 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 8. [design-spec.md](cxr-s/design-spec.md) -- UI design specs (480 × 640 px viewport, Android Go constraints)
 
 **CXR-L SDK (Standalone)**
-1. [api-reference.md](cxr-l/api-reference.md) -- API reference
-2. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
+1. [intro.md](cxr-l/intro.md) -- SDK introduction: positioning, core capabilities, prerequisite matrix, sample projects
+2. [api-reference.md](cxr-l/api-reference.md) -- API reference
+3. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
 
 **Bare-metal Android Development on Rokid Glasses**
 1. [development-guide.md](cxr-baremetal/development-guide.md) -- Reserved interactions + dev environment + side-load workflow
