@@ -346,11 +346,12 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18); `1.1.0` uploaded to Maven 2026-07-02 but not yet documented (no changelog published as of 2026-07-03) |
-| **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
-| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
+| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18); `1.1.0` uploaded to Maven 2026-07-02, provisionally documented 2026-07-04 via binary diff (no official changelog yet — see [cxr-l/release-notes.md](cxr-l/release-notes.md)) |
+| **Size** | 1,286,574 bytes (1.1.0 AAR, +1,724%); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.0) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
 | **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
+| **Dependencies (1.1.0)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); cxr-service-bridge is now bundled in the AAR instead of an external dependency |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
 **Entry Point:**
