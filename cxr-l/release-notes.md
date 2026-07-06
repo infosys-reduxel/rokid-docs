@@ -1,16 +1,43 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese; official Rokid changelog). v1.0.4 entry updated 2026-07-06 against the official changelog published 2026-06-29, which supersedes the earlier binary-diff-only reconstruction (fetched 2026-06-25). Maven now also lists a further `client-l:1.1.0` release (`maven-metadata.xml` `lastUpdated` 20260702091606) with no changelog published yet — not documented here to avoid fabricating content; see the "Unreleased" note below._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
-## v1.0.4 — published 2026-06-18
+## Unreleased — client-l 1.1.0 (Maven only, no changelog)
 
-> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Rokid has not published a portal changelog for this release as of 2026-06-25. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+Maven (`https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`) lists a `1.1.0` release as of `maven-metadata.xml` `lastUpdated` 20260702091606. The AAR is roughly 18x the size of v1.0.4 — an unusually large jump. No official changelog has been published for 1.1.0 as of 2026-07-06, and the portal changelog still tops out at v1.0.4. Not documented here — re-check next refresh cycle once a changelog (or a decompile) is available.
+
+## v1.0.4 — published 2026-06-29
+
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L tab, fetched 2026-07-06). The Maven artifact (`client-l:1.0.4`) was uploaded 2026-06-25; the official changelog documenting it followed on 2026-06-29. This confirms most of the earlier binary-diff reconstruction (AAR size 70,543 bytes vs 65,494 bytes for v1.0.3, +7.7%) and adds the officially-documented details below. Items not mentioned anywhere in the official changelog (session-lifecycle callbacks, `configCXRSession` 2-arg overload, `getCXRSessionState`, the `CXRSessionReason`/`CXRSessionState` enums, and the `targetSdkVersion` manifest removal) remain provisional, binary-diff-only findings — flagged as such below.
 
 **Theme: structured session lifecycle callbacks and direct device controls.**
 
-**New interfaces:**
+**Official changelog:**
+
+1. Android `client-l` upgraded to 1.0.4.
+2. New device-control APIs: `setGlassBrightness(level)` / `setGlassVolume(level)` — `level` range **0–15**.
+3. Device-info enhancement: `GlassInfo` gains `brightness` / `sound` fields, delivered via the `onGlassDeviceInfo` callback.
+4. New "Device Control" (设备控制) documentation chapter for both Android and iOS, covering brightness/volume set and query.
+5. Android sample archive updated to v1.0.4.
+6. iOS `RGCxrClient` gains `setBrightness` / `getBrightness` / `setVolume` / `getVolume`; `RGCxrDeviceInfo` gains `brightness` / `sound` fields.
+7. iOS documentation and sample version aligned to v1.0.4 (previously pinned at v1.0.1).
+
+> **Note on `GlassInfo` field timing.** This repo's own binary-diff analysis of the 1.0.2→1.0.3 AARs (see the v1.0.3 entry below) already listed `sound` and `brightness` as fields on the reconstructed `GlassInfo` class. The official 1.0.4 changelog (item 3 above) states these fields were *added* in 1.0.4. No full decompiled `GlassInfo` source is checked into this repo for either version, so the discrepancy can't be resolved from the artifacts on hand — both data points are recorded here rather than asserting a resolution. Treat the fields' *existence* as reliable (confirmed by both the binary diff and the official changelog); treat the exact version they were introduced in as unresolved.
+
+**iOS additions (RGCxrClient) — official, v1.0.4:**
+
+- `setBrightness` — set glasses display brightness.
+- `getBrightness` — query current display brightness.
+- `setVolume` — set glasses speaker volume.
+- `getVolume` — query current speaker volume.
+- `RGCxrDeviceInfo` gains `brightness` and `sound` fields.
+- iOS documentation and sample (`ios_cxr_l_sample`) are now version-aligned to v1.0.4 (previously pinned at v1.0.1 — see the v1.0.3 entry's iOS note below).
+
+> **TODO — signatures not independently confirmed.** Exact iOS parameter/return types (e.g. `Int` vs a typed range enum, synchronous return vs `RGCxrClientError?` completion) are inferred from the one-line Chinese changelog summary, not from a full crawl of the iOS SDK chapter or an iOS binary diff. Verify against the iOS chapter of `https://developerdoc.rokid.com/sdk` directly before treating these as authoritative for integration.
+
+**New interfaces (binary diff only — not present in the official changelog above; still provisional):**
 
 - `com.rokid.cxr.link.callbacks.ICXRSessionCbk` — session lifecycle callback interface.
 
@@ -23,7 +50,7 @@ The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios o
 
   > **Breaking change for implementors of `ICXRSessionCbk`.** Any class implementing this interface must provide all four methods.
 
-**New enums:**
+**New enums (binary diff only — not present in the official changelog above; still provisional):**
 
 - `com.rokid.cxr.link.utils.CxrDefs$CXRSessionReason` — reason code passed to all `ICXRSessionCbk` callbacks.
 
@@ -50,10 +77,10 @@ The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios o
 
 **New public methods on `ExternalAppClient` / `CXRLink`:**
 
-- `boolean configCXRSession(CxrDefs.CXRSession, ICXRSessionCbk)` — 2-argument overload of the existing `configCXRSession(CXRSession)`. Registers a session lifecycle callback at the same time as configuring the session type. The 1-argument overload remains available.
-- `CxrDefs.CXRSessionState getCXRSessionState()` — query the current session state.
-- `boolean setGlassBrightness(int)` — set the glasses display brightness level programmatically.
-- `boolean setGlassVolume(int)` — set the glasses speaker volume level programmatically.
+- `boolean configCXRSession(CxrDefs.CXRSession, ICXRSessionCbk)` — 2-argument overload of the existing `configCXRSession(CXRSession)`. Registers a session lifecycle callback at the same time as configuring the session type. The 1-argument overload remains available. *(binary-diff only, not in official changelog)*
+- `CxrDefs.CXRSessionState getCXRSessionState()` — query the current session state. *(binary-diff only, not in official changelog)*
+- `boolean setGlassBrightness(int level)` — set the glasses display brightness level. **`level` range: 0–15** (official changelog).
+- `boolean setGlassVolume(int level)` — set the glasses speaker volume level. **`level` range: 0–15** (official changelog).
 
 **AndroidManifest change:**
 
