@@ -75,45 +75,29 @@ See: [CXR-S SDK overview](../../cxr-s/brief.md)
 
 ## FAQ
 
-> This FAQ was updated from the upstream `developerdoc.rokid.com/sprite` page (fetched 2026-06-08). The upstream page focuses on CXR-L and bare-metal development; the earlier CXR-M/CXR-S Q&As have been replaced by the content below. Maven `client-l` is at 1.0.4 as of 2026-06-25; the portal FAQ has not yet been updated to reflect this.
+> This FAQ reflects a fresh live scrape of the upstream `developerdoc.rokid.com/sprite` page dated 2026-07-08. The previous refresh (fetched 2026-06-08, last touched 2026-06-27) captured a more detailed, six-question FAQ focused on CXR-L capabilities, CustomView vs. CustomApp session semantics, and bare-metal development. As of 2026-07-08, the live upstream page has reverted to a shorter, more generic four-question FAQ centered on CXR-M/CXR-S SDK capabilities and device support — matching an earlier style of FAQ content that the 2026-06-08 refresh had itself superseded. The detailed CXR-L/bare-metal Q&As are no longer present upstream and have been removed below to match; see this file's git history for the prior version.
 
-**Q: What are the main capabilities of the CXR-L SDK?**
+**Q: What are the main capabilities of the CXR-M SDK?**
 
-**A:** CXR-L runs on the mobile side. After authentication via the Rokid AI App or Hi Rokid (international), it coordinates with Rokid Glasses and supports: connection and session management; custom Views on the glasses (JSON layout and icons); custom Apps on the glasses (install/launch/control APK); audio streaming; remote photo capture; and, within a CustomApp session, custom commands (bidirectional Caps communication). The public documentation and samples are primarily CXR-L-focused; the glasses-side CustomApp requires the CXR-S SDK (`cxr-service-bridge`) as its counterpart.
+**A:** A mobile application built with the CXR-M SDK can communicate with Rokid Glasses to retrieve audio and video from the glasses, and can also customize the implementation of existing scenes on Rokid Glasses. When paired with the Rokid CXR-S SDK, it can also exchange custom commands.
 
-**Q: What is the difference between a CustomView session and a CustomApp session?**
+**Q: Which devices does the CXR-M SDK currently support?**
 
-**A:** A CustomView session has the mobile side push a layout JSON that the glasses render as a custom UI; the mobile app does not need to integrate CXR-S. A CustomApp session has the mobile side remotely install and launch a glasses-side Android application; that APK must integrate CXR-S, and its package name must match the CUSTOMAPP session configuration. Both session types support audio and photo capture once the session is fully constructed; custom commands are only available in CustomApp sessions, and only after the glasses-side target application is open.
+**A:** The CXR-M SDK currently only provides an SDK for Android mobile devices.
 
-**Q: What is "link ready" and "session construction"? Why does photo capture still fail after `connect()` succeeds?**
+**Q: What are the main capabilities of the CXR-S SDK?**
 
-**A:** "Link ready" means `onCXRLConnected(true)` and `onGlassBtConnected(true)` have both fired — only then can CustomView or CustomApp APIs be called. "Session construction" means the glasses are in the agreed business working state: for CustomView, `customViewOpen` must have succeeded and the `onCustomViewOpened` callback received; for CustomApp, `appStart` must have succeeded and `onOpenAppResult(true)` received. A successful `connect()` alone, or having a token alone, does not mean session construction is complete. Audio, photo capture, and custom commands all require session construction to have been completed first; calling them before that point will fail or be gated.
+**A:** The CXR-S SDK provides access to the data channel on YodaOS-Sprite, and can pass custom commands to the CXR-M SDK through the data channel.
 
-**Q: What are the environment prerequisites for CXR-L SDK development?**
+**Q: When developing a mobile application using only the CXR-M SDK, do I need to enable developer mode on Rokid Glasses?**
 
-**A:** A real device with a working Bluetooth environment is required, along with the Rokid AI App or Hi Rokid (international) installed on the phone, with `requestAuthorization` completed to obtain a token. For Android, integrate `com.rokid.cxr:client-l:1.0.4` (`minSdk 31+`). For iOS, use CocoaPods `RGCxrClient` — the current iOS chapter in the documentation corresponds to v1.0.1; alignment with the latest Android version follows the timeline of each platform chapter. Refer to RenewCXRLSample (mobile) and CXRSWithCXRLSample (glasses CustomApp joint-debugging) samples and the documentation OSS archive.
-
-**Q: How are custom commands (CustomCmd) used? What are the restrictions?**
-
-**A:** Custom commands enable bidirectional binary messaging between the mobile app and the glasses-side custom application. On Android, send via `Caps` and `sendCustomCmd`; on the glasses side, CXR-S uses `CXRServiceBridge` `subscribe`/`sendMessage` as the counterpart. Custom commands are only available in a CUSTOMAPP session, and only after the glasses-side application has started (session construction complete); CustomView sessions do not support them. Key and touchpad events can be reported from the glasses-side application and received on the mobile side via custom command callbacks (see the key and system broadcast chapter).
-
-**Q: What scenarios is bare-metal glasses development suited for? How does it compare to CXR-L?**
-
-**A:** Bare-metal development means writing standard Android applications on YodaOS-Sprite (Android Go) without a mobile-companion SDK — appropriate for Launcher-type apps, on-device audio recording, photo/video capture, key and wear/fold event listening, and IMU access — all scenarios that run entirely on the glasses without a phone. If you need a mobile app to remotely control the glasses UI or an app, or to receive glasses audio/video and command channels, use CXR-L (with CXR-S for CustomApp). The two tracks can coexist on different product lines; do not mix the connection models within the same business flow.
-
-**Q: What are the main capabilities of bare-metal glasses development?**
-
-**A:** Bare-metal applications use standard Android mechanisms: system broadcasts for wear/fold detection (`ACTION_TAKE_STATUS_CHANGED`, `ACTION_LEG_STATUS_CHANGED`) and function-key/touchpad events; 8-channel `AudioRecord` raw audio; CameraX for photo and video capture (no preview, triggered by a single touchpad tap, files saved to `/sdcard/Pictures/bare_photo/*.jpg` and `/sdcard/Video/bare_video/*.mp4`); `SensorManager` six-axis IMU. Screen resolution is 480 × 640 px; Android Go constraints and glasses UI design guidelines apply. Documentation and samples describe application-layer APIs only and do not cover system-internal implementation details.
-
-**Q: How do I install and debug a bare-metal application on the glasses?**
-
-**A:** Build the APK in Android Studio (see `GlassesBareDevSample`, `minSdk 31`), connect the glasses to the computer via the dedicated developer cable, enable ADB in the Rokid AI App on the phone, then run `adb install`. Use `scrcpy` to mirror the 480 × 640 display. The cable included in the retail box is typically a charge-only cable — contact the developer support team to obtain a developer cable. The bare-metal path does not replace the CXR-L authentication and Rokid AI App coordination flow.
+**A:** No.
 
 For additional questions, see the [Rokid Developer Forum](https://forum.rokid.com/).
 
 ## Notes
 
-- **Source**: https://developerdoc.rokid.com/sprite — the canonical developer portal for YodaOS-Sprite (loaded via iframe from `https://ar.rokid.com/sprite?lang=zh`). Initially captured on 2026-05-29; device specifications table added 2026-06-03; optical display specs (FOV, brightness, resolution, optics design) added 2026-06-04; FAQ section refreshed 2026-06-08. FAQ Q4 updated 2026-06-27 to pin `client-l:1.0.4` (Maven latest as of 2026-06-25; portal FAQ still shows 1.0.3).
+- **Source**: https://developerdoc.rokid.com/sprite — the canonical developer portal for YodaOS-Sprite (loaded via iframe from `https://ar.rokid.com/sprite?lang=zh`). Initially captured on 2026-05-29; device specifications table added 2026-06-03; optical display specs (FOV, brightness, resolution, optics design) added 2026-06-04; FAQ section refreshed 2026-06-08. FAQ Q4 updated 2026-06-27 to pin `client-l:1.0.4` (Maven latest as of 2026-06-25; portal FAQ still shows 1.0.3). FAQ reverted to the shorter CXR-M/CXR-S-focused version as observed 2026-07-08 (fresh live scrape, `.firecrawl/developerdoc-sprite-current.md`), superseding the 2026-06-08/2026-06-27 CXR-L-focused version.
 - **Scope**: This document covers the **YodaOS-Sprite** tab only — the OS that runs on Rokid Glasses and Rokid AI Glasses. A separate "YodaOS-Master" tab exists on the upstream page (covering Station 2 / Station Pro / AR Lite / AR Studio) but is out of scope for this repository.
 - **Known TODO links**:
   - "View specs" button under *About YodaOS-Sprite* — destination not captured; links to a hardware-spec modal on the portal SPA.
