@@ -20,148 +20,191 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-07
-  last_known_version: CXR-L 1.0.4 shown on portal (developerdoc.rokid.com); Maven still has client-l 1.1.0 as of 2026-07-02, unchanged since last cycle (see maven.rokid.com entry)
+  last_checked: 2026-07-10
+  last_known_version: (no CXR doc content hosted here anymore; see notes)
   notes: |
-    Reconfirmed live 2026-07-07 (firecrawl map --limit 60): 36 URLs, same count as 2026-07-05.
-    Still /doc, /?lang=en, and the Rokid Store app-catalog detail pages (/detail?appId=...) for
-    Rokid Station/Air apps (out-of-scope hardware), plus a few /all?type=... category-listing
-    pages already present in prior counts. No structural change, no new in-scope surface. Real
-    Sprite/CXR doc surfaces remain at developerdoc.rokid.com (registered) and open.rokid.com
-    (unregistered, see bottom section).
+    VERIFIED LIVE 2026-07-10 (map of root + scrape of /doc). Root path
+    (https://ar.rokid.com) now maps to a Rokid Store / OTT app marketplace
+    (appId=... detail pages for TV apps and games) -- not a docs portal.
+    /doc route renders the same "AIUI: The Next Frontier" developer homepage
+    now also served at developer.rokid.com and open.rokid.com, with a
+    "Rokid Glasses" hardware card linking Docs to open.rokid.com/sdk?lang=en.
+    YodaOS-Master card is present and explicit on this page -- skipped,
+    out of scope, not clicked through. No CXR-M/S/L content is directly
+    hosted at ar.rokid.com anymore; confirms the 2026-06-28 finding that
+    real Sprite/CXR doc surfaces have migrated to open.rokid.com.
 
 - url: https://developerdoc.rokid.com
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-07
-  last_known_version: CXR-L 1.0.4 (portal changelog, dated 2026-06-29 — UNCHANGED this run, portal still has NOT published anything for Maven's client-l 1.1.0, now 5 days stale relative to the 2026-07-02 Maven upload). CXR-M tab and 眼镜端裸机开发 tab content still not independently reverified this run (JS-tab click continues to fail via Firecrawl actions; known SPA limitation, unchanged from prior runs).
+  last_checked: 2026-07-10
+  last_known_version: CXR-L 1.0.4 (official, portal updated 2026-06-29). CXR-M / 眼镜端裸机开发 tabs NOT re-verified this run (see notes).
   notes: |
-    RE-VERIFIED LIVE 2026-07-07 with --only-main-content --max-age 0 --wait-for 3000 (per Leader's
-    explicit instruction this cycle, given the SPA's rendering-timing sensitivity noted 2026-07-05).
-    /sdk default (CXR-L) tab content is IDENTICAL to the 2026-07-05 capture — still only the v1.0.4
-    changelog (dated 2026.06.29), same 7-item V1.0.4 changelog text (setGlassBrightness/
-    setGlassVolume, "设备控制" chapter, iOS parity APIs) plus the V1.0.1 initial-release entry.
-    NO portal mention of client-l 1.1.0 anywhere on /sdk. This is now the THIRD consecutive
-    confirmed-live cycle (07-05, 07-07 — note 07-06 was not run per the registry's own
-    last_checked gap) where Maven has 1.1.0 and the portal changelog has not caught up — genuine,
-    persistent version-lag gap, not a portal bug (portal simply hasn't published a changelog yet).
-
-    RE-VERIFIED LIVE the /sprite FAQ drift with --max-age 0 --wait-for 3000 as instructed. Fresh
-    scrape STILL shows the SAME 4 short Q&As, all CXR-M/CXR-S focused ("CXR-M SDK 的主要功能包含
-    哪些？", "CXR-M SDK 目前支持哪些设备使用？", "CXR-S SDK 的主要功能包含哪些？", "仅使用 CXR-M SDK
-    开发移动端应用时，需要打开 Rokid Glasses 的开发者权限吗？"). This continues to NOT match what
-    local yodaos/docs/sprite-overview.md's own changelog note claims was captured live on
-    2026-06-08 (an 8-Q&A CXR-L/bare-metal-focused set). Device spec table (Rokid Glasses:
-    143x44x160.5mm, Qualcomm AR1, 2GB/32GB, SONY IMX681 etc.) and Developer Toolkit section on
-    /sprite still match local content exactly (no drift there).
-    PERSISTENT ACROSS MULTIPLE CONSECUTIVE VERIFIED-LIVE RUNS (2026-07-03, 07-04, 07-05, and now
-    07-07) — reported plainly per Leader's instruction, NOT resolved here. This needs human
-    judgment: either (a) the 2026-06-08 capture that produced the local 8-Q&A text was wrong or
-    came from a different source/session, or (b) upstream genuinely rolled back the FAQ and never
-    restored the CXR-L/bare-metal set. Map still returns only /sdk, /sprite, root (3-4 URLs).
-    YodaOS-Master tab skipped (out of scope).
+    VERIFIED LIVE 2026-07-10. Map returns 3 URLs (root, /sdk, /sprite) --
+    /sitemap.xml no longer listed (was 4 URLs as of 2026-06-30).
+    /sdk scraped live: CXR-L SDK now shows an OFFICIAL v1.0.4 changelog,
+    updated 2026-06-29 (previously only a provisional binary-diff
+    reconstruction existed, sourced 2026-06-25). Official changelog text:
+    Android client-l upgraded to 1.0.4; new setGlassBrightness(level) /
+    setGlassVolume(level) API, level range 0...15 (now documented -- local
+    docs previously said "range undocumented"); GlassInfo brightness/sound
+    fields exposed via onGlassDeviceInfo; new "Device Control" chapter for
+    both Android and iOS; Android Sample updated to v1.0.4; iOS RGCxrClient
+    gains setBrightness/getBrightness/setVolume/getVolume, RGCxrDeviceInfo
+    gains brightness/sound fields; iOS docs/sample version-aligned to 1.0.4.
+    This iOS parity and the value-range detail are NOT in local docs -- see
+    P1 action item.
+    /sprite scraped live: CXR-S Q&A and Rokid Glasses hardware spec table
+    (SoC Qualcomm AR1, 2GB RAM, 32GB ROM, 210mAh, Sony IMX681 12MP camera,
+    1500 nits, 480x640 waveguide res, IPX4, BT5.3, WiFi6) -- content
+    consistent with local docs' architecture description but this
+    consolidated spec table does not appear to exist in
+    yodaos/docs/hardware/product-variants.md.
+    NOT VERIFIED THIS RUN: the CXR-M SDK and 眼镜端裸机开发 tabs on /sdk.
+    This is a tab-based SPA; plain scrape only renders the default-active
+    CXR-L tab body. Confirming CXR-M/裸机开发 content requires an
+    actions-based scrape (click tab) next cycle -- do not treat prior
+    registry values for those tabs as re-verified.
+    YodaOS-Master tab remains present; skipped (out of scope).
 
 - url: https://custom.rokid.com/prod/rokid_web/
   kind: release-notes
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-07
+  last_checked: 2026-07-10
   notes: |
-    STILL BROKEN, re-verified live 2026-07-07 (cache bypass --max-age 0). Both previously valid
-    workspace hashes still return OSS NoSuchKey with fresh RequestIds this run (confirming a live
-    re-check, not a cached replay):
-    - 57e35cd3ae294d16b1b8fc8dcbb1b7c7 (CXR-M / CXR-S / 眼镜端裸机开发): NoSuchKey (RequestId
-      6A4C6D31393D1B363370E107 this run)
-    - 84feb39f8ef141b0ad0326f902ab881f (CXR-L): NoSuchKey (RequestId 6A4C6D34D1170E3734588E86
-      this run)
-    Source remains unreachable; new workspace hashes still unknown. Not usable as a monitor
-    candidate. Fourth consecutive run confirming this (2026-07-03, 07-04, 07-05, 07-07).
+    STATUS CHANGED from BROKEN (2026-06-30) to PARTIALLY REACHABLE, verified
+    live 2026-07-10. Root path (https://custom.rokid.com/prod/rokid_web/)
+    still returns HTTP 415 Unsupported Media Type when scraped directly
+    (confirmed live, statusCode 415, contentType application/octet-stream --
+    same failure mode as before). HOWEVER a live `firecrawl map` of that same
+    root URL now SUCCEEDS and returns 23 real content-page URLs across 3
+    workspace hashes (previously all workspace keys 404'd with OSS
+    NoSuchKey errors):
+      - 57e35cd3ae294d16b1b8fc8dcbb1b7c7 (matches the previously-known
+        CXR-M/CXR-S/眼镜端裸机开发 hash) -- page titles include "Rokid
+        Glasses 设备连接与管理", "设备连接管理", "Rokid Glasses AI
+        流程交互", "版本". IN SCOPE. Body content did NOT fully render via
+        plain scrape or scrape with --wait-for 6000ms (only "版本1.0" /
+        "版本0.0.5" SPA-shell placeholders were captured, not real
+        document body) -- this SPA needs actions-based scraping (click
+        into doc tree) to retrieve real content; NOT independently
+        content-verified this run, only URL/title-verified.
+      - c88be4bcde4c42c0b8b53409e1fa1701 (NEW hash, not previously known)
+        -- titles include "UXR3.0 SDK: Opening a New Chapter in YodaOS"
+        and "双目渲染、手势交互、平面检测等能力" (binocular rendering /
+        gesture interaction / plane detection). OUT OF SCOPE (UXR3.0
+        spatial-computing SDK) -- explicitly skipped, not scraped further,
+        no workspace hash logged as an in-scope source.
+      - 323825adf4914c21be8a0d5fe7b8a9e5 (NEW hash) -- appears to be a
+        top-level nav/landing page listing Rokid Glasses, YodaOS-Sprite
+        AIUI Studio, Rokid AR Lite, YodaOS-Master, Rokid AR Studio, Rokid
+        Glass3. MIXED scope -- only the Rokid Glasses entry point is
+        in-scope; AR Lite/AR Studio/Master/Glass3 are out of scope and
+        were not clicked through.
+      - The previously-known CXR-L-specific hash
+        84feb39f8ef141b0ad0326f902ab881f did NOT appear in this map.
+        Unknown whether its content merged into 57e35cd3... or moved
+        elsewhere -- unconfirmed, flag for next cycle.
 
 - url: https://developer.rokid.com
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-07
+  last_checked: 2026-07-10
   notes: |
-    Reconfirmed live 2026-07-07 (firecrawl map --limit 100): 19 URLs, same count and same page set
-    as 2026-07-05 — rokidos-linux-docs, rokid-homebase-docs, Skills Kit (2-RokidDocument/
-    3-ApiReference/4-Terms/5-enableVoice/8-app), contact-us — a legacy GitBook doc tree for
-    RokidOS-Linux, HomeBase, and the Speech Skills platform. None relate to YodaOS-Sprite,
-    CXR-M/S/L, or Rokid Glasses hardware. No action items, no change from prior cycles.
+    VERIFIED LIVE 2026-07-10 (direct scrape). Confirms this domain now
+    serves the identical "AIUI: The Next Frontier" homepage content as
+    open.rokid.com and ar.rokid.com/doc (same markup, same asset hashes).
+    "Rokid Glasses" hardware card links Docs to open.rokid.com/sdk?lang=en.
+    YodaOS-Master card explicitly present -- skipped, out of scope, not
+    clicked through. No in-scope Sprite/AR Glasses doc content hosted
+    directly at this domain; low priority as a distinct source (mirrors
+    developerdoc.rokid.com / open.rokid.com).
 
 - url: https://maven.rokid.com/repository/maven-public/
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-07
+  last_checked: 2026-07-10
   last_known_version: |
-    client-l 1.1.0 — UNCHANGED since 2026-07-02 (maven-metadata.xml lastUpdated still
-    20260702091606, re-verified live this run with --max-age 0; browse-listing directory index at
-    https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/client-l/
-    still lists 1.1.0 as the highest version folder present, maven-metadata.xml file timestamp
-    still "Thu Jul 02 10:17:54 Z 2026", 776 bytes — no new 1.1.1+ folder). client-m and
-    cxr-service-bridge not independently re-scraped this run (out of scope for this cycle's
-    specific ask, which was client-l only); last known values from 2026-07-05 unchanged per
-    registry baseline (client-m 1.2.2, cxr-service-bridge 1.0) — NOT re-verified live this cycle.
+    client-l 1.1.0 (release; metadata lastUpdated 20260702091606 / 2026-07-02
+      -- NEW release found this run, supersedes 1.0.4. Verified via raw
+      maven-metadata.xml fetch. Neither developerdoc.rokid.com/sdk (official
+      changelog verified live, tops out at 1.0.4 / 2026-06-29) nor local docs
+      mention 1.1.0. UNDOCUMENTED release -- flag P1.)
+    client-m 1.2.2 (release; metadata lastUpdated 20260608030211 -- unchanged
+      since prior check, verified via raw maven-metadata.xml fetch)
+    cxr-service-bridge 1.0 (release; metadata lastUpdated 20260522063622 --
+      unchanged since prior check, verified via raw maven-metadata.xml fetch)
   notes: |
-    Re-verified LIVE 2026-07-07 for client-l specifically (per Leader's explicit ask): re-scraped
-    both maven-metadata.xml (--max-age 0) and the browse-listing HTML index for
-    com/rokid/cxr/client-l/ — highest folder present is still 1.1.0, no 1.1.1 or newer. Cross-
-    checked against developerdoc.rokid.com/sdk (see that entry): portal STILL has not published an
-    official changelog for 1.1.0 — CXR-L tab still shows only v1.0.4 dated 2026-06-29. Local
-    cxr-l/release-notes.md's provisional/binary-diff-derived v1.1.0 section (added 2026-07-04,
-    commit ac1138a74) therefore remains correctly labeled "provisional pending official
-    confirmation" — no update needed to local docs this cycle, nothing changed upstream on either
-    axis (no new Maven version, no new portal changelog).
+    Public Maven for CXR SDK JARs/AARs. Direct browse path is
+    https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/
+    (the /repository/ path returns "not browseable" page; use /service/rest/repository/browse/
+    for human browsing, but maven-metadata.xml under each artifact path is
+    directly fetchable and is the canonical machine-readable source).
+    client-l: 1.1.0 is a brand-new, previously-unseen release as of this
+    run (2026-07-10) -- portal/local docs still only cover up through 1.0.4.
+    No binary diff of 1.1.0 has been performed yet.
+    client-m: 1.2.2 unchanged since 2026-06-08. Portal CXR-M tab was not
+    re-verified this run (tab-based SPA, see developerdoc.rokid.com note) --
+    do not assume portal still shows 1.1.0 without a fresh check next cycle.
+    cxr-service-bridge: 1.0 unchanged since 2026-05-22.
+    Use Maven as the canonical "what's actually shipped" source.
 
 - url: https://github.com/RokidGlass
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-07
-  notes: Reconfirmed live 2026-07-07 (25 URLs mapped, same count and same set as 2026-07-05). Still only 2 public repos, UXR-docs (out-of-scope spatial computing SDK) and glass2-docs (out-of-scope Glass 2 / older hardware, issues list only). No in-scope Sprite/AR Glasses content. No action items.
+  last_checked: 2026-07-10
+  notes: |
+    VERIFIED LIVE 2026-07-10 (map). Still only 2 public repos: UXR-docs
+    (out-of-scope spatial computing SDK) and glass2-docs (out-of-scope
+    Glass 2 / older hardware). No in-scope Sprite/AR Glasses content.
+    Unchanged from prior check. No action items.
 
 - url: https://github.com/rokid
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-07
-  notes: Reconfirmed live 2026-07-07 (72 URLs mapped vs 73 on 2026-07-05 — trivial issue-page churn, not a repo change; repo-name extraction confirms the same ~33-repo set as before: glass-docs, UXR-docs, CloudAppClient, RokidMobileSDKAndroidDemo/iOSDemo, RokidSDK-Swift, rokid-openvoice-*, skill/speech/tts demos, docs, community, etc.). Same conclusion as prior cycles — legacy Speech/OpenVoice/CloudApp/skill-kit/misc repos, glass-docs is stale 2020-era Glass 1/2 (not Sprite), UXR-docs is out of scope. No in-scope content found. Low priority.
+  last_checked: 2026-07-10
+  notes: |
+    VERIFIED LIVE 2026-07-10 (map). Same repo set as before: native-system-docs,
+    NextForum, mingutils, RokidMobileSDKiOSDemo, RokidMobileSDKAndroidDemo,
+    CloudAppClient, blacksiren, DeepFaceLab, and others -- Speech/OpenVoice/
+    CloudApp/forum-tooling repos, plus an unrelated DeepFaceLab mirror. No
+    in-scope Sprite/AR Glasses content found. Unchanged. Low priority.
 
 - url: https://github.com/Rokid-AR
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-07
+  last_checked: 2026-07-10
   notes: |
-    Reconfirmed live 2026-07-07, but with a NEW result this cycle: firecrawl map returned 0 URLs
-    (previous 3 cycles all returned exactly 1, the org root). Because that's a meaningful change in
-    map behavior (not just a count wobble), did a follow-up direct scrape of the org root page
-    (--max-age 0) to make sure this wasn't a silent detection failure — the scrape succeeded (200,
-    real rendered content, not an error page) and surfaced 2 public repos that map alone had not
-    been surfacing: openCV3_demo (Java, last updated Feb 2017) and BroadcastServiceDemo (Java, last
-    updated Jun 2017). Both are ~9-year-old legacy demos unrelated to CXR-M/S/L or Sprite; org page
-    states "no public members." No in-scope content. Net: org is reachable and unchanged in
-    substance; the map-vs-scrape URL-count discrepancy looks like a Firecrawl map crawl-depth/JS
-    quirk on this specific org page, not a real content change — flagging so future cycles don't
-    misread "map returned 0" as "org vanished."
+    VERIFIED LIVE 2026-07-10 (map). Map again returned an empty links array
+    (0 URLs), consistent with the 2026-06-30 check. No actionable content.
+    May have private repos not visible to this API key.
 
 ## New sources discovered (pending user approval to add to registry)
 
 - url: https://open.rokid.com
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
-  status: UNREGISTERED — requires user approval. Only a quick map-level reconfirmation was done this run per Leader's request; NOT scraped for content (out of the 8-source registry; scout does not silently extend source list).
+  status: UNREGISTERED -- requires user approval. NOT independently
+    scraped this run (out of the 8 approved registry sources); its
+    existence and role as the new canonical portal is corroborated
+    indirectly via live scrapes of developer.rokid.com and ar.rokid.com/doc,
+    both of which link Rokid Glasses docs to open.rokid.com/sdk?lang=en.
   notes: |
-    Quick reconfirm 2026-07-07 (map, --limit 20, no content scrape): returned 9 URLs this run —
-    root, /sitemap.xml, /sprite?lang=zh, /sdk?lang=zh, /academy, /sdk?lang=en, /?lang=en, /?lang=cn,
-    /master?lang=en. That is 3 MORE distinct URL slugs than the 6 seen on 2026-07-05
-    (/sitemap.xml, /sprite?lang=zh, /sdk?lang=zh are new-to-map this cycle). Notably
-    /sprite?lang=zh suggests this unregistered host may carry its own Sprite-specific doc surface
-    distinct from developerdoc.rokid.com/sprite — potentially relevant to the in-scope
-    YodaOS-Sprite/CXR-M/S/L scope this repo tracks. Per Leader's instruction this was a map-level
-    check ONLY — no content was scraped, no workspace hash logged, nothing added to the repo.
-    Flagging the new slugs for Leader/user attention; registration status UNCHANGED — still
-    awaiting explicit user decision on whether to register open.rokid.com. YodaOS-Master content
-    remains at open.rokid.com/master — out of scope, skipped, not scraped.
+    Discovered 2026-06-28, corroborated again 2026-07-10 via developer.rokid.com
+    and ar.rokid.com/doc (both now serve the same "AIUI: The Next Frontier"
+    homepage and link Docs to open.rokid.com/sdk / /sprite). Prior direct
+    check (2026-06-28) found open.rokid.com/sprite?lang=zh content matches
+    developerdoc.rokid.com/sprite exactly; open.rokid.com/sdk?lang=zh
+    previously returned only SPA shell. /academy hosts "乐奇学院" (Rokid
+    Academy) with CXR-L / Glasses courses (in scope) alongside UXR 3.0 and
+    AIUI courses (out of scope). YodaOS-Master content linked from
+    open.rokid.com/master -- skipped (out of scope). Suggest registering
+    open.rokid.com as the canonical replacement for ar.rokid.com; requires
+    explicit user sign-off before Scout treats it as a registry source.
