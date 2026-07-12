@@ -20,9 +20,12 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   last_known_version: (no CXR doc content hosted here anymore; see notes)
   notes: |
+    RE-VERIFIED 2026-07-12, no change since 2026-07-10 check below (Station
+    App Store on root, AIUI homepage on /doc, YodaOS-Master card present,
+    skipped).
     VERIFIED LIVE 2026-07-10 (map of root + scrape of /doc). Root path
     (https://ar.rokid.com) now maps to a Rokid Store / OTT app marketplace
     (appId=... detail pages for TV apps and games) -- not a docs portal.
@@ -38,9 +41,13 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   last_known_version: CXR-L 1.0.4 (official, portal updated 2026-06-29). CXR-M / 眼镜端裸机开发 tabs NOT re-verified this run (see notes).
   notes: |
+    RE-VERIFIED 2026-07-12: /sdk still tops out at the official v1.0.4
+    changelog (2026-06-29); no v1.1.0 changelog published yet. /sprite
+    spec table diffed field-by-field against yodaos/docs/sprite-overview.md
+    -- exact match, no drift. No change since 2026-07-10 check below.
     VERIFIED LIVE 2026-07-10. Map returns 3 URLs (root, /sdk, /sprite) --
     /sitemap.xml no longer listed (was 4 URLs as of 2026-06-30).
     /sdk scraped live: CXR-L SDK now shows an OFFICIAL v1.0.4 changelog,
@@ -72,8 +79,12 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: release-notes
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   notes: |
+    RE-VERIFIED 2026-07-12: same partially-reachable state as 2026-07-10
+    (map succeeds, individual page scrapes still only return empty SPA-shell
+    placeholders). No new evidence this run; still unverified as a content
+    source.
     STATUS CHANGED from BROKEN (2026-06-30) to PARTIALLY REACHABLE, verified
     live 2026-07-10. Root path (https://custom.rokid.com/prod/rokid_web/)
     still returns HTTP 415 Unsupported Media Type when scraped directly
@@ -112,8 +123,10 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   notes: |
+    RE-VERIFIED 2026-07-12: still no in-scope content hosted directly here.
+    No change since 2026-07-10 check below.
     VERIFIED LIVE 2026-07-10 (direct scrape). Confirms this domain now
     serves the identical "AIUI: The Next Frontier" homepage content as
     open.rokid.com and ar.rokid.com/doc (same markup, same asset hashes).
@@ -127,18 +140,20 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   last_known_version: |
     client-l 1.1.0 (release; metadata lastUpdated 20260702091606 / 2026-07-02
-      -- NEW release found this run, supersedes 1.0.4. Verified via raw
-      maven-metadata.xml fetch. Neither developerdoc.rokid.com/sdk (official
-      changelog verified live, tops out at 1.0.4 / 2026-06-29) nor local docs
-      mention 1.1.0. UNDOCUMENTED release -- flag P1.)
-    client-m 1.2.2 (release; metadata lastUpdated 20260608030211 -- unchanged
-      since prior check, verified via raw maven-metadata.xml fetch)
+      -- unchanged since 2026-07-10 check, re-confirmed via fresh
+      maven-metadata.xml fetch 2026-07-12. Still no official changelog
+      published (developerdoc.rokid.com/sdk tops out at 1.0.4 / 2026-06-29).
+      Already documented provisionally via binary-diff in this branch's
+      cxr-l/release-notes.md and cxr-l/api-reference.md -- no further action.)
+    client-m 1.2.2 (release; metadata lastUpdated 20260608030211 -- unchanged,
+      re-verified via fresh maven-metadata.xml fetch 2026-07-12)
     cxr-service-bridge 1.0 (release; metadata lastUpdated 20260522063622 --
-      unchanged since prior check, verified via raw maven-metadata.xml fetch)
+      unchanged, re-verified via fresh maven-metadata.xml fetch 2026-07-12)
   notes: |
+    RE-VERIFIED 2026-07-12: no new releases since 2026-07-10 check below.
     Public Maven for CXR SDK JARs/AARs. Direct browse path is
     https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/
     (the /repository/ path returns "not browseable" page; use /service/rest/repository/browse/
@@ -157,8 +172,9 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   notes: |
+    RE-VERIFIED 2026-07-12: no change since 2026-07-10 check below.
     VERIFIED LIVE 2026-07-10 (map). Still only 2 public repos: UXR-docs
     (out-of-scope spatial computing SDK) and glass2-docs (out-of-scope
     Glass 2 / older hardware). No in-scope Sprite/AR Glasses content.
@@ -168,8 +184,9 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   notes: |
+    RE-VERIFIED 2026-07-12: no change since 2026-07-10 check below.
     VERIFIED LIVE 2026-07-10 (map). Same repo set as before: native-system-docs,
     NextForum, mingutils, RokidMobileSDKiOSDemo, RokidMobileSDKAndroidDemo,
     CloudAppClient, blacksiren, DeepFaceLab, and others -- Speech/OpenVoice/
@@ -180,8 +197,9 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-10
+  last_checked: 2026-07-12
   notes: |
+    RE-VERIFIED 2026-07-12: no change since 2026-07-10 check below.
     VERIFIED LIVE 2026-07-10 (map). Map again returned an empty links array
     (0 URLs), consistent with the 2026-06-30 check. No actionable content.
     May have private repos not visible to this API key.
