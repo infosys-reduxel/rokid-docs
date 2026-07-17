@@ -130,6 +130,38 @@ Scout reads this file to know which upstream documentation sources to monitor. L
     specifically from this file's history; that framing did not originate
     from this registry's own notes. Flagging as newly-evidenced P2 as of
     today regardless of the disputed cycle count.
+    BARE-METAL P1 -- RETRIEVAL BREAKTHROUGH 2026-07-17 (corrected from an
+    earlier same-cycle false negative): a second attempt this cycle
+    confirmed real v1.0.0 body content for 眼镜端裸机开发 IS retrievable --
+    via the Firecrawl REST API called directly (curl, through the
+    required proxy) plus an executeJavascript click-through of the
+    doc's antd Tree nav (window.open patched to capture the target URL).
+    The "查看文档" link now resolves through https://t.rokid.com/fwgr4uj5
+    to a NEW custom.rokid.com workspace,
+    https://custom.rokid.com/prod/rokid_web/ff28c865a9634876be98cbc293588460/pc/cn/index.html
+    -- superseding the old 57e35cd3ae294d16b1b8fc8dcbb1b7c7-hosted page
+    this doc previously cited. This is a genuine site rebuild (matches
+    "重构文档"), not just a version-string bump. Confirmed 8 sub-pages:
+    简介, 快速开始, Sample工程与页面说明, 眼镜UI设计规范, 按键与佩戴折叠,
+    原始音频, 拍照, 录像, IMU与传感器. Only 3 map to existing local docs
+    (简介+快速开始 -> development-guide.md, 按键与佩戴折叠 ->
+    key-broadcasts.md, 原始音频 -> audio-recording.md); the other 4 --
+    Sample工程与页面说明, 眼镜UI设计规范, 拍照, 录像, IMU与传感器 -- have
+    NO local doc and are NEW P0 CANDIDATES for a future cycle. 按键与
+    佩戴折叠 also appears to have grown scope beyond the current
+    key-broadcasts.md (wear/fold-state broadcasts, triple-click
+    Bluetooth pairing, extra-long-press) -- may need a rename/scope
+    discussion rather than a straight refresh. Translation itself is
+    STILL BLOCKED, but for a different reason than reported earlier same
+    day: the `baoyu-translate` skill's SKILL.md is not installed in this
+    environment (only .baoyu-skills/baoyu-translate/EXTEND.md, the
+    glossary config, is present) -- a session/tooling setup gap, not a
+    content-availability gap. Raw Chinese source was staged in that
+    session's ephemeral scratchpad and intentionally not committed (repo
+    policy against committing untranslated upstream copies); it will
+    need to be re-fetched once the skill gap is fixed. See the
+    REFRESH-PENDING comments in cxr-baremetal/*.md for the corrected
+    per-file notes.
 
 - url: https://custom.rokid.com/prod/rokid_web/
   kind: release-notes
