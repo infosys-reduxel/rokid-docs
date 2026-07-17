@@ -4,6 +4,8 @@
 >
 > **Doc version: v0.0.1 (2026-03-01)**
 
+<!-- REFRESH-PENDING (2026-07-17): Upstream index at https://developerdoc.rokid.com/sdk now lists 眼镜端裸机开发 at v1.0.0 (updated 2026-06-05, "重构文档" + new sample project source), but the detailed guide body could not be retrieved this cycle. The doc site is a client-rendered SPA (React/webpack bundle served from static.rokidcdn.com) with no content in the server-rendered HTML shell; no Firecrawl/headless-browser tool was available to click through to the actual v1.0.0 pages, plain WebFetch/curl only return the empty shell, and direct fetches to static.rokidcdn.com are blocked by egress policy (403). Content below is UNCHANGED and still reflects v0.0.1 — do not treat it as v1.0.0. Do not bump the Doc version line above until real v1.0.0 body content is retrieved and translated. -->
+
 This page covers the system-function buttons on Rokid Glasses and how a bare-metal Android app intercepts them. See the [Bare-Metal Development Guide](./development-guide.md) for context and the list of system interactions you **cannot** override (long-press touchpad → AI module, double-click right button → back, top button → camera).
 
 ## System-function buttons on Rokid Glasses
