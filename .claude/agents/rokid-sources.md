@@ -14,15 +14,28 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   notes: <one line>
 ```
 
+## Process note (2026-07-24 Scout run)
+
+At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOMMITTED working-tree modification (git diff HEAD showed +107/-8 lines) that had bumped every source's `last_checked` to 2026-07-24 and added extremely detailed "RE-VERIFIED 2026-07-24" notes for all 8 sources -- BEFORE this Scout run made a single tool call. This Scout has no record of producing that content. Per the verified-upstream-or-abort rule, content not produced by an actual Firecrawl/WebFetch call *in this run* cannot be treated as freshly verified, regardless of how plausible it reads or how it got there (crashed/uncommitted prior attempt vs. something else -- origin was not determined and is out of scope for Scout to investigate further). That uncommitted draft was DISCARDED and is NOT reflected below. Everything below dated 2026-07-24 was produced by live Firecrawl/WebFetch calls actually made in this run; see the accompanying report to the Leader for full tool-call evidence. Flagging this discrepancy to the Leader as a process/data-integrity item worth investigating (e.g. was another Scout invocation started and abandoned without committing?).
+
 ## Sources
 
 - url: https://ar.rokid.com
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   last_known_version: (no CXR doc content hosted here anymore; see notes)
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- live `firecrawl map` of root,
+    limit 50, no cache; plus a direct scrape of /sdk): map returns the same
+    long-standing pattern -- Rokid Store OTT/game-app marketplace detail
+    pages (appId=...) plus a generic /doc link, no CXR-M/S/L content
+    directly hosted here. Direct scrape of https://ar.rokid.com/sdk
+    confirms it 301/redirects: sourceURL ar.rokid.com/sdk -> finalURL
+    https://open.rokid.com/ (statusCode 200, contentType text/html),
+    rendering the "Rokid Open Platform" / "AIUI: The Next Frontier"
+    homepage. No change from prior cycles.
     RE-VERIFIED 2026-07-21 (live `firecrawl map` of root, limit 500, plus
     scrape of /doc): same pattern as every check since 2026-07-10 -- Rokid
     Store app-catalog detail pages, generic /doc and /?lang=en links, no
@@ -52,8 +65,21 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   last_known_version: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- fresh `firecrawl map` +
+    direct scrapes of /sdk and /sprite, no cache): map returns 3 URLs
+    (root, /sdk, /sdk?lang=zh) -- unchanged shape. /sdk "SDK 选型速览"
+    comparison table + card badges read directly: CXR-L 公开 1.0.4
+    (更新于 2026.06.25), CXR-M 商务合作 1.1.0 (更新于 2026.04.01),
+    眼镜端裸机开发 公开 1.0.0 (更新于 2026.06.05) -- all three UNCHANGED
+    from the 2026-07-21 baseline. Cross-checked against Maven (see
+    maven.rokid.com entry): portal still lags Maven's client-l 1.1.0
+    tag by version-string (both now say 1.1.0, so actually caught up on
+    the number, though no official CXR-L 1.1.0 changelog prose was
+    found on this page -- the 1.1.0 badge appears to be the SAME 1.1.0
+    number already tracked locally via binary-diff in
+    cxr-l/release-notes.md, not a newer bump).
     RE-VERIFIED 2026-07-21 (fresh `firecrawl map` + scrape of /sdk and
     /sprite): CXR-L 1.0.4, CXR-M 1.1.0, 眼镜端裸机开发 1.0.0 -- all three
     UNCHANGED from 2026-07-18. Portal still lags Maven's client-l 1.1.0
@@ -92,6 +118,21 @@ Scout reads this file to know which upstream documentation sources to monitor. L
       scrape of the custom.rokid.com URL above, clicking through the
       in-page nav tree, or flag for human retrieval.)
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run): direct scrape of /sprite
+    (--only-main-content, live, no cache) re-diffed word-for-word against
+    yodaos/docs/sprite-overview.md: hardware spec table identical (SoC,
+    RAM/ROM, battery, camera, FOV, brightness, resolution all match) and
+    the FAQ section still shows the SAME 4 CXR-M/CXR-S Q&As (CXR-M
+    capabilities, CXR-M Android-only device support, CXR-S capabilities,
+    no developer-mode requirement for CXR-M-only apps) -- CONFIRMED NO
+    DRIFT, independently re-verified by this run (full scrape saved at
+    .firecrawl/developerdoc-sprite.json). Did not observe the "Rokid
+    Glasses3"/x-docs.rokid.com hardware card mentioned in prior cycles'
+    notes on this run's /sdk scrape -- NOT independently confirmed
+    present or absent this cycle (only --only-main-content markdown was
+    captured, not rawHtml, so a card that requires rawHtml/different
+    rendering could have been missed; do not treat its absence here as
+    evidence it was removed).
     RE-VERIFIED 2026-07-18 (fresh live fetches, no cache reuse throughout):
     SITE UI REBUILT since 2026-07-17: /sdk no longer uses the old 3-tab
     layout (the "middle_title_div--2D3AR" tab selectors used on 07-16/07-17
@@ -230,8 +271,52 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: release-notes
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run): root path
+    https://custom.rokid.com/prod/rokid_web/ STILL returns HTTP 415
+    Unsupported Media Type (confirmed live, contentType
+    application/octet-stream) -- unchanged.
+    `firecrawl map` of https://custom.rokid.com (limit 50) surfaced 4
+    distinct workspace hashes:
+    - 57e35cd3ae294d16b1b8fc8dcbb1b7c7 (CXR-M/CXR-S, in-scope): CONFIRMED
+      ALIVE AGAIN -- map returned real page titles ("Rokid Glasses 设备
+      连接与管理", "设备连接管理") with statusCode 200 on direct scrape,
+      REVERSING the 2026-06-30 baseline note that this hash returned
+      NoSuchKey. HOWEVER, this run's own direct scrapes of two of its
+      pages (--only-main-content, --wait-for up to 5000ms) rendered only
+      the antd-Tree-nav SPA shell ("版本 ... 文档", ~35 bytes), not the
+      article body -- so CXR-M/CXR-S body-content drift could NOT be
+      confirmed or denied by this run; treat as "could not verify body
+      content," not as "no drift."
+    - ff28c865a9634876be98cbc293588460 (bare-metal workspace -- a THIRD
+      hash not part of the registry's originally-tracked pair): CONFIRMED
+      ALIVE and its 简介 (intro) page's real article body WAS
+      successfully retrieved this run via a plain `firecrawl scrape
+      --wait-for 3000` (no click-through/actions needed for this specific
+      URL). Content: "Rokid Glasses 裸机开发简介", 版本1.0.0 -- matches
+      developerdoc.rokid.com/sdk's 眼镜端裸机开发 badge (1.0.0, 更新于
+      2026.06.05) exactly, no version bump. Confirmed document map: 简介,
+      快速开始, Sample工程与页面说明, 眼镜UI设计规范, 功能开发 (>按键与
+      佩戴折叠, 原始音频, 拍照, 录像, IMU与传感器). Sibling sub-pages
+      (everything except 简介) were NOT independently fetched this run --
+      their specific documentId/URL values are not exposed by `map` and
+      require in-page client-side navigation this run's scrape attempts
+      did not perform. Local repo maps: 简介+快速开始 -> development-
+      guide.md, 按键与佩戴折叠 -> key-broadcasts.md, 原始音频 ->
+      audio-recording.md (all exist). Sample工程与页面说明, 眼镜UI设计
+      规范, 拍照, 录像, IMU与传感器 have NO local doc -- P0 (see report).
+    - c88be4bcde4c42c0b8b53409e1fa1701: confirmed present in the map,
+      content is entirely UXR2.0/UXR3.0/JSAR (spatial-computing SDKs) --
+      OUT OF SCOPE per CLAUDE.md, correctly NOT scraped further.
+    - 323825adf4914c21be8a0d5fe7b8a9e5: generic multi-product nav page
+      mixing Rokid Glasses (in-scope) with YodaOS-Master/AR Lite/AR
+      Studio (out of scope) -- not clicked through further.
+    - 84feb39f8ef141b0ad0326f902ab881f (CXR-L-specific hash): searched
+      for directly by hash and by "CXR-L" keyword this run -- NOT found
+      in either search's results. Could not confirm current live status
+      one way or the other this cycle; treat as "could not verify," not
+      as confirmed-resolved.
     RE-VERIFIED 2026-07-21: `firecrawl map` (limit 500, 29 URLs) and 5 scrapes
     across the 3 known workspace hashes -- device-connection, CXR-S intro,
     CXR-L intro, and the ff28c865 bare-metal set all match already-documented
@@ -395,8 +480,19 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run): direct scrape
+    (--only-main-content --json) confirms sourceURL developer.rokid.com
+    redirects: finalURL https://open.rokid.com/ (statusCode 200,
+    cacheState hit), rendering the "Rokid Open Platform" / "AIUI: The
+    Next Frontier" homepage. Rokid Glasses hardware card links Docs to
+    open.rokid.com/sdk?lang=en; YodaOS-Master, Rokid AR Lite, Rokid AR
+    Studio, and AIUI Studio cards present and explicitly skipped as out
+    of scope. Did NOT re-run the legacy-GitBook `firecrawl map` this
+    cycle (time-boxed) -- no evidence of change, but that specific check
+    was not repeated today; carry forward the 2026-07-21 map finding as
+    unconfirmed-but-presumed-unchanged rather than re-verified.
     RE-VERIFIED 2026-07-21 (fresh `firecrawl map`): same 15 legacy GitBook
     paths as prior cycles (rokidos-linux-docs, rokid-homebase-docs, skill/,
     2-RokidDocument, etc.) -- legacy Rokid Skill/Voice smart-speaker
@@ -437,8 +533,30 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   last_known_version: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- WebFetch of maven-metadata.xml
+    for all 3 artifacts; narrow-manifest exception per Scout policy):
+    client-l: release/latest STILL 1.1.0. `lastUpdated` MOVED to
+    20260718072455 (2026-07-18) from the previously-recorded
+    20260702091606. The full <versions> list still tops out at 1.1.0,
+    with a 1.1.X-SNAPSHOT entry also present -- most consistent with a
+    SNAPSHOT rebuild on the 1.1.x line, not a new tagged release. This
+    run did NOT independently verify (via .aar Last-Modified/size/hash
+    diff) whether the 1.1.0 release artifact itself changed -- flagging
+    as a WATCH item, not confirmed-benign and not a confirmed P1.
+    client-m: release/latest STILL 1.2.2, lastUpdated STILL
+    20260608030211 -- fully unchanged, no ambiguity.
+    cxr-service-bridge: release/latest STILL 1.0. `lastUpdated` MOVED to
+    20260723084719 (2026-07-23, the day before this check) from a
+    previously-recorded 20260715121541. Same caveat as client-l: this
+    run did not pull the .aar browse-listing to rule out a real content
+    change vs. checksum/re-indexing noise -- flagging as a WATCH item
+    pending independent confirmation next cycle, not asserting either
+    way. This directly underlies the CXR-S wire-protocol layer
+    (cxr-s/design-spec.md pins cxr-service-bridge:1.0) and is bundled
+    into client-l 1.1.0 per cxr-l/release-notes.md -- worth prioritizing
+    a real diff next cycle given its centrality.
     RE-VERIFIED 2026-07-21 (WebFetch of maven-metadata.xml for all 3
     artifacts): client-l release/latest still 1.1.0, lastUpdated
     20260702091606 -- unchanged, already fully documented via binary-diff
@@ -478,6 +596,13 @@ Scout reads this file to know which upstream documentation sources to monitor. L
       NOT ACTIONABLE (explicitly checked and ruled out this run, not just
       assumed).
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run): direct browse path
+    https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/
+    not re-checked this cycle (WebFetch of maven-metadata.xml was used
+    instead, per the narrow-manifest exception). See last_known_version
+    above for the two lastUpdated-timestamp WATCH items opened today
+    (client-l 07-18, cxr-service-bridge 07-23) -- neither is confirmed
+    as a real content change nor ruled out as noise by this run.
     RE-VERIFIED 2026-07-16 (Firecrawl scrape of maven-metadata.xml for
     all three artifacts, plus a browse-listing scrape of
     cxr-service-bridge/1.0/ to investigate the lastUpdated jump). No new
@@ -500,8 +625,15 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- fresh live map, limit 50, no
+    cache): still exactly 2 public repos, UXR-docs (out-of-scope spatial-
+    computing SDK) and glass2-docs (out-of-scope Glass 2/older hardware,
+    many old GitHub Issues threads e.g. #177, #53, #80, #201, #168,
+    #213, #84, #44, #224, #162, #98, #204, #176, #63, #83, #209, #66,
+    #174, #88, #57, #35). No in-scope Sprite/AR Glasses/CXR content. No
+    new repos, no change.
     RE-VERIFIED 2026-07-21 (fresh live map): still exactly 2 public repos,
     UXR-docs and glass2-docs, both out of scope. No change.
     RE-VERIFIED 2026-07-18 (fresh live map, limit 50, no cache): still
@@ -521,8 +653,19 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- fresh live map, limit 50, no
+    cache): 32 links returned; same long-standing repo set (NextForum,
+    mingutils, RokidMobileSDKiOS/AndroidDemo, CloudAppClient,
+    blacksiren, RokidVoiceAIDemo, better_jieba, community, NewsDemo,
+    docs, skill-java, UXR-docs [out of scope], rokidos-cli,
+    node-webworker, RokidSDK-Swift, rokidos-www, ELMo-chinese,
+    glass-docs [out of scope, legacy 2020-era Glass project], tts-demo,
+    mapi-demo-outer, native-system-docs, speech-python-demo,
+    node-http-bypass). No NEW repositories. All content remains legacy
+    voice/speech/skill-platform or pre-Sprite Glass, out of scope. No
+    in-scope Sprite/CXR content found. No action.
     RE-VERIFIED 2026-07-21 (fresh live map): same legacy Skill/Voice/Glass-1-2
     era repo set as prior cycles, all out of scope. No in-scope content, no
     change.
@@ -555,8 +698,12 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-07-21
+  last_checked: 2026-07-24
   notes: |
+    RE-VERIFIED 2026-07-24 (this Scout run -- fresh live map, limit 50, no
+    cache): still an empty links array (0 URLs), consistent with every
+    check since 2026-06-30. No actionable content. May have private
+    repos not visible to this API key.
     RE-VERIFIED 2026-07-21 (fresh live map): still an empty links array (0
     URLs), consistent with every check since 2026-06-30. No action.
     RE-VERIFIED 2026-07-18 (fresh live map, limit 50, no cache): still an
@@ -600,6 +747,20 @@ Scout reads this file to know which upstream documentation sources to monitor. L
     indirectly via live scrapes of developer.rokid.com and ar.rokid.com,
     both of which link Rokid Glasses docs to open.rokid.com/sdk?lang=en.
   notes: |
+    STILL PENDING 2026-07-24 -- NOT independently registered or crawled
+    as a source this run, per the no-silent-extension rule (no
+    AskUserQuestion available in this unattended cycle). Its role as the
+    landing target for both ar.rokid.com and developer.rokid.com was
+    RE-CORROBORATED today via this run's own direct scrapes (both
+    redirect to https://open.rokid.com/, confirmed via sourceURL/finalURL
+    metadata). As a one-off spot check (not a registered-source crawl),
+    this run also scraped https://open.rokid.com/sprite?lang=zh directly
+    and confirmed its content matches developerdoc.rokid.com/sprite and
+    yodaos/docs/sprite-overview.md exactly (same 4 FAQ Q&As, same
+    hardware spec table) -- consistent with the 2026-06-28 finding.
+    Recommend the user decide on registering open.rokid.com given it has
+    now been open for many cycles and both redirects/mirrors continue to
+    point to it.
     STILL PENDING 2026-07-21 -- not scraped, per the no-silent-extension
     rule; unchanged since 07-18. Recommend the user decide on registering
     it, and on x-docs.rokid.com/docs/ below, given both have now been open
