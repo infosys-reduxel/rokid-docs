@@ -18,6 +18,8 @@ Scout reads this file to know which upstream documentation sources to monitor. L
 
 At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOMMITTED working-tree modification (git diff HEAD showed +107/-8 lines) that had bumped every source's `last_checked` to 2026-07-24 and added extremely detailed "RE-VERIFIED 2026-07-24" notes for all 8 sources -- BEFORE this Scout run made a single tool call. This Scout has no record of producing that content. Per the verified-upstream-or-abort rule, content not produced by an actual Firecrawl/WebFetch call *in this run* cannot be treated as freshly verified, regardless of how plausible it reads or how it got there (crashed/uncommitted prior attempt vs. something else -- origin was not determined and is out of scope for Scout to investigate further). That uncommitted draft was DISCARDED and is NOT reflected below. Everything below dated 2026-07-24 was produced by live Firecrawl/WebFetch calls actually made in this run; see the accompanying report to the Leader for full tool-call evidence. Flagging this discrepancy to the Leader as a process/data-integrity item worth investigating (e.g. was another Scout invocation started and abandoned without committing?).
 
+**Root cause identified (orchestrator note, added after commit `7a9723756`):** not tampering. This cycle's orchestration accidentally spawned three concurrent Scout runs against this same branch (a coordination bug on the orchestrator's part, not a Scout error) -- the "mystery" uncommitted draft this run discarded was legitimate work from a sibling Scout run in the same cycle, and the commit that later appeared under this filename (`7a9723756`) landed via a file-write race between two sibling Scouts: its commit *message* summarizes one sibling's findings (including a browse-listing byte/timestamp check that ruled the two Maven `lastUpdated` bumps below out as re-indexing noise), but the file *content* that actually got committed is this run's more cautious, unconfirmed "WATCH item" version, because this run's write landed last. Net effect: no fabricated or inaccurate content reached the repo either way -- one sibling did strictly more verification (an actual browse-listing scrape) than this run did, and that verification is restored into `last_known_version` below in a follow-up commit so it isn't lost. Recommend the orchestrator avoid spawning multiple concurrent Scout instances against the same branch in one cycle.
+
 ## Sources
 
 - url: https://ar.rokid.com
@@ -543,20 +545,27 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
     with a 1.1.X-SNAPSHOT entry also present -- most consistent with a
     SNAPSHOT rebuild on the 1.1.x line, not a new tagged release. This
     run did NOT independently verify (via .aar Last-Modified/size/hash
-    diff) whether the 1.1.0 release artifact itself changed -- flagging
-    as a WATCH item, not confirmed-benign and not a confirmed P1.
-    client-m: release/latest STILL 1.2.2, lastUpdated STILL
-    20260608030211 -- fully unchanged, no ambiguity.
+    diff) whether the 1.1.0 release artifact itself changed -- flagged
+    as a WATCH item at the time.
     cxr-service-bridge: release/latest STILL 1.0. `lastUpdated` MOVED to
     20260723084719 (2026-07-23, the day before this check) from a
     previously-recorded 20260715121541. Same caveat as client-l: this
-    run did not pull the .aar browse-listing to rule out a real content
-    change vs. checksum/re-indexing noise -- flagging as a WATCH item
-    pending independent confirmation next cycle, not asserting either
-    way. This directly underlies the CXR-S wire-protocol layer
-    (cxr-s/design-spec.md pins cxr-service-bridge:1.0) and is bundled
-    into client-l 1.1.0 per cxr-l/release-notes.md -- worth prioritizing
-    a real diff next cycle given its centrality.
+    run did not pull the .aar browse-listing itself -- flagged as a
+    WATCH item at the time.
+    BOTH WATCH ITEMS RESOLVED same-day by a sibling Scout run in this
+    cycle (see Process note above re: 3 concurrent runs): a browse-listing
+    scrape of https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/client-l/1.1.0/
+    confirms client-l-1.1.0.aar is byte-identical to its previously-known
+    state (Last Modified Thu Jul 02 10:18:18 Z 2026, 1,286,574 bytes) --
+    only .sha1 (Jul 08) / .sha256 (Jul 11) checksum sidecars carry newer
+    timestamps. Likewise for cxr-service-bridge-1.0.aar (Last Modified
+    Thu Dec 25 12:54:20 Z 2025, 1,076,548 bytes, unchanged). Both
+    `lastUpdated` bumps are confirmed repository re-indexing/checksum-
+    regeneration noise, consistent with the same pattern already
+    established for cxr-service-bridge on 2026-07-16/07-21 -- NOT real
+    artifact changes, NOT actionable. No P1.
+    client-m: release/latest STILL 1.2.2, lastUpdated STILL
+    20260608030211 -- fully unchanged, no ambiguity.
     RE-VERIFIED 2026-07-21 (WebFetch of maven-metadata.xml for all 3
     artifacts): client-l release/latest still 1.1.0, lastUpdated
     20260702091606 -- unchanged, already fully documented via binary-diff
@@ -601,8 +610,9 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
     not re-checked this cycle (WebFetch of maven-metadata.xml was used
     instead, per the narrow-manifest exception). See last_known_version
     above for the two lastUpdated-timestamp WATCH items opened today
-    (client-l 07-18, cxr-service-bridge 07-23) -- neither is confirmed
-    as a real content change nor ruled out as noise by this run.
+    (client-l 07-18, cxr-service-bridge 07-23) -- both since RESOLVED by a
+    sibling Scout run's browse-listing check the same day: confirmed
+    re-indexing/checksum noise, not real artifact changes.
     RE-VERIFIED 2026-07-16 (Firecrawl scrape of maven-metadata.xml for
     all three artifacts, plus a browse-listing scrape of
     cxr-service-bridge/1.0/ to investigate the lastUpdated jump). No new
