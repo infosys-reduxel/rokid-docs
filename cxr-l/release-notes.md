@@ -1,8 +1,36 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet. v1.1.0 entry sourced from binary diff of Maven AARs (2026-07-26); no official changelog has been published for this release either._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.1.0 — uploaded 2026-07-02 (no changelog published)
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.4` and `client-l:1.1.0` AARs (downloaded 2026-07-26 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Live `maven-metadata.xml` confirms `<release>1.1.0</release>` with `<lastUpdated>20260718072455</lastUpdated>` (2026-07-18 07:24:55 UTC); the AAR file timestamp itself is 2026-07-02. The developer portal (`https://developerdoc.rokid.com/sdk`) still documents CXR-L at v1.0.4 and has not published a changelog for v1.1.0 as of 2026-07-26. AAR size: 1,286,574 bytes vs 70,543 bytes for v1.0.4 (+1,724%) — see below for what accounts for the jump.
+
+**Theme: new coroutine-based `CxrSession` API added alongside the existing `CXRLink`/`ExternalAppClient` API; native bridge libraries now bundled directly in the AAR.**
+
+This is the largest change to `client-l` since the v1.0.1 initial release. Two structural changes were confirmed by the binary diff:
+
+1. **New `com.rokid.cxr.session` package (94 new `.class` files).** All classes present in the v1.0.4 `classes.jar` (66 total, spanning `com.rokid.cxr.link.*` and `com.rokid.sprite.aiapp.externalapp.*`) are still present byte-for-byte in v1.1.0's class list — this is confirmed additive, not a replacement. See [api-reference.md](api-reference.md#cxrsession-api-v110-provisional) for the reconstructed API surface of the new package.
+2. **`CXRServiceBridge`, `CXRSocketProtocol`, and `Caps` classes (package `com.rokid.cxr`), plus five native libraries for `arm64-v8a` and `armeabi-v7a` (`libcaps.so`, `libcxr-bridge-jni.so`, `libcxr-sock-proto-jni.so`, `libflora-cli.so`, `libmutils.so`), are now bundled directly inside the `client-l` AAR** (`aar/jni/<abi>/*.so`, not present at all in v1.0.4). Correspondingly, the v1.1.0 POM **no longer declares** the `com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105` compile dependency that v1.0.4 had — the bridge/protocol/Caps layer that CXR-S normally provides transitively appears to have been inlined into `client-l` directly instead. See [cxr-s/data-structure.md](../cxr-s/data-structure.md) for the general Caps wire format.
+
+**Dependency changes vs v1.0.4** (from POM diff):
+
+| Dependency | v1.0.4 | v1.1.0 |
+|---|---|---|
+| `com.rokid.cxr:cxr-service-bridge` | `1.0-20260522.063600-105` (`compile`) | *(removed — see above)* |
+| `org.jetbrains.kotlin:kotlin-stdlib` | `1.6.0` (`runtime`) | `1.6.0` (`runtime`, unchanged) |
+| `com.google.code.gson:gson` | `2.10.1` (`runtime`) | `2.10.1` (`runtime`, unchanged) |
+| `org.jetbrains.kotlinx:kotlinx-coroutines-android` | *(none)* | `1.6.4` (`runtime`, new) |
+
+The new `kotlinx-coroutines-android` dependency lines up with the new `CxrSession.getStateFlow(): StateFlow<SessionState>` API exposed in the session package (confirmed via `javap` on the compiled class — see API reference).
+
+**`AndroidManifest.xml` and `R.txt`:** byte-for-byte identical to v1.0.4. No manifest-level changes.
+
+**No classes removed.** Every v1.0.4 class name is still present in v1.1.0 (name-level diff only — no bytecode-level diff was performed on the pre-existing classes, so undocumented internal behavior changes to `CXRLink`/`ExternalAppClient`, if any, cannot be ruled out).
+
+> Method-level signatures for the new `com.rokid.cxr.session` package were reconstructed with `javap -p` directly against the v1.1.0 `classes.jar` (not decompiled/guessed) — see [api-reference.md](api-reference.md#cxrsession-api-v110-provisional) for the full inventory. No behavioral testing was performed against real hardware; do not assume undocumented behavior (retry semantics, thread affinity, exception types, default timeout values) until Rokid publishes official documentation.
 
 ## v1.0.4 — published 2026-06-18
 
