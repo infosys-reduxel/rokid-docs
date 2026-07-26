@@ -346,12 +346,15 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
-| **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.1.0` (uploaded 2026-07-02; confirmed live via `maven-metadata.xml`, no official changelog published as of 2026-07-26 — see [release notes](cxr-l/release-notes.md#v110--uploaded-2026-07-02-no-changelog-published)) |
+| **Size** | 1,286,574 bytes (1.1.0 AAR); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
-| **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
+| **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 onward |
 | **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
+| **Dependencies (1.1.0)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); `cxr-service-bridge` dependency dropped — its classes are now bundled directly in the AAR |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
+
+> **v1.1.0 (provisional, binary-diff-derived):** adds a new coroutine-based `com.rokid.cxr.session` package (`CxrSessionManager` / `CxrSession`) alongside the existing `CXRLink`/`ExternalAppClient` API below, which is unchanged. See [API reference — CxrSession API](cxr-l/api-reference.md#cxrsession-api-v110-provisional) for the reconstructed surface; no official Rokid changelog exists for this release yet.
 
 **Entry Point:**
 ```kotlin
