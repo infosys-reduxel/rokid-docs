@@ -10,7 +10,7 @@ YodaOS-Sprite runs on **Rokid Glasses** and **Bolon AI Glasses** (OEM variants s
 
 ## Device Specifications — Rokid Glasses
 
-> Source: https://ar.rokid.com/sprite ("View specifications" panel), fetched 2026-06-03.
+> Source: https://developerdoc.rokid.com/sprite ("View specifications" panel; content confirmed byte-identical to the table below, re-verified 2026-07-26). Originally cited as https://ar.rokid.com/sprite (fetched 2026-06-03), but that URL now redirects to a generic homepage — citation updated to the canonical portal since the underlying spec content is unchanged.
 
 | Property | Value |
 |----------|-------|
