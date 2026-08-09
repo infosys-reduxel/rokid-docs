@@ -75,7 +75,7 @@ See: [CXR-S SDK overview](../../cxr-s/brief.md)
 
 ## FAQ
 
-> This FAQ was updated from the upstream `developerdoc.rokid.com/sprite` page (fetched 2026-06-08). The upstream page focuses on CXR-L and bare-metal development; the earlier CXR-M/CXR-S Q&As have been replaced by the content below. Maven `client-l` is at 1.0.4 as of 2026-06-25; the portal FAQ has not yet been updated to reflect this.
+> This FAQ was updated from the upstream `developerdoc.rokid.com/sprite` page (fetched 2026-06-08). The upstream page focuses on CXR-L and bare-metal development; the earlier CXR-M/CXR-S Q&As have been replaced by the content below. Maven `client-l` is at 1.1.0 as of 2026-08-09 (uploaded to Maven 2026-07-02); the portal FAQ and changelog have not yet been updated to reflect this — see [CXR-L release notes](../../cxr-l/release-notes.md) for what's known about v1.1.0 so far (binary-diff only, provisional).
 
 **Q: What are the main capabilities of the CXR-L SDK?**
 
@@ -91,7 +91,7 @@ See: [CXR-S SDK overview](../../cxr-s/brief.md)
 
 **Q: What are the environment prerequisites for CXR-L SDK development?**
 
-**A:** A real device with a working Bluetooth environment is required, along with the Rokid AI App or Hi Rokid (international) installed on the phone, with `requestAuthorization` completed to obtain a token. For Android, integrate `com.rokid.cxr:client-l:1.0.4` (`minSdk 31+`). For iOS, use CocoaPods `RGCxrClient` — the current iOS chapter in the documentation corresponds to v1.0.1; alignment with the latest Android version follows the timeline of each platform chapter. Refer to RenewCXRLSample (mobile) and CXRSWithCXRLSample (glasses CustomApp joint-debugging) samples and the documentation OSS archive.
+**A:** A real device with a working Bluetooth environment is required, along with the Rokid AI App or Hi Rokid (international) installed on the phone, with `requestAuthorization` completed to obtain a token. For Android, integrate `com.rokid.cxr:client-l:1.1.0` (`minSdk 31+`; Maven latest as of 2026-08-09 — see [CXR-L release notes](../../cxr-l/release-notes.md) for the v1.1.0 changes, which are provisional pending an official Rokid changelog). For iOS, use CocoaPods `RGCxrClient` — the current iOS chapter in the documentation corresponds to v1.0.1; alignment with the latest Android version follows the timeline of each platform chapter. Refer to RenewCXRLSample (mobile) and CXRSWithCXRLSample (glasses CustomApp joint-debugging) samples and the documentation OSS archive.
 
 **Q: How are custom commands (CustomCmd) used? What are the restrictions?**
 
@@ -113,7 +113,8 @@ For additional questions, see the [Rokid Developer Forum](https://forum.rokid.co
 
 ## Notes
 
-- **Source**: https://developerdoc.rokid.com/sprite — the canonical developer portal for YodaOS-Sprite (loaded via iframe from `https://ar.rokid.com/sprite?lang=zh`). Initially captured on 2026-05-29; device specifications table added 2026-06-03; optical display specs (FOV, brightness, resolution, optics design) added 2026-06-04; FAQ section refreshed 2026-06-08. FAQ Q4 updated 2026-06-27 to pin `client-l:1.0.4` (Maven latest as of 2026-06-25; portal FAQ still shows 1.0.3).
+- **Source**: https://developerdoc.rokid.com/sprite — the canonical developer portal for YodaOS-Sprite (loaded via iframe from `https://ar.rokid.com/sprite?lang=zh`). Initially captured on 2026-05-29; device specifications table added 2026-06-03; optical display specs (FOV, brightness, resolution, optics design) added 2026-06-04; FAQ section refreshed 2026-06-08. FAQ Q4 updated 2026-06-27 to pin `client-l:1.0.4` (Maven latest as of 2026-06-25; portal FAQ still shows 1.0.3). Re-verified 2026-08-09 against `open.rokid.com/sprite?lang=zh` (the new canonical portal surface, see [Notes](#notes) below) — hardware spec table and page content are unchanged; FAQ Q4 updated again to pin `client-l:1.1.0` (Maven latest as of 2026-08-09; portal changelog still shows 1.0.4).
+- **Canonical portal migration**: as of 2026-06-28, `ar.rokid.com/sdk` redirects developers to `open.rokid.com/sdk` / `open.rokid.com/sprite` rather than rendering the `developerdoc.rokid.com` iframe content directly. `open.rokid.com/sprite?lang=zh` content is byte-for-byte identical to `developerdoc.rokid.com/sprite` as of 2026-08-09 (same hardware spec table, same FAQ). `developerdoc.rokid.com` still appears to be the underlying iframe-serve layer.
 - **Scope**: This document covers the **YodaOS-Sprite** tab only — the OS that runs on Rokid Glasses and Rokid AI Glasses. A separate "YodaOS-Master" tab exists on the upstream page (covering Station 2 / Station Pro / AR Lite / AR Studio) but is out of scope for this repository.
 - **Known TODO links**:
   - "View specs" button under *About YodaOS-Sprite* — destination not captured; links to a hardware-spec modal on the portal SPA.
