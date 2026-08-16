@@ -3,6 +3,8 @@
 > Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
 >
 > **Doc version: v0.0.1 (2026-03-01)**
+>
+> **Stale version notice (2026-08-16).** Upstream bare-metal docs now show v1.0.0 (updated 2026-06-05); see the notice in the [Bare-Metal Development Guide](./development-guide.md#rokid-glasses-bare-metal-development-guide) for details. Content on this page has not been re-verified against v1.0.0 — the new workspace's document body did not render in Firecrawl scrapes.
 
 This page covers 8-channel microphone capture on Rokid Glasses from a bare-metal Android app. For the broader context (dev environment, ADB enablement, reserved system gestures), see the [Bare-Metal Development Guide](./development-guide.md). The reference implementation reuses the `KeyReceiver` from [Button Broadcasts](./key-broadcasts.md) to start and stop recording on a side-button click.
 

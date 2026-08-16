@@ -386,7 +386,7 @@ For apps that run directly on the glasses **without any CXR SDK** -- plain, side
 | **Target** | YodaOS-Sprite (Android 12, Go-edition) |
 | **Display viewport** | 480 × 640 px |
 | **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
-| **Doc version** | v0.0.1 (2026-03-01) |
+| **Doc version** | v0.0.1 (2026-03-01); upstream now shows v1.0.0 (2026-06-05) — content not yet re-verified, see [development-guide.md](cxr-baremetal/development-guide.md) for details |
 
 YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
 
