@@ -1,17 +1,18 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. v1.1.0/v1.1.1 entries (new `com.rokid.cxr.session` package) are reconstructed from `javap` bytecode inspection of the 1.1.0 and 1.1.1 AARs (2026-08-16), cross-referenced against the AAR's own `proguard.txt` consumer keep-rules, which explicitly enumerate the intended public API; no official Rokid changelog has been published for either release. See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
-CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
+CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service. As of v1.1.0, CXR-L additionally exposes a higher-level Kotlin coroutine/`StateFlow`-based `CxrSession` API (see [CxrSession API](#cxrsession-api-v110-provisional) below) layered on top of the original `CXRLink` entry point, which remains unchanged.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.1.1` (2026-08-15). The public changelog at `https://developerdoc.rokid.com/sdk` (mirrored at `https://open.rokid.com/sdk`) still lists CXR-L at **1.0.4** as of 2026-08-16 — Maven leads the documented portal by two minor releases.
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
 - **Dependencies (1.0.3–1.0.4)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
+- **Dependencies (1.1.1)**: `kotlin-stdlib:1.9.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260715.121510-107`, `kotlinx-coroutines-android:1.9.0` (new — backs the `CxrSession` `StateFlow` API)
 - **Companion app requirement (1.0.3+)**: Rokid AI App (domestic) ≥ 1.7.14
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
@@ -338,6 +339,154 @@ package com.rokid.sprite.aiapp.externalapp.auth
 data class AuthorizationResult(val token: String)
 ```
 
+## CxrSession API (v1.1.0+, provisional)
+
+> **Provisional — reconstructed from `javap` bytecode inspection of `client-l:1.1.0`/`1.1.1`, cross-referenced against the AAR's `proguard.txt` consumer keep-rules (which explicitly mark this package as "公开 SDK API" / "public SDK API" to preserve across obfuscation).** No official Rokid changelog or documentation page has been published for this API as of 2026-08-16. Method bodies are not shown (interfaces/data classes only) — parameter semantics below are inferred from names and types, not verified against real device behavior. Treat value ranges, thread-safety, and exact timing as unconfirmed until an official doc appears.
+>
+> This is a **new, additive** API surface introduced in v1.1.0 and retained unchanged in v1.1.1. It does not replace `CXRLink` — both entry points coexist in the same AAR (`com.rokid.cxr.link.CXRLink` is byte-identical to v1.0.4). `CxrSession` appears to be a coroutine/`Flow`-idiomatic rewrite of the same underlying session concepts (`CUSTOM_VIEW`/`CUSTOM_APP`, connect/close, audio/photo/custom-command), returning a typed `SessionResult<T>` wrapper instead of `Boolean` and callback-registration methods instead of single setters.
+
+### CxrSessionManager
+
+Entry point for authorization and session creation.
+
+```kotlin
+package com.rokid.cxr.session
+
+interface CxrSessionManager {
+    companion object Companion  // resolution mechanism (e.g. a static `getInstance()`) not captured by bytecode inspection
+
+    fun create(config: SessionConfig): CxrSession
+    fun getSession(): CxrSession?
+    fun requestAuthorization(activity: Activity, permissions: List<GlassPermission>, callback: (AuthResult) -> Unit)
+    fun parseAuthorizationResult(resultCode: Int, data: Intent): AuthResult
+    fun isRokidAppInstalled(context: Context): Boolean
+    fun checkRokidAppCompatibility(context: Context): RokidAppStatus
+    fun isGlassesBtConnected(): Boolean
+}
+```
+
+### CxrSession
+
+```kotlin
+package com.rokid.cxr.session
+
+interface CxrSession {
+    val state: SessionState
+    val stateFlow: StateFlow<SessionState>
+    val config: SessionConfig
+
+    fun connect(token: String)
+    fun close()
+
+    fun startAudioStream(): SessionResult<Unit>
+    fun stopAudioStream(): SessionResult<Unit>
+    fun customViewUpdate(data: String): SessionResult<Unit>
+    fun takePhoto(width: Int, height: Int, quality: Int): SessionResult<Unit>
+    fun sendCustomCmd(cmd: String, caps: Caps, data: ByteArray): SessionResult<Unit>
+    fun setGlassBrightness(level: Int): SessionResult<Unit>
+    fun setGlassVolume(level: Int): SessionResult<Unit>
+    fun queryGlassesInfo(): SessionResult<GlassesInfo>
+
+    fun addLifecycleCallback(cb: ISessionLifecycleCbk)
+    fun removeLifecycleCallback(cb: ISessionLifecycleCbk)
+    fun addAudioCallback(cb: IAudioCallback)
+    fun removeAudioCallback(cb: IAudioCallback)
+    fun addImageCallback(cb: IImageCallback)
+    fun removeImageCallback(cb: IImageCallback)
+    fun addCustomCmdCallback(cb: ICustomCmdSessionCallback)
+    fun removeCustomCmdCallback(cb: ICustomCmdSessionCallback)
+    fun addGlassesEventListener(cb: IGlassesEventListener)
+    fun removeGlassesEventListener(cb: IGlassesEventListener)
+}
+```
+
+Notable differences from `CXRLink`: session state is observable both synchronously (`state`) and reactively (`stateFlow: StateFlow<SessionState>`); every mutating call returns a typed `SessionResult<T>` rather than `Boolean`; callback registration is add/remove (multi-listener) rather than single-setter; `sendCustomCmd` takes a `Caps` object plus a raw `ByteArray` in the same call, where `CXRLink.sendCustomCmd` only appears in the older API as documented informally in the [Sprite FAQ](../yodaos/docs/sprite-overview.md).
+
+### SessionConfig
+
+```kotlin
+package com.rokid.cxr.session
+
+data class SessionConfig(
+    val sessionType: SessionType,               // CUSTOM_VIEW | CUSTOM_APP
+    val glassesPackageName: String?,
+    val aiInterceptMode: AiInterceptMode,        // ALLOW_WITH_PAUSE | BLOCK_AI
+    val terminatingGracePeriodMs: Long,
+    val timeouts: SessionTimeouts,
+    val viewData: String?,
+    val viewIconData: String?,
+    val glassesActivityName: String?,
+    val glassesApkPath: String?
+)
+
+data class SessionTimeouts(
+    val connectTimeoutMs: Long = /* default not captured */ 0,
+    val takePhotoTimeoutMs: Long = /* default not captured */ 0,
+    val customCmdTimeoutMs: Long = /* default not captured */ 0
+)
+```
+
+> The zero-arg `SessionTimeouts()` constructor exists (implying built-in defaults), but the actual default millisecond values are baked into the AAR's bytecode as constants not surfaced by `javap`'s signature-only output — do not assume 0; consult official docs when published before relying on defaults.
+
+### Enums and result types
+
+| Type | Values / shape |
+|------|-----------------|
+| `SessionType` | `CUSTOM_VIEW`, `CUSTOM_APP` |
+| `SessionState` | `Idle`, `Starting`, `Started`, `Paused`, `Terminating` |
+| `AiInterceptMode` | `ALLOW_WITH_PAUSE`, `BLOCK_AI` |
+| `CloseReason` | `USER_CLOSED`, `CONNECT_FAILED`, `GLASSES_EXIT`, `LINK_LOST`, `CHAIN_TORN`, `FATAL_ERROR` |
+| `PausedReason` | `AI_ASSIST`, `BT_DISCONNECTED` |
+| `TerminatingReason` | `GLASSES_APP_EXIT`, `GLASSES_APP_CRASH`, `GLASSES_RESOURCE_RECLAIMED`, `LINK_CHAIN_TORN`, `OTHER` |
+| `GlassPermission` | `CAMERA`, `MICROPHONE`, `MEDIA`, `DEVICE_MANAGE` |
+| `SessionErrorCode` | 28 values incl. `OK`, `NOT_AUTHENTICATED`, `TOKEN_EXPIRED`, `ROKID_APP_NOT_INSTALLED`, `ROKID_APP_VERSION_LOW`, `LINK_NOT_READY`, `BT_NOT_CONNECTED`, `LINK_LOST`, `LINK_TIMEOUT`, `SESSION_NOT_STARTED`, `SESSION_TERMINATING`, `SESSION_ALREADY_EXISTS`, `CONNECT_FAILED`, `SCENE_OPEN_FAILED`, `RESOURCE_PREPARE_FAILED`, `SESSION_PAUSED`, `DATA_NOT_READY`, `INVALID_ARGUMENT`, `OPERATION_IN_PROGRESS`, `OPERATION_CANCELLED`, `GLASSES_SIGNAL_TIMEOUT`, `GLASSES_APP_NOT_FOUND`, `GLASSES_APP_INSTALL_FAILED`, `GLASSES_MEMORY_PRESSURE`, `GLASSES_CAMERA_ERROR`, `GLASSES_AUDIO_ERROR`, `INTERNAL_ERROR`, `UNKNOWN`. Each value exposes `.code: Int` and `.message: String`. |
+| `SessionResult<T>` | `data class SessionResult<T>(val code: SessionErrorCode, val data: T?, val message: String?)` with derived `isSuccess: Boolean` |
+| `AuthResult` | `data class AuthResult(val isSuccess: Boolean, val token: String?, val errorCode: SessionErrorCode?, val message: String?)` |
+| `GlassesInfo` | `data class GlassesInfo(val osVersion: String, val batteryPercent: Int, val freeMemoryMb: Long, val isCharging: Boolean, val displayWidth: Int, val displayHeight: Int, val screenOn: Boolean)` — the `CxrSession`-era counterpart to the older `CxrDefs`/`GlassInfo` struct; field sets differ (this one adds `freeMemoryMb`/`displayWidth`/`displayHeight`/`screenOn`, drops `deviceName`/`sn`/`wearingStatus`). |
+| `RokidAppStatus` | Sealed-style base class with three subtypes: `Compatible(version: String)`, `NotInstalled(minimumVersion: String, downloadUrl: String)`, `VersionTooLow(installedVersion: String, minimumVersion: String, downloadUrl: String)` — returned by `checkRokidAppCompatibility()`. |
+
+### Callback interfaces
+
+```kotlin
+package com.rokid.cxr.session
+
+interface ISessionLifecycleCbk {
+    fun onSessionStarted()
+    fun onSessionPaused(reason: PausedReason)
+    fun onSessionResumed()
+    fun onSessionTerminating(reason: TerminatingReason, gracePeriodMs: Long)
+    fun onSessionClosed(reason: CloseReason)
+    fun onConnectResult(success: Boolean, errorCode: SessionErrorCode)
+}
+
+interface IAudioCallback {
+    fun onAudioReceived(data: ByteArray)
+    fun onAudioError(code: Int, message: String)
+    fun onAudioStreamStateChanged(streaming: Boolean)
+}
+
+interface IImageCallback {
+    fun onImageReceived(data: ByteArray)
+    fun onImageError(code: SessionErrorCode, extra: Int, message: String)
+}
+
+interface ICustomCmdSessionCallback {
+    fun onCustomCmdResult(cmd: String, data: ByteArray)
+}
+
+interface IGlassesEventListener {
+    fun onGlassesAppResumed()
+    fun onGlassesAppPaused()
+    fun onWearingStatusChanged(isWearing: Boolean)
+    fun onDeviceInfoChanged(info: GlassesInfo)
+    fun onScreenOff()
+    fun onScreenOn()
+    fun onLauncherResumed()
+    fun onAiWake()
+    fun onAiInterruptChanged(interrupted: Boolean)
+}
+```
+
 ## Usage Pattern
 
 ```kotlin
@@ -442,3 +591,13 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 - **`CXRSessionState` enum added** with 4 state values mirroring the `ICXRSessionCbk` callback names.
 - **`targetSdkVersion` removed from AAR manifest.** The `<uses-sdk>` element in the AAR no longer declares `targetSdkVersion`. Host apps are unaffected — their own `targetSdkVersion` in `build.gradle` takes precedence.
 - **No dependency changes.** POM is identical to v1.0.3: `cxr-service-bridge:1.0-20260522.063600-105`, `kotlin-stdlib:1.6.0`, `gson:2.10.1`.
+
+### v1.1.0 / v1.1.1 additions (Android — provisional, bytecode inspection)
+
+> Source: `javap` inspection of `client-l:1.1.0` and `client-l:1.1.1` AARs (downloaded 2026-08-16 from Maven), cross-referenced against each AAR's own `proguard.txt`. No official changelog published; the documented portal (`developerdoc.rokid.com/sdk` / `open.rokid.com/sdk`) still shows v1.0.4 as of 2026-08-16. See the [CxrSession API](#cxrsession-api-v110-provisional) section above for the full new surface.
+
+- **New `com.rokid.cxr.session` package** — a coroutine/`StateFlow`-based session API (`CxrSessionManager`, `CxrSession`, `SessionConfig`, plus supporting enums/callbacks) layered on top of the existing AIDL-based `CXRLink`. Purely additive — `com.rokid.cxr.link.CXRLink` is byte-identical to v1.0.4 in both 1.1.0 and 1.1.1.
+- **New runtime dependency in v1.1.1**: `kotlinx-coroutines-android:1.9.0`. `kotlin-stdlib` bumped `1.6.0` → `1.9.0`. `cxr-service-bridge` dependency bumped `1.0-20260522.063600-105` → `1.0-20260715.121510-107`.
+- **AndroidManifest `package` attribute changed** from `com.rokid.cxr.client.extend` to `com.rokid.cxr.link` (cosmetic; does not affect host-app manifest merging). `minSdkVersion` unchanged at 28.
+- **v1.1.0 was a size outlier and appears to have been withdrawn in favor of v1.1.1.** The v1.1.0 AAR (1,286,574 bytes, +1,724% vs v1.0.4) bundled native JNI libraries for `arm64-v8a`/`armeabi-v7a` (`libcaps.so`, `libcxr-bridge-jni.so`, `libcxr-sock-proto-jni.so`, `libflora-cli.so`, `libmutils.so`) plus inlined copies of `com.rokid.cxr.Caps`/`CXRServiceBridge`/`CXRSocketProtocol`/`RLog` directly in `client-l`'s own `classes.jar`, instead of pulling them transitively from `cxr-service-bridge`. v1.1.1 (171,369 bytes) removes all of that and returns to depending on `cxr-service-bridge` normally — consistent with v1.1.0 having briefly linked the native socket-protocol/Flora IPC layer directly (the architecture CXR-M uses) before reverting. **Recommendation: do not use v1.1.0; use v1.1.1 or later.**
+- **`com.rokid.sprite.aiapp.externalapp.IXxxCallback$Stub$a` AIDL helper classes renamed** to single letters (`a.class`–`h.class`) between v1.1.0 and v1.1.1 — an internal obfuscation/build change with no expected effect on the public API.

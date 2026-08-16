@@ -1,8 +1,34 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet. v1.1.0/v1.1.1 entries sourced from `javap` bytecode inspection of Maven AARs (2026-08-16); the official changelog at `developerdoc.rokid.com/sdk` still shows v1.0.4 as of 2026-08-16 — Maven leads the documented portal by two minor releases._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.1.1 — published 2026-08-15
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from `javap` bytecode inspection of `client-l:1.1.1` (downloaded 2026-08-16 from Maven), cross-referenced against the AAR's own `proguard.txt` consumer keep-rules and diffed against `client-l:1.1.0`. No official changelog published as of 2026-08-16.
+
+**Theme: rollback of the v1.1.0 native-bridge experiment; retains the new coroutine-based `CxrSession` API.**
+
+- AAR size: 171,369 bytes (vs. 1,286,574 bytes for v1.1.0, −86.7%; vs. 70,543 bytes for v1.0.4, +142.9%).
+- **Removes the native JNI libraries bundled in v1.1.0** — `libcaps.so`, `libcxr-bridge-jni.so`, `libcxr-sock-proto-jni.so`, `libflora-cli.so`, `libmutils.so` for both `arm64-v8a` and `armeabi-v7a` — along with the copies of `com.rokid.cxr.Caps` / `CXRServiceBridge` / `CXRSocketProtocol` / `RLog` that v1.1.0 had inlined directly into `client-l`'s own `classes.jar`. These are supplied transitively via the `cxr-service-bridge` dependency again, as in the v1.0.x line.
+- **Dependency changes vs. v1.0.4**: `cxr-service-bridge` `1.0-20260522.063600-105` → `1.0-20260715.121510-107`; `kotlin-stdlib` `1.6.0` → `1.9.0`; `gson:2.10.1` unchanged. **New dependency**: `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0`, backing the new `StateFlow`-based session API.
+- **AndroidManifest `package` attribute** changed from `com.rokid.cxr.client.extend` to `com.rokid.cxr.link`. `minSdkVersion` unchanged (28 for the AAR manifest declaration; official docs still specify 31+ for the documented v1.0.4 API surface).
+- **Retains the entire `com.rokid.cxr.session` package** introduced in v1.1.0 (see below), unchanged at the class level between 1.1.0 and 1.1.1.
+- **The pre-existing `com.rokid.cxr.link.*` package is byte-identical to v1.0.4** — `CXRLink`, `ICXRLinkCbk`, `CxrDefs`, and all other v1.0.x public types are unaffected. No breaking changes to the documented API.
+
+See [api-reference.md](api-reference.md#cxrsession-api-v110-provisional) for the full reconstructed `CxrSession` API surface.
+
+## v1.1.0 — published 2026-07-02
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from `javap` bytecode inspection of `client-l:1.1.0` (downloaded 2026-08-16 from Maven), diffed against `client-l:1.0.4`. No official changelog published; the SDK selection page at `developerdoc.rokid.com/sdk` (mirrored at `open.rokid.com/sdk`) still lists CXR-L at 1.0.4 as of 2026-08-16.
+
+**Theme: new coroutine/`Flow`-based `CxrSession` API layered on top of the existing `CXRLink`/AIDL layer.**
+
+- AAR size: 1,286,574 bytes vs. 70,543 bytes for v1.0.4 (+1,724%) — driven almost entirely by newly bundled native libraries under `jni/arm64-v8a/` and `jni/armeabi-v7a/` (`libcaps.so`, `libcxr-bridge-jni.so`, `libcxr-sock-proto-jni.so`, `libflora-cli.so`, `libmutils.so`) plus inlined copies of `com.rokid.cxr.Caps`, `CXRServiceBridge`, `CXRSocketProtocol`, and `RLog` — classes normally supplied transitively via the `cxr-service-bridge` dependency. This suggests `client-l` briefly linked the native socket-protocol / Flora IPC layer directly in this build, mirroring the architecture CXR-M uses (see the repository's architectural notes in `CLAUDE.md`); v1.1.1 reverted this change (see above). **v1.1.0 is superseded by v1.1.1 — prefer 1.1.1 or later for new integrations.**
+- **New package `com.rokid.cxr.session`** introducing a higher-level session API: `CxrSessionManager` (authorization + session creation), `CxrSession` (connect/close, audio/photo/custom-command, `StateFlow<SessionState>`), `SessionConfig`, and a family of supporting enums, result types, and callback interfaces. This is purely additive — the existing `com.rokid.cxr.link.CXRLink` entry point is untouched (byte-identical to v1.0.4).
+
+See [api-reference.md](api-reference.md#cxrsession-api-v110-provisional) for the full reconstructed API surface.
 
 ## v1.0.4 — published 2026-06-18
 
