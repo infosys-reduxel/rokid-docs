@@ -777,8 +777,38 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-08-03
+  last_checked: 2026-08-19
   last_known_version: |
+    RE-VERIFIED 2026-08-19 (this run -- direct curl of maven-metadata.xml
+    for all 3 artifacts; no Firecrawl-class JS-rendering tool available this
+    cycle, so the browse UI wasn't used, only the raw metadata XML and .pom
+    files, fetched directly): client-l: <release> moved 1.1.0 -> 1.1.1,
+    <latest> is now 1.2.X-SNAPSHOT, <lastUpdated> moved 20260718072455 ->
+    20260814092031 (2026-08-14) -- a NEW tagged release since the 08-03
+    baseline. AAR-embedded BuildConfig.BUILD_TIME confirms "2026-08-14
+    15:43:24". Downloaded and diffed client-l-1.1.0.aar (1,286,574 bytes)
+    vs client-l-1.1.1.aar (171,369 bytes, -86.7%) plus both .pom files:
+    1.1.1 removes the com.rokid.cxr root package (Caps/CXRSocketProtocol/
+    CXRServiceBridge/RLog) and all 5 native .so libs that 1.1.0 had
+    erroneously bundled (see this file's prior entry below), and restores
+    cxr-service-bridge as an external POM dependency (now pinned to
+    1.0-20260715.121510-107, still release "1.0"). kotlin-stdlib bumped
+    1.6.0->1.9.0, kotlinx-coroutines-android bumped 1.6.4->1.9.0. The
+    com.rokid.cxr.session API added in 1.1.0 is unchanged (re-confirmed via
+    javap -p). ACTIONED AS P1 THIS CYCLE -- see cxr-l/release-notes.md and
+    cxr-l/api-reference.md (both already had a 1.1.0 write-up from a prior
+    cycle; this cycle added a superseding 1.1.1 entry rather than
+    duplicating the 1.1.0 analysis). client-m: release/latest STILL 1.2.2,
+    lastUpdated STILL 20260608030211 -- unchanged since 2026-06-09, portal
+    still on 1.1.0 per developerdoc.rokid.com entry. cxr-service-bridge
+    (top-level artifact metadata, not the client-l dependency pin above):
+    release/latest STILL 1.0, but lastUpdated is now 20260728074326
+    (2026-07-28) -- newer than the 08-03 baseline's most recent noted bump;
+    consistent with the established re-indexing/checksum-noise pattern for
+    this artifact UNLESS it corresponds to the same 1.0-20260715.121510-107
+    build now referenced by client-l:1.1.1's .pom (plausible but not
+    independently re-verified via browse-listing byte diff this cycle --
+    time-boxed). Not treated as a P1 on its own (no release version bump).
     RE-VERIFIED 2026-08-03 (this Scout run -- Firecrawl scrape of
     maven-metadata.xml for client-l and client-m; cxr-service-bridge not
     re-checked this cycle, low priority given its lastUpdated churn has
