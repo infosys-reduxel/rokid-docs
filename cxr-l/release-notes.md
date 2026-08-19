@@ -1,10 +1,37 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). The v1.0.4 device-control APIs are now confirmed by an official changelog (published 2026-06-29, fetched 2026-07-03); the v1.0.4 session-lifecycle additions remain a provisional binary-diff reconstruction not covered by the official text. `client-l:1.1.0` (uploaded to Maven 2026-07-02) still has no official changelog as of 2026-07-04 — see the v1.1.0 entry below for a binary-diff reconstruction._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). The v1.0.4 device-control APIs are now confirmed by an official changelog (published 2026-06-29, fetched 2026-07-03); the v1.0.4 session-lifecycle additions remain a provisional binary-diff reconstruction not covered by the official text. `client-l:1.1.0` (uploaded to Maven 2026-07-02) still has no official changelog as of 2026-07-04 — see the v1.1.0 entry below for a binary-diff reconstruction. `client-l:1.1.1` (uploaded to Maven 2026-08-14) supersedes 1.1.0 and is documented below from a binary diff + `.pom` diff performed 2026-08-19; `developerdoc.rokid.com/sdk` was checked again on 2026-08-19 and still rendered only as a JavaScript SPA shell in this environment (no Firecrawl-class JS-rendering tool was available this cycle, unlike some earlier cycles — see `.claude/agents/rokid-sources.md`), so it is unknown whether an official v1.1.x changelog has since been published there._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
+## v1.1.1 — published 2026-08-14 (provisional binary-diff reconstruction — no official changelog)
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.1.0` and `client-l:1.1.1` AARs and their Maven `.pom` files (diffed 2026-08-19). AAR size: 171,369 bytes, **down** 86.7% from the 1,286,574-byte v1.1.0 AAR (though still +143% vs the 70,543-byte v1.0.4 baseline). `BuildConfig.BUILD_TIME` embedded in the 1.1.1 AAR reads `2026-08-14 15:43:24`, and `maven-metadata.xml`'s `lastUpdated` (`20260814092031`) agrees. `client-l:1.1.0` was live on Maven for roughly six weeks (2026-07-02 – 2026-08-14) before being superseded by this release.
+
+**Theme: v1.1.1 fixes the v1.1.0 packaging defect described below — it drops the erroneously bundled `cxr-service-bridge` classes and native libraries and restores a normal external dependency — while keeping the new `com.rokid.cxr.session` API introduced in v1.1.0 fully intact.**
+
+The v1.0.x `CXRLink`/`ExternalAppClient` API and the `com.rokid.cxr.session` API added in v1.1.0 (both documented above/below and in [api-reference.md](api-reference.md#cxrsession-api-v110)) are **unchanged** in v1.1.1 at the class/method level — every public type from v1.1.0's `com.rokid.cxr.session` package and every v1.0.x `CXRLink` method is still present with an identical signature. What changed is packaging only:
+
+- **The bundled `com.rokid.cxr` root package is gone.** `com.rokid.cxr.Caps`, `com.rokid.cxr.CXRSocketProtocol`, `com.rokid.cxr.CXRServiceBridge`, and `com.rokid.cxr.RLog` — the `cxr-service-bridge` classes that v1.1.0 erroneously bundled directly into `client-l`'s own `classes.jar` (see the v1.1.0 entry below) — are removed from `classes.jar` in v1.1.1.
+- **All five native `.so` libraries are removed** from both `jni/arm64-v8a/` and `jni/armeabi-v7a/` (`libcaps.so`, `libcxr-sock-proto-jni.so`, `libcxr-bridge-jni.so`, `libflora-cli.so`, `libmutils.so`). This alone accounts for the great majority of the AAR's size reduction.
+- **`cxr-service-bridge` is restored as an external POM dependency** — `.pom` diff shows `client-l:1.1.1` now depends on `com.rokid.cxr:cxr-service-bridge:1.0-20260715.121510-107` (release version still `1.0`; this is a newer snapshot build than the `1.0-20260522.063600-105` build v1.0.4 depended on — see the `maven.rokid.com` entry in `.claude/agents/rokid-sources.md` for confirmation the published `cxr-service-bridge` *release* itself has not moved past `1.0`).
+- **The AAR's own library package/namespace changed** from `com.rokid.cxr.client.extend` (v1.0.x and v1.1.0) to `com.rokid.cxr.link` (v1.1.1). This is the AAR's internal `BuildConfig`/manifest package attribute only — it does not affect the public `com.rokid.cxr.link.*` API package, which was already named `com.rokid.cxr.link` in earlier versions.
+- `minSdkVersion` remains `28`; `AndroidManifest.xml` is otherwise unchanged (same `<queries>` block).
+
+**Dependency changes vs v1.1.0:**
+
+| Dependency | v1.1.0 | v1.1.1 |
+|------------|--------|--------|
+| `cxr-service-bridge` | *(bundled directly, not a POM dependency)* | `1.0-20260715.121510-107` (restored as an external dependency) |
+| `kotlin-stdlib` | `1.6.0` | `1.9.0` |
+| `gson` | `2.10.1` | `2.10.1` (unchanged) |
+| `kotlinx-coroutines-android` | `1.6.4` | `1.9.0` |
+
+**Practical takeaway for integrators:** apps that briefly integrated `client-l:1.1.0` were pulling in ~2.4 MB of native code across two ABIs and a fat `classes.jar`, none of which was needed unless they used the new `com.rokid.cxr.session` API's underlying transport directly. `client-l:1.1.1` is a strict size/packaging fix on top of the same API surface — **new integrations should target 1.1.1, not 1.1.0.**
+
 ## v1.1.0 — uploaded to Maven 2026-07-02 (provisional binary-diff reconstruction — no official changelog)
+
+> **Superseded by v1.1.1 (published 2026-08-14, see above).** The packaging defect described in this entry — a bundled `cxr-service-bridge` (Java classes + 5 native `.so` libraries) inside the `client-l` AAR — was fixed in v1.1.1, which removed the bundling and restored `cxr-service-bridge` as a normal external dependency. The `com.rokid.cxr.session` API introduced in this release is unaffected and remains current in v1.1.1. This entry is retained for historical reference; **new integrations should use v1.1.1.**
 
 > **This entire section is a provisional binary-diff reconstruction, not covered by any official changelog.** As of 2026-07-04, `developerdoc.rokid.com/sdk` (CXR-L tab) still only shows the changelog through v1.0.4 (dated 2026-06-29); no v1.1.0 entry exists there. Maven's `maven-metadata.xml` for `com.rokid.cxr:client-l` was fetched with cache bypass on 2026-07-04 and shows `release` moved from `1.0.4` to `1.1.0` and `lastUpdated` moved from `20260625070819` to `20260702091606` — i.e. the artifact itself was uploaded 2026-07-02, five days before this write-up. The findings below come from downloading and diffing `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/1.0.4/client-l-1.0.4.aar` (70,543 bytes) against `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/1.1.0/client-l-1.1.0.aar` (1,286,574 bytes) — a **+1,724 % size increase**, by far the largest jump of any point release in this SDK's history — using `unzip`, `javap -p`, `strings`, and `md5sum` (no `jadx`/`apktool`/dedicated Android decompiler was available in this environment; see the tooling note at the end of this entry).
 

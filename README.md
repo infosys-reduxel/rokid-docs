@@ -346,20 +346,21 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18); `1.1.0` uploaded to Maven 2026-07-02, provisionally documented 2026-07-04 via binary diff (no official changelog yet — see [cxr-l/release-notes.md](cxr-l/release-notes.md)) |
-| **Size** | 1,286,574 bytes (1.1.0 AAR, +1,724%); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
-| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.0) |
+| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.1` (published 2026-08-14, diffed 2026-08-19 via binary diff — supersedes the short-lived `1.1.0` from 2026-07-02; no official changelog for either — see [cxr-l/release-notes.md](cxr-l/release-notes.md)) |
+| **Size** | 171,369 bytes (1.1.1 AAR); 1,286,574 bytes (1.1.0 AAR, +1,724% vs 1.0.4, later reverted); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.1) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
 | **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
-| **Dependencies (1.1.0)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); cxr-service-bridge is now bundled in the AAR instead of an external dependency |
+| **Dependencies (1.1.0, superseded)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); cxr-service-bridge was bundled in the AAR instead of an external dependency — fixed in 1.1.1 |
+| **Dependencies (1.1.1)** | cxr-service-bridge 1.0-20260715.121510-107 (restored as external dependency), Kotlin stdlib 1.9.0, Gson 2.10.1, kotlinx-coroutines-android 1.9.0 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
-**Entry Point:**
+**Entry Point (v1.0.x API):**
 ```kotlin
 class CXRLink(context: Context) : ExternalAppClient(context)
 ```
 
-`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
+`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration. Since v1.1.0, the SDK additionally exposes a higher-level coroutine/`StateFlow`-based `CxrSession` API (`com.rokid.cxr.session`, entry point `CxrSessionManager.getInstance(context)`) layered over the same transport — see [CxrSession API (v1.1.0+)](cxr-l/api-reference.md#cxrsession-api-v110).
 
 > [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 
