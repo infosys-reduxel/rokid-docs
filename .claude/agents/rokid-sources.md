@@ -95,8 +95,21 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-08-03
+  last_checked: 2026-08-21
   last_known_version: |
+    RE-VERIFIED 2026-08-21 (this run -- `firecrawl scrape --only-main-content
+    --wait-for 5000 --max-age 0` of /sdk successfully rendered the SPA this
+    time; an earlier attempt this same session without --wait-for returned
+    only the shell, confirming --wait-for is required for this route -- see
+    the /sdk-shell note under the "New sources discovered" open.rokid.com
+    entry for the same behavior there): "SDK 选型速览" table unchanged --
+    CXR-L 公开 1.0.4 (更新于 2026.06.25), CXR-M 商务合作 1.1.0 (更新于
+    2026.04.01), 眼镜端裸机开发 公开 1.0.0 (更新于 2026.06.05). The portal
+    changelog for CXR-L remains pinned at 1.0.4 and has NOT caught up to
+    Maven's 1.1.1 (or even 1.1.0) -- confirms Maven continues to lead this
+    portal by 2 releases for CXR-L; no official changelog for 1.1.x exists
+    on this surface as of today. Bare-metal 1.0.0 badge matches the local
+    doc version already recorded in cxr-baremetal/development-guide.md.
     RE-VERIFIED 2026-08-03 (this Scout run -- fresh `firecrawl scrape
     --only-main-content --wait-for 5000 --max-age 0` of /sdk): "SDK 选型
     速览" table + card badges read directly: CXR-L 公开 1.0.4 (更新于
@@ -385,8 +398,13 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: release-notes
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-08-03
+  last_checked: 2026-08-21
   notes: |
+    RE-VERIFIED 2026-08-21 (this run -- direct scrape of the CXR-L workspace,
+    84feb39f8ef141b0ad0326f902ab881f/pc/cn/): still returns OSS NoSuchKey
+    (RequestId 6A87C0622851783339216D77, HTTP 404). Not re-checked this
+    cycle: the ff28c865/bare-metal workspace (see 2026-08-03 note below,
+    still the most recent check for that workspace).
     RE-VERIFIED 2026-08-03 (this Scout run -- direct scrape of the ff28c865
     workspace's 简介 (intro) page, `--format rawHtml`): first attempt at
     the default `--wait-for` (implicitly lower) rendered only the ~3.5KB SPA
@@ -777,8 +795,30 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-08-19
+  last_checked: 2026-08-21
   last_known_version: |
+    RE-VERIFIED 2026-08-21 (this run -- direct curl of maven-metadata.xml
+    and per-version .pom files for client-l 1.0.4/1.1.0/1.1.1, client-m,
+    and cxr-service-bridge; also re-downloaded and re-diffed all three
+    client-l AARs independently, plus a fresh javap -p pass against
+    client-l:1.1.1's classes.jar): NO NEW RELEASE since the 2026-08-19
+    check. client-l: <release> still 1.1.1, <lastUpdated> still
+    20260814092031 (2026-08-14); AAR still 171,369 bytes, still lacks the
+    5 bundled native .so libs and the com.rokid.cxr root package, still
+    depends on cxr-service-bridge:1.0-20260715.121510-107. client-m:
+    release/latest still 1.2.2, lastUpdated still 20260608030211.
+    cxr-service-bridge: release/latest still "1.0", lastUpdated still
+    20260728074326 -- unchanged since 08-19, corroborating (not yet
+    independently proven) the prior cycle's guess that this build is the
+    same 1.0-20260715.121510-107 now pinned by client-l:1.1.1. One
+    correction from this cycle's re-verification: the CxrSession API's
+    SessionConfig write-up in cxr-l/api-reference.md was missing its 7th
+    constructor field, viewIconData: String? (getViewIconData(), sitting
+    between viewData and glassesActivityName) -- confirmed present via
+    javap -p against the live 1.1.1 classes.jar and added. No other
+    discrepancies found in a full re-check of the CxrSession API section
+    against the current AAR. Everything else already documented in the
+    2026-08-19 entry below remains accurate and was not re-actioned.
     RE-VERIFIED 2026-08-19 (this run -- direct curl of maven-metadata.xml
     for all 3 artifacts; no Firecrawl-class JS-rendering tool available this
     cycle, so the browse UI wasn't used, only the raw metadata XML and .pom
@@ -972,8 +1012,11 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: github
   covers: cxr-m, cxr-s, cxr-l, yodaos, hardware
   monitor_id:
-  last_checked: 2026-08-03
+  last_checked: 2026-08-21
   notes: |
+    RE-VERIFIED 2026-08-21 (this run -- fresh live map, limit 50, no cache):
+    still exactly 2 public repos, UXR-docs and glass2-docs, both out of
+    scope. No new repos, no change.
     RE-VERIFIED 2026-08-03 (this Scout run -- fresh live map, limit 50, no
     cache, 22 links): still exactly 2 public repos, UXR-docs and
     glass2-docs, both out of scope. No new repos, no change. Evidence:
@@ -1089,8 +1132,11 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: github
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-08-03
+  last_checked: 2026-08-21
   notes: |
+    RE-VERIFIED 2026-08-21 (this run -- fresh live map, limit 50, no cache):
+    still an empty links array (0 URLs), consistent with every check since
+    2026-06-30. No actionable content.
     RE-VERIFIED 2026-08-03 (this Scout run -- fresh live map, limit 50, no
     cache): still an empty links array (0 URLs), consistent with every
     check since 2026-06-30. No actionable content. Evidence:
@@ -1208,6 +1254,22 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
     indirectly via live scrapes of developer.rokid.com and ar.rokid.com,
     both of which link Rokid Glasses docs to open.rokid.com/sdk?lang=en.
   notes: |
+    RE-VERIFIED 2026-08-21 -- STILL NOT independently registered or crawled
+    as a registry source this run, per the no-silent-extension rule (no
+    AskUserQuestion available in this unattended cycle). One light spot-check
+    scrape of https://open.rokid.com/sprite?lang=zh (no --wait-for, --max-age
+    default) rendered the FULL hydrated page this time -- content still
+    word-for-word matches developerdoc.rokid.com/sprite and
+    yodaos/docs/sprite-overview.md (same 4-item CXR-M/CXR-S FAQ, same
+    hardware spec table, same CXR-M business-cooperation gating notice). A
+    companion spot-check of https://open.rokid.com/sdk?lang=zh without
+    --wait-for returned only the bare SPA shell (consistent with the
+    equivalent developerdoc.rokid.com/sdk behavior documented above -- this
+    route needs `--wait-for 5000`+ to hydrate; not retried with that flag
+    this cycle since /sdk is outside the 8 approved sources). Recommend the
+    user decide on registering open.rokid.com -- it has now mirrored
+    developerdoc.rokid.com/sprite exactly across every check since
+    2026-06-28 (nearly 2 months) with zero independent drift.
     RE-VERIFIED 2026-07-29 -- NOT independently registered or crawled as a
     registry source this run, per the no-silent-extension rule (no
     AskUserQuestion available in this unattended cycle). One light spot-
