@@ -334,12 +334,15 @@ class SessionConfig(
     val terminatingGracePeriodMs: Long,
     val timeouts: SessionTimeouts,
     val viewData: String?,
+    val viewIconData: String?,
     val glassesActivityName: String?,
     val glassesApkPath: String?
 )
 ```
 
-A Kotlin data class (`copy()`/`component1..8()`/`equals`/`hashCode`/`toString` all present in the decompile). Field names are decompiled getter names (`getSessionType`, `getGlassesPackageName`, etc.) rendered back to property form.
+A Kotlin data class (`copy()`/`component1..9()`/`equals`/`hashCode`/`toString` all present in the decompile). Field names are decompiled getter names (`getSessionType`, `getGlassesPackageName`, etc.) rendered back to property form.
+
+> **Correction (2026-08-21, this cycle):** the field list above previously omitted `viewIconData` (`getViewIconData(): String?`), the 7th constructor parameter — re-verified via a fresh `javap -p` pass against the `client-l:1.1.1` `classes.jar` (all 9 fields: `sessionType`, `glassesPackageName`, `aiInterceptMode`, `terminatingGracePeriodMs`, `timeouts`, `viewData`, `viewIconData`, `glassesActivityName`, `glassesApkPath`). Likely the custom-View icon payload, mirroring `CXRLink.setIcons(iconsJson: String)` from the v1.0.x API.
 
 ### SessionTimeouts
 
