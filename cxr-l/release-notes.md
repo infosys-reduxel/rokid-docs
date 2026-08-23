@@ -1,8 +1,33 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 and v1.1.1 entries sourced from binary diffs of Maven AARs (2026-06-25 and 2026-08-23 respectively); no official changelog has been published for either release yet._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.1.1 — published 2026-08-14
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.4` and `client-l:1.1.1` AARs (downloaded 2026-08-23 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). The developer portal at `https://developerdoc.rokid.com/sdk` still lists 1.0.4 as the current CXR-L version as of 2026-08-23; no portal changelog has been published for v1.1.0 or v1.1.1.
+
+**Theme: new coroutine-based Session API (`com.rokid.cxr.session`), layered alongside the existing `CXRLink` API.**
+
+`client-l:1.1.1` (171,369-byte AAR, +143% vs 1.0.4's 70,543 bytes) adds a new Kotlin-idiomatic session API in package `com.rokid.cxr.session`. It exposes session state as a `kotlinx.coroutines.flow.StateFlow`, wraps call results in a `SessionResult<T>` type, supports multiple registered listeners per callback type (vs. one listener per callback in the v1.0.x `CXRLink` API), and adds a companion-app compatibility check. The existing `com.rokid.cxr.link.CXRLink` / `ICXRLinkCbk` classes are byte-for-byte identical to v1.0.4 — the old API continues to work unchanged. See [api-reference.md](api-reference.md#session-api-v111-package-comrokidcxrsession) for the full class-by-class breakdown.
+
+**New entry point:** `CxrSessionManager` (factory: `create(SessionConfig): CxrSession`, `requestAuthorization`, `checkRokidAppCompatibility`, `isGlassesBtConnected`).
+
+**New session object:** `CxrSession` (`connect`, `close`, `startAudioStream`/`stopAudioStream`, `customViewUpdate`, `takePhoto`, `sendCustomCmd`, `setGlassBrightness`/`setGlassVolume`, `queryGlassesInfo`, plus `add`/`remove` methods for five listener types).
+
+**AndroidManifest change:** the AAR's top-level `package` attribute changed from `com.rokid.cxr.client.extend` (all prior versions) to `com.rokid.cxr.link`. AAR-level declaration only — does not affect host app package names.
+
+**Dependency changes vs v1.0.4:**
+
+| Dependency | v1.0.4 | v1.1.1 |
+|------------|--------|--------|
+| `cxr-service-bridge` | `1.0-20260522.063600-105` | `1.0-20260715.121510-107` |
+| `kotlin-stdlib` | `1.6.0` | `1.9.0` |
+| `gson` | `2.10.1` | `2.10.1` (unchanged) |
+| `kotlinx-coroutines-android` | — | `1.9.0` (new) |
+
+> **Note on the intermediate v1.1.0 release (2026-07-02).** Maven briefly published `client-l:1.1.0` (1,286,574-byte AAR) before v1.1.1 replaced it on 2026-08-14. v1.1.0 additionally bundled five native libraries under `jni/{armeabi-v7a,arm64-v8a}/` (`libflora-cli.so`, `libmutils.so`, `libcaps.so`, `libcxr-sock-proto-jni.so`, `libcxr-bridge-jni.so`) that are absent from both v1.0.4 and v1.1.1. These resemble glasses-side / CXR-S-side native components rather than mobile-SDK dependencies. Since `v1.1.1` is the Maven `<release>` as of 2026-08-23, v1.1.0 is treated as superseded and is not documented further here — do not pin to it.
 
 ## v1.0.4 — published 2026-06-18
 
