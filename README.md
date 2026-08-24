@@ -111,13 +111,23 @@ rokid-docs/
 │   └── data-structure.md           # Caps serialization format
 │
 ├── cxr-l/                          # CXR-L SDK documentation (Standalone)
+│   ├── intro.md                    # SDK introduction, capabilities, sample projects
+│   ├── quick-start.md              # Environment setup, sample build, verification paths
+│   ├── terms-and-abbreviations.md  # Glossary of CXR-L terms and abbreviations
 │   ├── api-reference.md            # Complete API reference
 │   └── release-notes.md            # SDK changelog
 │
 ├── cxr-baremetal/                  # Bare-metal Android dev on Rokid Glasses (no CXR SDK)
-│   ├── development-guide.md        # Reserved interactions + dev environment
-│   ├── key-broadcasts.md           # Hardware-button Intent broadcasts
-│   └── audio-recording.md          # 8-channel mic recording (ChannelMask 0x6000FC)
+│   ├── development-guide.md        # Introduction: positioning, runtime env, capabilities
+│   ├── quick-start.md              # Environment setup, sample build/install, ADB
+│   ├── sample-project.md           # GlassesBareDevSample project layout
+│   ├── ui-design-guidelines.md     # Monochrome display conventions, safe area
+│   ├── key-broadcasts.md           # Hardware-button/touch-panel Intents and KeyEvents
+│   ├── audio-recording.md          # 8-channel mic recording (ChannelMask 0x6000FC)
+│   ├── photo-capture.md            # CameraX ImageCapture flow
+│   ├── video-recording.md          # CameraX VideoCapture flow
+│   ├── camera-preview-outlining.md # Real-time edge-detection preview shader pipeline
+│   └── imu-sensors.md              # 6-axis IMU via SensorManager
 │
 └── yodaos/                         # YodaOS platform documentation
     ├── docs/
@@ -386,17 +396,24 @@ For apps that run directly on the glasses **without any CXR SDK** -- plain, side
 | **Target** | YodaOS-Sprite (Android 12, Go-edition) |
 | **Display viewport** | 480 × 640 px |
 | **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
-| **Doc version** | v0.0.1 (2026-03-01) |
+| **Doc version** | v1.0.0 |
 
-YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
+YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents or standard `KeyEvent`s.
 
 **Documentation:**
 
 | Document | Description |
 |----------|-------------|
-| [development-guide.md](cxr-baremetal/development-guide.md) | Reserved interactions, dev environment, and side-load workflow |
-| [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) | Hardware-button system Intents and the `BroadcastReceiver` pattern |
+| [development-guide.md](cxr-baremetal/development-guide.md) | Introduction: positioning, runtime environment, device capabilities, reading order |
+| [quick-start.md](cxr-baremetal/quick-start.md) | Environment setup, sample build/install, ADB enablement, minimal verification path |
+| [sample-project.md](cxr-baremetal/sample-project.md) | `GlassesBareDevSample` project layout, input model, Hub and routes |
+| [ui-design-guidelines.md](cxr-baremetal/ui-design-guidelines.md) | Monochrome display conventions, safe area, wireframe UI components |
+| [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) | Hardware-button/touch-panel system Intents, `KeyEvent`s, wear/fold events |
 | [audio-recording.md](cxr-baremetal/audio-recording.md) | 8-channel mic recording (`ChannelMask = 0x6000FC`, 16 kHz, 16-bit PCM) |
+| [photo-capture.md](cxr-baremetal/photo-capture.md) | CameraX `ImageCapture` still-photo flow |
+| [video-recording.md](cxr-baremetal/video-recording.md) | CameraX `VideoCapture` MP4 recording flow |
+| [camera-preview-outlining.md](cxr-baremetal/camera-preview-outlining.md) | Real-time edge-detection preview (OpenGL ES shader pipeline) |
+| [imu-sensors.md](cxr-baremetal/imu-sensors.md) | 6-axis IMU via `SensorManager`, axis verification, demo pages |
 
 ---
 
@@ -494,8 +511,11 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
 | Bare-metal Android dev on Glasses | [cxr-baremetal/development-guide.md](cxr-baremetal/development-guide.md) |
-| Hardware-button broadcast Intents | [cxr-baremetal/key-broadcasts.md](cxr-baremetal/key-broadcasts.md) |
+| Bare-metal quick start | [cxr-baremetal/quick-start.md](cxr-baremetal/quick-start.md) |
+| Hardware-button/touch-panel Intents and KeyEvents | [cxr-baremetal/key-broadcasts.md](cxr-baremetal/key-broadcasts.md) |
 | 8-channel mic recording on Glasses | [cxr-baremetal/audio-recording.md](cxr-baremetal/audio-recording.md) |
+| CameraX photo/video capture on Glasses | [cxr-baremetal/photo-capture.md](cxr-baremetal/photo-capture.md), [cxr-baremetal/video-recording.md](cxr-baremetal/video-recording.md) |
+| 6-axis IMU on Glasses | [cxr-baremetal/imu-sensors.md](cxr-baremetal/imu-sensors.md) |
 | Full CXR-M SDK API | [cxr-m/sdk-decompiled-reference.md](cxr-m/sdk-decompiled-reference.md) |
 | Caps data format | [cxr-s/data-structure.md](cxr-s/data-structure.md) |
 | Firmware changelogs | [yodaos/DECOMPILED/vendor/firmware/](yodaos/DECOMPILED/vendor/firmware/) |
@@ -524,13 +544,22 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 
 **CXR-L SDK (Standalone)**
 1. [intro.md](cxr-l/intro.md) -- SDK introduction: positioning, core capabilities, prerequisite matrix, sample projects
-2. [api-reference.md](cxr-l/api-reference.md) -- API reference
-3. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
+2. [quick-start.md](cxr-l/quick-start.md) -- Environment setup, sample build, minimal verification paths (Android/iOS)
+3. [terms-and-abbreviations.md](cxr-l/terms-and-abbreviations.md) -- Glossary of CXR-L terms and abbreviations
+4. [api-reference.md](cxr-l/api-reference.md) -- API reference
+5. [release-notes.md](cxr-l/release-notes.md) -- SDK changelog
 
 **Bare-metal Android Development on Rokid Glasses**
-1. [development-guide.md](cxr-baremetal/development-guide.md) -- Reserved interactions + dev environment + side-load workflow
-2. [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) -- Hardware-button system Intents and `BroadcastReceiver` pattern
-3. [audio-recording.md](cxr-baremetal/audio-recording.md) -- 8-channel mic recording (`ChannelMask = 0x6000FC`)
+1. [development-guide.md](cxr-baremetal/development-guide.md) -- Introduction: positioning, runtime environment, device capabilities
+2. [quick-start.md](cxr-baremetal/quick-start.md) -- Environment setup, sample build/install, ADB enablement
+3. [sample-project.md](cxr-baremetal/sample-project.md) -- GlassesBareDevSample project layout, input model, Hub and routes
+4. [ui-design-guidelines.md](cxr-baremetal/ui-design-guidelines.md) -- Monochrome display conventions, safe area, wireframe UI
+5. [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) -- Hardware-button/touch-panel system Intents and `KeyEvent`s
+6. [audio-recording.md](cxr-baremetal/audio-recording.md) -- 8-channel mic recording (`ChannelMask = 0x6000FC`)
+7. [photo-capture.md](cxr-baremetal/photo-capture.md) -- CameraX `ImageCapture` still-photo flow
+8. [video-recording.md](cxr-baremetal/video-recording.md) -- CameraX `VideoCapture` MP4 recording flow
+9. [camera-preview-outlining.md](cxr-baremetal/camera-preview-outlining.md) -- Real-time edge-detection preview (OpenGL ES shader pipeline)
+10. [imu-sensors.md](cxr-baremetal/imu-sensors.md) -- 6-axis IMU via `SensorManager`, axis verification, demo pages
 
 **YodaOS -- System**
 1. [overview.md](yodaos/docs/overview.md) -- Build info and architecture
