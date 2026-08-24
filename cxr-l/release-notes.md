@@ -1,14 +1,30 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/us/663f26766e7348059905815bc022e1f7.html?documentId=957ba2467a1248678aa556564ef50b46> (official English "Version History" chapter, fetched 2026-08-24). The v1.0.4 entry below is now confirmed by this official changelog (previously carried in this file as a provisional binary-diff reconstruction — see note below); v1.0.1–v1.0.3 entries are unchanged from the prior official changelog._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
+## Undocumented Maven releases beyond v1.0.4 (as of 2026-08-24)
+
+`https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/maven-metadata.xml` lists **v1.1.0** and **v1.1.1** as published releases (current `<release>` is 1.1.1, `lastUpdated` 20260814092031), with a `1.2.X-SNAPSHOT` in progress. Neither the official Version History chapter above nor the SDK landing page (`developerdoc.rokid.com/sdk`, still showing "1.0.4" as of this check) documents these releases yet. Per this repo's convention of not fabricating changelog content, no entry is added here until Rokid publishes an official changelog or a binary-diff reconstruction is performed in a future refresh cycle — see the CXR-L section of the accompanying refresh-cycle report for details.
+
 ## v1.0.4 — published 2026-06-18
 
-> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Rokid has not published a portal changelog for this release as of 2026-06-25. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+> **Confirmed by the official English Version History chapter** (fetched 2026-08-24 from the URL above). This entry previously appeared in this file as a provisional reconstruction from a binary diff of `client-l:1.0.3` / `client-l:1.0.4` AARs (downloaded 2026-06-25); the technical findings below are retained as they remain accurate and add detail (API signatures, enum values) beyond the prose changelog. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+
+**Official changelog (Version History chapter):**
+
+1. Android `client-l` upgraded to **1.0.4**; theme is **device control**, adding brightness/volume APIs.
+2. New device control APIs: `setGlassBrightness(level)` / `setGlassVolume(level)`, level range 0…15.
+3. Enhanced device info: `GlassInfo` adds `brightness` / `sound` fields, retrieved via `onGlassDeviceInfo` callback.
+4. New "Device Control" chapters (Android / iOS) covering brightness/volume set and query.
+5. Android Sample zip package updated to v1.0.4 (project renamed **RenewCXRLSample**, package `com.rokid.renewcxrlsample`, as of the same documentation refresh — see [intro.md](intro.md)).
+6. iOS `RGCxrClient` adds `setBrightness` / `getBrightness` / `setVolume` / `getVolume`; `RGCxrDeviceInfo` adds `brightness` / `sound` fields.
+7. iOS documentation and Sample version unified to v1.0.4 (aligned with Android; v1.0.2 / v1.0.3 changes were already merged internally on iOS).
 
 **Theme: structured session lifecycle callbacks and direct device controls.**
+
+**Additional technical findings (from the earlier binary-diff reconstruction, retained for detail):**
 
 **New interfaces:**
 
