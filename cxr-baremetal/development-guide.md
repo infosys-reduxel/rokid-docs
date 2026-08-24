@@ -1,55 +1,65 @@
-# Rokid Glasses Bare-Metal Development Guide
+# Introduction to Bare-Metal Development on Rokid Glasses
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/ff28c865a9634876be98cbc293588460/pc/us/index.html> (official English documentation, fetched 2026-08-24)
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0**
 
-This guide describes how to build plain Android apps that run directly on Rokid Glasses (YodaOS-Sprite) **without using any CXR SDK**. These are side-loaded standalone apps that handle their own input, audio, and camera. For apps that integrate with the on-device Rokid AI app or the mobile companion, see the [CXR-L](../cxr-l/), [CXR-S](../cxr-s/), and [CXR-M](../cxr-m/) SDK docs instead.
+This guide describes how to build and debug standard Android applications **on Rokid Glasses** (system **YodaOS-Sprite**, based on **Android 12 (API 31)** / Android Go) using standard Android APIs, **without** a phone-side co-SDK.
 
-## Overview
+Typical use cases: launchers, on-device utilities, local audio capture / photo / video, key and wear-state listeners, IMU demos, and similar glasses-only apps.
 
-Bare-metal development on Rokid Glasses is essentially the same as standard Android app development.
+## Runtime environment
 
-A few things to keep in mind:
+| Item | Details |
+| --- | --- |
+| Glasses OS | YodaOS-Sprite, **Android 12 (API 31)** / Android Go |
+| App minSdk | **31** (same as `GlassesBareDevSample`) |
+| Sample targetSdk | **36** (same as the sample project) |
+| Recommended IDE | Android Studio |
+| Debug setup | Dedicated dev cable + Rokid AI App on phone to enable glasses ADB (see [Bare-Metal Development Quick Start](./quick-start.md)) |
 
-- The YodaOS-Sprite system on Rokid Glasses is built on Android Go, so you must follow Android Go's development constraints.
-- The Rokid Glasses display is designed for a **480 × 640 pixel** viewport. Follow the design spec when laying out your UI.
-- YodaOS-Sprite defines several interactions with the Rokid Glasses mobile companion app that bare-metal apps **cannot** override:
-  - Long-press the touchpad on the side of the right temple to enter the on-device Rokid AI module.
-  - Double-click the button on the right temple to trigger the back action.
-  - Click the top button on the right temple to take a photo.
-  - Long-press the top button on the right temple to record video.
-  - Certain wake words activate dedicated functions (specific functions will be documented in future revisions).
+## System and constraints
 
-For everything else — clicks, long presses, two-finger gestures on the touchpad, and the Settings key — see [Button Broadcasts](./key-broadcasts.md).
+- Follow the [Android Go developer guidance](https://developer.android.com/guide/topics/androidgo).
+- Display: **480 × 640** px. UI rules are in [Glasses UI Design Guidelines (Bare Metal)](./ui-design-guidelines.md).
+- Product visuals: Rokid glasses design guidelines (`https://t.rokid.com/0w0opp8x`).
 
-## Development Environment
+## Device capabilities
 
-Essentially the same as standard Android app development:
+| Capability | Integration | Chapter |
+| --- | --- | --- |
+| 480×640 single-green display | Compose / standard Views | [Glasses UI Design Guidelines (Bare Metal)](./ui-design-guidelines.md) |
+| Temple function key + right touch panel | System broadcasts + `KeyEvent` | [Keys, Wear Detection, and Fold Events](./key-broadcasts.md) |
+| 8-channel raw audio | `AudioRecord` | [Raw Audio on Glasses](./audio-recording.md) |
+| Photo / video | CameraX | [Photo Capture](./photo-capture.md) / [Video Recording](./video-recording.md) |
+| 6-axis IMU | `SensorManager` | [IMU and Sensors](./imu-sensors.md) |
 
-- A computer capable of Android development, with a standard USB port.
-- An Android IDE such as Android Studio.
-- A Rokid Glasses device.
+## Suggested reading order
 
-## Device Connection
+1. Introduction to Bare-Metal Development on Rokid Glasses (this page)
+2. [Bare-Metal Development Quick Start](./quick-start.md)
+3. [Glasses UI Design Guidelines (Bare Metal)](./ui-design-guidelines.md)
+4. [GlassesBareDevSample Project and Pages](./sample-project.md)
+5. [Keys, Wear Detection, and Fold Events](./key-broadcasts.md)
+6. [Raw Audio on Glasses](./audio-recording.md) → [Photo Capture](./photo-capture.md) → [Video Recording](./video-recording.md) → [Camera Preview Outlining](./camera-preview-outlining.md) → [IMU and Sensors](./imu-sensors.md)
 
-The charging contacts on the side of the left temple of Rokid Glasses are dual-purpose: they carry both power and data. To use them for data, however, you need the dedicated developer cable.
+## Document index
 
-### Use the dedicated developer cable
+Each chapter is published as a separate page on the documentation platform:
 
-ADB and other data flows over USB require the dedicated **developer cable** — the standard charging cable that ships in-box will not work.
+| Chapter | Topics |
+| --- | --- |
+| [Bare-Metal Development Quick Start](./quick-start.md) | Environment, ADB, sample build |
+| [Glasses UI Design Guidelines (Bare Metal)](./ui-design-guidelines.md) | Resolution, safe area, wireframe UI |
+| [Keys, Wear Detection, and Fold Events](./key-broadcasts.md) | Keys, touch panel, wear/fold (broadcasts + `KeyEvent`) |
+| [Raw Audio on Glasses](./audio-recording.md) | 8-channel `AudioRecord` |
+| [Photo Capture](./photo-capture.md) / [Video Recording](./video-recording.md) | CameraX |
+| [Camera Preview Outlining](./camera-preview-outlining.md) | Real-time edge-detection preview shader pipeline |
+| [IMU and Sensors](./imu-sensors.md) | `SensorManager` |
+| [GlassesBareDevSample Project and Pages](./sample-project.md) | Sample app structure and capability screens |
 
-> **Tip:** The cable that ships in-box is charge-only. To request a developer cable, contact the Rokid **Developer Assistant**.
+## Sample project
 
-### Enable ADB
+**GlassesBareDevSample** (package `com.rokid.glassesbaredevsample`). Download and build steps are in [Bare-Metal Development Quick Start](./quick-start.md).
 
-ADB on Rokid Glasses must be enabled through the **Rokid AI mobile app**, not via the on-device Settings UI.
-
-Once ADB is on, you can mirror the glasses display during development using a screen-mirroring tool such as **SCRCPY**.
-
-## Related docs
-
-- [Button Broadcasts](./key-broadcasts.md) — the `KeyType` enum and ordered-broadcast pattern for intercepting button / touchpad events.
-- [Audio Recording](./audio-recording.md) — 8-channel microphone capture (`ChannelMask = 0x6000FC`, 16 kHz, 16-bit PCM).
-
-<!-- TODO: Source mentions "specific functions [for wake words] will be documented in future revisions" but does not list any. Refresh when upstream publishes the list. -->
+<!-- Earlier revision (v0.0.1, 2026-03-01) also documented reserved system interactions (long-press touchpad → AI module, double-click → back, top button → photo/video) and developer-cable / ADB-enablement steps inline on this page. That material now lives in the Quick Start and Keys/Wear/Fold chapters linked above, matching the upstream v1.0.0 restructuring. -->

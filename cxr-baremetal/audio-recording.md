@@ -1,24 +1,68 @@
-# Audio Recording (Bare-Metal)
+# Raw Audio on Glasses (Bare-Metal)
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/ff28c865a9634876be98cbc293588460/pc/us/index.html?documentId=641107e820764397870d6da8a103da19> (official English documentation, fetched 2026-08-24)
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0** (supersedes the v0.0.1 revision fetched 2026-05-29 from the now-migrated `57e35cd3ae294d16b1b8fc8dcbb1b7c7` workspace; implementation notes and the reference `AudioRecordViewModel` sample below are retained from that earlier decompiled-sample capture — the channel mask, sample rate, and channel layout are unchanged between the two revisions).
 
-This page covers 8-channel microphone capture on Rokid Glasses from a bare-metal Android app. For the broader context (dev environment, ADB enablement, reserved system gestures), see the [Bare-Metal Development Guide](./development-guide.md). The reference implementation reuses the `KeyReceiver` from [Button Broadcasts](./key-broadcasts.md) to start and stop recording on a side-button click.
+This page covers 8-channel microphone capture on Rokid Glasses from a bare-metal Android app. For the broader context, see the [Introduction to Bare-Metal Development on Rokid Glasses](./development-guide.md).
 
-## Audio recording on Rokid Glasses
+## Overview
 
-Rokid Glasses exposes an **8-channel audio recording configuration** (`ChannelMask` set to `0x6000FC`). Developers can read all 8 channels via Android's `AudioRecord` channel API at a **16 kHz** sample rate, **16-bit PCM**.
+The glasses support **8-channel** PCM capture via standard `android.media.AudioRecord`, using `AudioFormat.Builder.setChannelMask(...)` for the device channel mask.
 
-### Channel layout
+| Parameter | Recommended value |
+| --- | --- |
+| ChannelMask | `0x6000FC` |
+| Sample rate | 16000 Hz |
+| Encoding | `ENCODING_PCM_16BIT` |
+| Audio source | `MediaRecorder.AudioSource.MIC` |
 
-| Channels | Source |
-|----------|--------|
-| **0, 1** | **Post-algorithm audio** — output of the on-device AEC / beamforming pipeline. Use these channels for downstream speech recognition or transcription. |
-| **2, 3, 4, 5** | **Raw audio** from the 4 microphone capsules on Rokid Glasses. Use these for custom DSP, beamforming experiments, or per-capsule analysis. |
-| **6, 7** | **Hardware echo reference** — playback reference signal used by the AEC. Useful when implementing your own echo cancellation in place of the system's. |
+## Channel layout
 
-### Reference implementation
+| Channel | Content |
+| --- | --- |
+| 0 / 1 | Processed algorithm audio (output of the on-device AEC / beamforming pipeline) |
+| 2–5 | Four raw microphone channels (per-capsule, for custom DSP / beamforming) |
+| 6 / 7 | Hardware echo reference (playback reference signal used by the AEC) |
+
+## Prerequisites
+
+- Runtime `RECORD_AUDIO` permission.
+- Optional: listen for click broadcasts from the [Keys, Wear Detection, and Fold Events](./key-broadcasts.md) chapter to toggle recording.
+
+## Code sketch
+
+```kotlin
+val channelMask = 0x6000FC
+val recorder = AudioRecord.Builder()
+    .setAudioSource(MediaRecorder.AudioSource.MIC)
+    .setAudioFormat(
+        AudioFormat.Builder()
+            .setSampleRate(16_000)
+            .setChannelMask(channelMask)
+            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            .build()
+    )
+    .build()
+recorder.startRecording()
+// Background thread read(buffer) and write PCM file
+```
+
+## Practices
+
+- Call `stop()` and `release()` when leaving the screen to avoid leaks.
+- Mind storage paths and permissions on Android 10+ scoped storage.
+- The output is **interleaved PCM** at 16 kHz, 16-bit, 8 channels — each frame is `8 channels × 2 bytes = 16 bytes`. To play back a raw `.pcm` capture (no WAV header), open it in a tool such as Audacity with the same parameters (16 kHz, 16-bit signed, 8 channels, interleaved). _(Carried over from the v0.0.1-era capture; not contradicted by the current doc.)_
+
+## Sample
+
+`GlassesBareDevSample` → **Raw audio** screen: click broadcast toggles recording; status area shows the PCM file path.
+
+See also the [Keys, Wear Detection, and Fold Events](./key-broadcasts.md) chapter.
+
+## Legacy reference implementation (v0.0.1-era)
+
+The following `AudioRecordViewModel` was captured from the v0.0.1-era decompiled sample (`com.rokid.cxrssdksamples`, superseded by `GlassesBareDevSample` in v1.0.0). It demonstrates the same `ChannelMask = 0x6000FC` / 16 kHz / 16-bit PCM configuration confirmed by the current doc above, plus a full read/write loop; kept for reference since the current chapter only gives a code sketch.
 
 ```kotlin
 package com.rokid.cxrssdksamples.activities.audioRecord
@@ -65,7 +109,6 @@ class AudioRecordViewModel : ViewModel() {
             override fun onReceive(keyType: KeyType) {
                 when (keyType) {
                     KeyType.CLICK -> {
-                        Log.e("AudioRecordActivity", "Click")
                         if (!permissionGranted.value) {
                             permissionNeed?.needPermission()
                         } else {
@@ -78,11 +121,6 @@ class AudioRecordViewModel : ViewModel() {
                             }
                         }
                     }
-                    KeyType.BUTTON_DOWN -> Log.e("AudioRecordActivity", "Button down")
-                    KeyType.BUTTON_UP -> Log.e("AudioRecordActivity", "Button up")
-                    KeyType.DOUBLE_CLICK -> Log.e("AudioRecordActivity", "Double click")
-                    KeyType.AI_START -> Log.e("AudioRecordActivity", "AI start")
-                    KeyType.LONG_PRESS -> Log.e("AudioRecordActivity", "Long press")
                     else -> Log.e("AudioRecordActivity", "Other key")
                 }
             }
@@ -107,17 +145,12 @@ class AudioRecordViewModel : ViewModel() {
     fun registerReceiver(activity: Activity) {
         activity.registerReceiver(keyReceiver, IntentFilter().apply {
             addAction(KeyType.CLICK.action)
-            addAction(KeyType.BUTTON_DOWN.action)
-            addAction(KeyType.BUTTON_UP.action)
-            addAction(KeyType.DOUBLE_CLICK.action)
-            addAction(KeyType.AI_START.action)
-            addAction(KeyType.LONG_PRESS.action)
             priority = 100
         })
     }
 
     fun unregisterReceiver(activity: Activity) {
-        keyReceiver?.let {
+        keyReceiver.let {
             activity.unregisterReceiver(it)
         }
     }
@@ -161,8 +194,6 @@ class AudioRecordViewModel : ViewModel() {
         val fileName = "$timeStamp.pcm"
         val file = File(audioDir, fileName)
 
-        Log.d("AudioRecordViewModel", "Saving audio to: ${file.absolutePath}")
-
         try {
             FileOutputStream(file).use { outputStream ->
                 val buffer = ByteArray(BUFFER_SIZE)
@@ -178,16 +209,9 @@ class AudioRecordViewModel : ViewModel() {
 }
 ```
 
-### Notes
-
-- The output is **interleaved PCM** at 16 kHz, 16-bit, 8 channels — so each frame is `8 channels × 2 bytes = 16 bytes`. Writing `BUFFER_SIZE = 1024` bytes at a time corresponds to 64 frames per write (~4 ms of audio).
-- The recording is written as raw `.pcm` (no WAV header) into `/sdcard/Audio/`. To play back, open it in a tool like Audacity with the same parameters (16 kHz, 16-bit signed, 8 channels, interleaved).
-- The reference code only registers the 6 single-finger broadcast actions on `IntentFilter`. If you also need the two-finger or settings actions, mirror the full filter from [Button Broadcasts](./key-broadcasts.md).
-- `MediaRecorder.AudioSource.MIC` is used; the channel mask is what unlocks the 8-channel layout. Other audio sources (e.g. `VOICE_RECOGNITION`) have not been verified to respect the same channel mask.
-
 ## Related docs
 
-- [Bare-Metal Development Guide](./development-guide.md) — overview, dev environment, ADB enablement.
-- [Button Broadcasts](./key-broadcasts.md) — `KeyType` enum and full action-string list used by the reference `KeyReceiver` above.
+- [Introduction to Bare-Metal Development on Rokid Glasses](./development-guide.md) — overview, dev environment, ADB enablement.
+- [Keys, Wear Detection, and Fold Events](./key-broadcasts.md) — action-string list used to start/stop recording on a click.
 
-<!-- TODO: Source does not document the per-channel sample format (signed vs. unsigned, byte order). Confirm against a firmware-side decompiled trace or capture a sample and inspect. -->
+<!-- TODO: Neither the current v1.0.0 doc nor the v0.0.1-era capture documents the per-channel sample format (signed vs. unsigned, byte order) beyond "16-bit PCM". Confirm against a firmware-side decompiled trace or capture a sample and inspect if exact byte order matters for your use case. -->

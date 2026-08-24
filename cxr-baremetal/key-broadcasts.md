@@ -1,38 +1,208 @@
-# Button Broadcasts (Bare-Metal)
+# Keys, Wear Detection, and Fold Events (Bare-Metal)
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/ff28c865a9634876be98cbc293588460/pc/us/index.html?documentId=ca8fedf26d534e1fabb8a34d1fa24e98> (official English documentation, fetched 2026-08-24)
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0** (supersedes the v0.0.1 revision fetched 2026-05-29 from the now-migrated `57e35cd3ae294d16b1b8fc8dcbb1b7c7` workspace; the reference `KeyReceiver` sample below is retained from that earlier decompiled-sample capture and cross-checked against the current action list).
 
-This page covers the system-function buttons on Rokid Glasses and how a bare-metal Android app intercepts them. See the [Bare-Metal Development Guide](./development-guide.md) for context and the list of system interactions you **cannot** override (long-press touchpad → AI module, double-click right button → back, top button → camera).
+This page covers the input events Rokid Glasses exposes to bare-metal apps: the temple function key, the touch panel (single- and two-finger gestures), and wear / fold state changes. See the [Introduction to Bare-Metal Development on Rokid Glasses](./development-guide.md) for context.
 
-## System-function buttons on Rokid Glasses
+## Overview
 
-On Rokid Glasses, system button events are delivered as **ordered broadcasts**. Register a `BroadcastReceiver` with `priority = 100` to intercept and consume them; call `abortBroadcast()` so the default system handler does not also fire.
+Rokid Glasses exposes two kinds of input events to bare-metal apps:
 
-### Action string reference
+- **System broadcasts**: temple function key, two-finger touch-panel gestures (double-tap, swipe forward, swipe back, long press), and single-finger long press on the touch panel. Register a dynamic `BroadcastReceiver` to receive them.
+- **Standard `KeyEvent`**: single-finger tap, single-finger double-tap, two-finger tap, single-finger long press, and single-finger swipe forward / swipe back (a sequence of two key-down events) on the touch panel. Handle them in Activity `dispatchKeyEvent` / `onKeyDown` / `onKeyUp`.
 
-The 11 action strings emitted by the Sprite key driver:
+This chapter lists the **action / extra / key code** for each event and how to integrate them.
 
-| `KeyType` constant | Intent action | Trigger |
-|--------------------|---------------|---------|
-| `CLICK` | `com.android.action.ACTION_SPRITE_BUTTON_CLICK` | Single click on the right-temple side button |
-| `BUTTON_DOWN` | `com.android.action.ACTION_SPRITE_BUTTON_DOWN` | Side button pressed (down edge) |
-| `BUTTON_UP` | `com.android.action.ACTION_SPRITE_BUTTON_UP` | Side button released (up edge) |
-| `DOUBLE_CLICK` | `com.android.action.ACTION_SPRITE_BUTTON_DOUBLE_CLICK` | Double-click — reserved for **back/exit** (see note below) |
-| `AI_START` | `com.android.action.ACTION_AI_START` | Long-press of the right-temple touchpad — launches the on-device Rokid AI module |
-| `LONG_PRESS` | `com.android.action.ACTION_SPRITE_BUTTON_LONG_PRESS` | Long press on the side button |
-| `ACTION_TWO_FINGER_SINGLE_TAP` | `com.android.action.ACTION_TWO_FINGER_SINGLE_TAP` | Two-finger single tap on the touchpad |
-| `ACTION_TWO_FINGER_DOUBLE_TAP` | `com.android.action.ACTION_TWO_FINGER_DOUBLE_TAP` | Two-finger double tap on the touchpad |
-| `ACTION_TWO_FINGER_SWIPE_FORWARD` | `com.android.action.ACTION_TWO_FINGER_SWIPE_FORWARD` | Two-finger forward swipe on the touchpad |
-| `ACTION_TWO_FINGER_SWIPE_BACK` | `com.android.action.ACTION_TWO_FINGER_SWIPE_BACK` | Two-finger back swipe on the touchpad |
-| `ACTION_SETTINGS_KEY` | `com.android.action.ACTION_SETTINGS_KEY` | Settings key (two-finger long-press, per the reference code's log message) |
+## Wear and fold
 
-> **Note on `DOUBLE_CLICK`:** Per the source comment, this event cannot be fully intercepted — the system reserves the double-click on the right-temple button for the global back/exit action. `abortBroadcast()` will stop downstream receivers in your process, but the back semantic is still applied by the platform.
+### Wear state change
 
-### 1. Button broadcasts — receiver
+| Field | Value |
+| --- | --- |
+| Action | `com.rokid.sprite.ACTION_TAKE_STATUS_CHANGED` |
+| Extra | `glasses_take_state` (String): `"1"` worn, `"0"` removed |
 
-The button broadcast definitions are as follows:
+### Temple open / fold
+
+| Field | Value |
+| --- | --- |
+| Action | `com.rokid.sprite.ACTION_LEG_STATUS_CHANGED` |
+| Extra | `glasses_leg_state` (String): `"1"` open, `"0"` folded |
+
+### Example
+
+```kotlin
+ContextCompat.registerReceiver(
+    context,
+    receiver,
+    IntentFilter().apply {
+        addAction("com.rokid.sprite.ACTION_TAKE_STATUS_CHANGED")
+        addAction("com.rokid.sprite.ACTION_LEG_STATUS_CHANGED")
+    },
+    ContextCompat.RECEIVER_EXPORTED,
+)
+// onReceive: intent.getStringExtra("glasses_take_state"), etc.
+```
+
+## Function key and touch panel (system broadcasts)
+
+Glasses run **Android 12 (API 31)**. Prefer `ContextCompat.registerReceiver(..., ContextCompat.RECEIVER_EXPORTED)`. When **targetSdk ≥ 33**, an explicit exported flag is required; `ContextCompat` runs correctly on API 31 glasses.
+
+Broadcasts are delivered only to **dynamically registered** receivers.
+
+### Temple function key
+
+| Event | Action | Notes |
+| --- | --- | --- |
+| Click | `com.android.action.ACTION_SPRITE_BUTTON_CLICK` | |
+| Down | `com.android.action.ACTION_SPRITE_BUTTON_DOWN` | |
+| Up | `com.android.action.ACTION_SPRITE_BUTTON_UP` | Not sent if long press already fired |
+| Double-click | `com.android.action.ACTION_SPRITE_BUTTON_DOUBLE_CLICK` | |
+| Triple-click | `com.android.action.ACTION_BOLON_PAIRING` | Triggers Bluetooth pairing |
+| Long press | `com.android.action.ACTION_SPRITE_BUTTON_LONG_PRESS` | Enters shutdown by default; intercept with `abortBroadcast` |
+| Very long press | `com.android.action.ACTION_SPRITE_BUTTON_VERY_VERY_LONG_PRESS` | |
+
+### Touch panel broadcasts (single-finger long press and two-finger gestures)
+
+| Event | Action |
+| --- | --- |
+| Single-finger long press | `com.android.action.ACTION_AI_START` |
+| Two-finger double-tap | `com.android.action.ACTION_TWO_FINGER_DOUBLE_TAP` |
+| Two-finger swipe forward | `com.android.action.ACTION_TWO_FINGER_SWIPE_FORWARD` |
+| Two-finger swipe back | `com.android.action.ACTION_TWO_FINGER_SWIPE_BACK` |
+| Two-finger long press (settings) | `com.android.action.ACTION_SETTINGS_KEY` |
+
+Two-finger **single tap** is **not** delivered as a broadcast: on the glasses firmware it is reported as a **`KeyEvent`** (`KEYCODE_NOTIFICATION`, key code 83) — see below. This differs from the v0.0.1-era sample, which listened for a (now removed) `ACTION_TWO_FINGER_SINGLE_TAP` broadcast.
+
+Single-finger tap and double-tap use **`KeyEvent`** (`KEYCODE_ENTER` / `KEYCODE_BACK`); single-finger long press also delivers **`KEYCODE_PROG_BLUE`** and broadcast **`ACTION_AI_START`** — both paths can be consumed; see the example below.
+
+### Registration and KeyEvent example
+
+```kotlin
+ContextCompat.registerReceiver(
+    context,
+    keyReceiver,
+    IntentFilter().apply {
+        priority = IntentFilter.SYSTEM_HIGH_PRIORITY
+        addAction("com.android.action.ACTION_SPRITE_BUTTON_CLICK")
+        addAction("com.android.action.ACTION_SPRITE_BUTTON_LONG_PRESS")
+        addAction("com.android.action.ACTION_AI_START")
+        addAction("com.android.action.ACTION_TWO_FINGER_SWIPE_FORWARD")
+        // … other actions from the tables above
+    },
+    ContextCompat.RECEIVER_EXPORTED,
+)
+
+override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+    if (keyCode == KeyEvent.KEYCODE_ENTER && event?.repeatCount == 0) {
+        // Single-finger tap
+        return true
+    }
+    return super.onKeyUp(keyCode, event)
+}
+
+override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+    when (keyCode) {
+        KeyEvent.KEYCODE_BACK -> {
+            // Single-finger double-tap / back
+            return true
+        }
+        KeyEvent.KEYCODE_PROG_BLUE -> {
+            // Single-finger long press (also sent as ACTION_AI_START)
+            return true
+        }
+        KeyEvent.KEYCODE_NOTIFICATION -> {
+            // Two-finger tap (key code 83, scan code 204)
+            return true
+        }
+        KeyEvent.KEYCODE_SETTINGS -> {
+            // Two-finger long press (also sent as ACTION_SETTINGS_KEY)
+            return true
+        }
+    }
+    return super.onKeyDown(keyCode, event)
+}
+```
+
+Call `abortBroadcast()` inside `onReceive`, before `goAsync`, and only for **ordered** broadcasts, to block system defaults (AI, shutdown, etc.). Non-ordered broadcasts cannot be aborted; consume the `KeyEvent` path when available.
+
+### Single-finger swipe forward / back (KeyEvent sequence)
+
+Single-finger swipe forward and swipe back on the touch panel are reported as a **sequence of two key-down events**, with no more than 500 ms between the two keys:
+
+| Gesture | Key sequence (key code) | Interval |
+| --- | --- | --- |
+| Swipe forward | `KEYCODE_DPAD_RIGHT` (22) → `KEYCODE_DPAD_DOWN` (20) | ≤ 500 ms |
+| Swipe back | `KEYCODE_DPAD_LEFT` (21) → `KEYCODE_DPAD_UP` (19) | ≤ 500 ms |
+
+Non-consecutive keys or a timeout invalidate the sequence. Consume the first key of the sequence as well so it does not leak into focus navigation. Example:
+
+```kotlin
+class SwipeDetector(
+    private val onSwipeForward: () -> Unit,
+    private val onSwipeBack: () -> Unit,
+) {
+    private var lastKeyCode = -1
+    private var lastEventTime = 0L
+
+    /** Call for each ACTION_DOWN (repeatCount == 0); returns true when consumed. */
+    fun onKeyDown(keyCode: Int, eventTime: Long): Boolean {
+        val prev = if (eventTime - lastEventTime <= MAX_INTERVAL_MS) lastKeyCode else -1
+        lastKeyCode = keyCode
+        lastEventTime = eventTime
+        return when {
+            prev == FORWARD_FIRST && keyCode == FORWARD_SECOND -> {
+                onSwipeForward()
+                reset()
+                true
+            }
+            prev == BACK_FIRST && keyCode == BACK_SECOND -> {
+                onSwipeBack()
+                reset()
+                true
+            }
+            // Consume the first key too, so it does not leak into focus navigation
+            keyCode == FORWARD_FIRST || keyCode == BACK_FIRST -> true
+            else -> false
+        }
+    }
+
+    fun reset() {
+        lastKeyCode = -1
+        lastEventTime = 0L
+    }
+
+    companion object {
+        private const val FORWARD_FIRST = KeyEvent.KEYCODE_DPAD_RIGHT   // 22
+        private const val FORWARD_SECOND = KeyEvent.KEYCODE_DPAD_DOWN   // 20
+        private const val BACK_FIRST = KeyEvent.KEYCODE_DPAD_LEFT       // 21
+        private const val BACK_SECOND = KeyEvent.KEYCODE_DPAD_UP        // 19
+        private const val MAX_INTERVAL_MS = 500L
+    }
+}
+
+// In the Activity:
+override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+    if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+        if (swipeDetector.onKeyDown(event.keyCode, event.eventTime)) {
+            return true
+        }
+    }
+    return super.dispatchKeyEvent(event)
+}
+```
+
+## Notes
+
+- Do not rely on actions not listed in this chapter.
+- Two-finger tap is reported as a `KeyEvent` (key code 83); do not rely on a broadcast.
+- Single-finger swipe forward / back are key-sequence events; the app must track sequence state itself. If the app uses focus navigation, consume the first key of the sequence.
+
+## Legacy reference sample (v0.0.1-era, temple-key broadcasts only)
+
+The following `KeyReceiver` was captured from the v0.0.1-era decompiled sample. It only covers the **temple function key** and a superseded two-finger single-tap broadcast (`ACTION_TWO_FINGER_SINGLE_TAP`, no longer emitted — see the [Function key and touch panel](#function-key-and-touch-panel-system-broadcasts) tables above for the current action set). Kept for reference on the ordered-broadcast + `priority = 100` + `abortBroadcast()` pattern; prefer the current tables above for the authoritative action-string list.
 
 ```kotlin
 package com.rokid.cxrssdksamples.activities.keys
@@ -52,7 +222,6 @@ enum class KeyType(val action: String) {
     DOUBLE_CLICK("com.android.action.ACTION_SPRITE_BUTTON_DOUBLE_CLICK"),
     AI_START("com.android.action.ACTION_AI_START"),
     LONG_PRESS("com.android.action.ACTION_SPRITE_BUTTON_LONG_PRESS"),
-    ACTION_TWO_FINGER_SINGLE_TAP("com.android.action.ACTION_TWO_FINGER_SINGLE_TAP"),
     ACTION_TWO_FINGER_DOUBLE_TAP("com.android.action.ACTION_TWO_FINGER_DOUBLE_TAP"),
     ACTION_TWO_FINGER_SWIPE_FORWARD("com.android.action.ACTION_TWO_FINGER_SWIPE_FORWARD"),
     ACTION_TWO_FINGER_SWIPE_BACK("com.android.action.ACTION_TWO_FINGER_SWIPE_BACK"),
@@ -67,7 +236,6 @@ class KeyReceiver : BroadcastReceiver() {
         intent?.action?.let {
             when (it) {
                 KeyType.CLICK.action -> {
-                    // Button click received — abort the broadcast
                     listener?.onReceive(KeyType.CLICK)
                     abortBroadcast()
                 }
@@ -80,7 +248,9 @@ class KeyReceiver : BroadcastReceiver() {
                     abortBroadcast()
                 }
                 KeyType.DOUBLE_CLICK.action -> {
-                    // Button double-click — abort the broadcast — NOTE: this event cannot truly be intercepted; the system reserves it for the back/exit action
+                    // NOTE: the temple double-click is also reserved by the platform for the global back/exit
+                    // action; abortBroadcast() stops downstream receivers in this process but the platform
+                    // back semantic still applies.
                     listener?.onReceive(KeyType.DOUBLE_CLICK)
                     abortBroadcast()
                 }
@@ -90,10 +260,6 @@ class KeyReceiver : BroadcastReceiver() {
                 }
                 KeyType.LONG_PRESS.action -> {
                     listener?.onReceive(KeyType.LONG_PRESS)
-                    abortBroadcast()
-                }
-                KeyType.ACTION_TWO_FINGER_SINGLE_TAP.action -> {
-                    listener?.onReceive(KeyType.ACTION_TWO_FINGER_SINGLE_TAP)
                     abortBroadcast()
                 }
                 KeyType.ACTION_TWO_FINGER_DOUBLE_TAP.action -> {
@@ -118,30 +284,13 @@ class KeyReceiver : BroadcastReceiver() {
 }
 ```
 
-### 2. Registering and consuming the broadcasts
-
-> **Note on the source's "left leg" log strings:** the log messages below say "button on left leg". This is a typo in the upstream sample — physically, the activated button is on the **right** temple. The string values are preserved verbatim from the source for fidelity; treat them as if they said "right temple".
-
-Sample registration:
+Sample registration (`priority = 100`):
 
 ```kotlin
 private val keyReceiver = KeyReceiver().apply {
     listener = object : KeyReceiverListener {
         override fun onReceive(keyType: KeyType) {
             latestKeyType = keyType
-            when (keyType) {
-                KeyType.CLICK -> Log.d("KeysActivity", "system event: button on left leg")
-                KeyType.BUTTON_DOWN -> Log.d("KeysActivity", "system event: button on left leg down")
-                KeyType.BUTTON_UP -> Log.d("KeysActivity", "system event: button on left leg up")
-                KeyType.DOUBLE_CLICK -> Log.d("KeysActivity", "system event: button on left leg double click")
-                KeyType.AI_START -> Log.d("KeysActivity", "system event: touchpad long pressed")
-                KeyType.LONG_PRESS -> Log.d("KeysActivity", "system event: long pressed the button on left leg")
-                KeyType.ACTION_TWO_FINGER_SINGLE_TAP -> Log.d("KeysActivity", "system event: two finger single tap")
-                KeyType.ACTION_TWO_FINGER_DOUBLE_TAP -> Log.d("KeysActivity", "system event: two finger double tap")
-                KeyType.ACTION_TWO_FINGER_SWIPE_FORWARD -> Log.d("KeysActivity", "system event: two finger swipe forward")
-                KeyType.ACTION_TWO_FINGER_SWIPE_BACK -> Log.d("KeysActivity", "system event: two finger swipe back")
-                KeyType.ACTION_SETTINGS_KEY -> Log.d("KeysActivity", "system event: two finger long pressed")
-            }
         }
     }
 }
@@ -149,13 +298,6 @@ private val keyReceiver = KeyReceiver().apply {
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    setContent {
-        CXRSSDKSamplesTheme {
-            KeysScreen(latestKeyType = latestKeyType?.name ?: "")
-        }
-    }
     registerReceiver(keyReceiver, IntentFilter().apply {
         addAction(KeyType.CLICK.action)
         addAction(KeyType.BUTTON_DOWN.action)
@@ -163,7 +305,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
         addAction(KeyType.DOUBLE_CLICK.action)
         addAction(KeyType.AI_START.action)
         addAction(KeyType.LONG_PRESS.action)
-        addAction(KeyType.ACTION_TWO_FINGER_SINGLE_TAP.action)
         addAction(KeyType.ACTION_TWO_FINGER_DOUBLE_TAP.action)
         addAction(KeyType.ACTION_TWO_FINGER_SWIPE_FORWARD.action)
         addAction(KeyType.ACTION_TWO_FINGER_SWIPE_BACK.action)
@@ -173,47 +314,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
-### Other key events
-
-Any remaining keys not covered by the broadcasts above can be observed through the standard system `KeyEvent` callbacks:
-
-```kotlin
-@SuppressLint("GestureBackNavigation")
-override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-    Log.d("KeysActivity", "onKeyDown: $keyCode")
-    when (keyCode) {
-        KeyEvent.KEYCODE_BACK -> {
-            Log.d("KeysActivity", "onKeyDown: back pressed")
-            return true
-        }
-        KeyEvent.KEYCODE_ENTER -> {
-            Log.d("KeysActivity", "onKeyUp: touchpad single down")
-            return true
-        }
-        else -> Log.d("KeysActivity", "onKeyUp: $keyCode")
-    }
-    return super.onKeyDown(keyCode, event)
-}
-
-@SuppressLint("GestureBackNavigation")
-override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-    Log.d("KeysActivity", "onKeyUp: $keyCode")
-    when (keyCode) {
-        KeyEvent.KEYCODE_BACK -> {
-            Log.d("KeysActivity", "onKeyUp: back pressed")
-            return true
-        }
-        KeyEvent.KEYCODE_ENTER -> {
-            Log.d("KeysActivity", "onKeyUp: touchpad single up")
-            return true
-        }
-        else -> Log.d("KeysActivity", "onKeyUp: $keyCode")
-    }
-    return super.onKeyUp(keyCode, event)
-}
-```
-
 ## Related docs
 
-- [Bare-Metal Development Guide](./development-guide.md) — overview, reserved system interactions, dev environment.
-- [Audio Recording](./audio-recording.md) — uses the same `KeyReceiver` to start/stop recording on `CLICK`.
+- [Introduction to Bare-Metal Development on Rokid Glasses](./development-guide.md) — overview, runtime environment, dev environment.
+- [Raw Audio on Glasses](./audio-recording.md) — can reuse the click event to start/stop recording.
+- [GlassesBareDevSample Project and Pages](./sample-project.md) — how the current sample's `BareGlassesInputDispatcher` wires these events.
