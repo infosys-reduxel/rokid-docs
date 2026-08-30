@@ -380,17 +380,17 @@ cxrLink.disconnect()
 
 ## Session Types and Capability Matrix
 
-The SDK operates in one of two session modes set before calling `connect`. Capabilities differ by session:
+The SDK operates in one of two session modes set before calling `connect`. Capabilities differ by session. As of v1.0.4, the official docs also track **Brightness** and **Volume** (the Device Controls capability) in this matrix — note that, unlike the other three capabilities, they become available as soon as the link is connected and do **not** require scene building:
 
-| Session / State | Audio | Photo | Custom Command |
-|-----------------|-------|-------|----------------|
-| Unauthenticated / no token | No | No | No |
-| Authenticated but not connected | No | No | No |
-| Connected but scene not ready (View not opened / app not launched) | No | No | No |
-| `CUSTOMVIEW` + custom view opened | Yes | Yes | No |
-| `CUSTOMAPP` + glasses-side app opened | Yes | Yes | Yes (requires same `CXRLink` instance) |
+| Session / State | Audio | Photo | Custom Command | Brightness | Volume |
+|-----------------|-------|-------|----------------|------------|--------|
+| Unauthenticated / no token | No | No | No | No | No |
+| Authenticated but not connected | No | No | No | No | No |
+| Connected but scene not ready (View not opened / app not launched) | No | No | No | Yes | Yes |
+| `CUSTOMVIEW` + custom view opened | Yes | Yes | No | Yes | Yes |
+| `CUSTOMAPP` + glasses-side app opened | Yes | Yes | Yes (requires same `CXRLink` instance) | Yes | Yes |
 
-> Source: `custom.rokid.com` CXR-L SDK intro page (Chinese), fetched 2026-06-03.
+> Source: `custom.rokid.com` CXR-L SDK Introduction doc, docId `663f26766e7348059905815bc022e1f7` (English, fetched 2026-08-30; supersedes the prior docId `9adcfb07939846e5945e79dfbd923f63` fetched 2026-06-03). See [intro.md](intro.md#capability-availability-matrix) for the full capability tables.
 
 ## Notes
 
@@ -442,7 +442,8 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 
 - **Session lifecycle callbacks.** New `ICXRSessionCbk` interface with four methods: `onSessionAvailable`, `onSessionStart`, `onSessionPause`, `onSessionUnavailable` — each receives a `CXRSessionReason` enum value. Register via the new 2-arg `configCXRSession(session, callback)` overload before calling `connect()`.
 - **`getCXRSessionState()` added.** Returns the current `CXRSessionState` (Available / Start / Pause / Unavailable) without needing a callback.
-- **`setGlassBrightness(int)` and `setGlassVolume(int)` added.** Programmatic control of glasses display brightness and speaker volume from the mobile-side SDK. Value ranges are undocumented in the binary; consult official docs when released.
+- **`setGlassBrightness(int)` and `setGlassVolume(int)` added.** Programmatic control of glasses display brightness and speaker volume from the mobile-side SDK. **Value range 0–15 for both, now officially documented** (see [Device Controls](#device-controls-v104) above and [intro.md](intro.md#core-capabilities)) — previously listed here as undocumented/inferred from the binary; confirmed against the official Introduction doc fetched 2026-08-30. That doc also states this capability requires no scene building, unlike audio/photo/custom commands.
+- **Official Android sample renamed.** The `client-l` reference sample shipped alongside the official docs is now `RenewCXRLSample` (`com.rokid.renewcxrlsample`), superseding the previously-referenced `CXRLSample` (`com.rokid.cxrlsample`); minimum required Rokid AI App (domestic) is now **1.9.0**. See [intro.md](intro.md#sample-projects).
 - **`CXRSessionReason` enum added** with 9 reason codes covering glass state, link state, AI events, and scene takeovers.
 - **`CXRSessionState` enum added** with 4 state values mirroring the `ICXRSessionCbk` callback names.
 - **`targetSdkVersion` removed from AAR manifest.** The `<uses-sdk>` element in the AAR no longer declares `targetSdkVersion`. Host apps are unaffected — their own `targetSdkVersion` in `build.gradle` takes precedence.
