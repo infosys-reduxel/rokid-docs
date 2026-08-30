@@ -1,6 +1,6 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); most of the v1.0.4 additions still have no official Rokid changelog. The exception is the **Device Controls** section below (`setGlassBrightness` / `setGlassVolume`), which is now officially documented — see the per-method notes. See [release-notes.md](release-notes.md) for the full changelogs and [intro.md](intro.md) for the current official Introduction doc (fetched 2026-08-30).
 
 ## Overview
 
@@ -12,7 +12,8 @@ CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rok
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
 - **Dependencies (1.0.3–1.0.4)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
-- **Companion app requirement (1.0.3+)**: Rokid AI App (domestic) ≥ 1.7.14
+- **Companion app requirement (1.0.3)**: Rokid AI App (domestic) ≥ 1.7.14
+- **Companion app requirement (1.0.4)**: Rokid AI App (domestic) ≥ 1.9.0, per the `RenewCXRLSample` requirement listed in the official Introduction doc (fetched 2026-08-30) — see [intro.md](intro.md#sample-projects)
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
 
@@ -106,10 +107,14 @@ Used in the `CUSTOMAPP` session type. The target glasses-side app must be instal
 
 ### Device Controls (v1.0.4+)
 
+Officially documented as the **Device control** capability (set/query glasses brightness and volume). Per the official Introduction doc, this capability is available as soon as the phone-glasses link is ready — **scene building (CustomView/CustomApp) is not required**, unlike audio, photo, and custom commands. See [intro.md](intro.md#core-capabilities) for the full capability/prerequisite tables.
+
 | Method | Signature | Returns | Description |
 |--------|-----------|---------|-------------|
-| `setGlassBrightness` | `(level: Int)` | `Boolean` | v1.0.4+. Set the glasses display brightness level. Value range undocumented (inferred from binary diff). |
-| `setGlassVolume` | `(level: Int)` | `Boolean` | v1.0.4+. Set the glasses speaker volume level. Value range undocumented (inferred from binary diff). |
+| `setGlassBrightness` | `(level: Int)` | `Boolean` | v1.0.4+. Set the glasses display brightness level. Value range **0–15** (officially documented). |
+| `setGlassVolume` | `(level: Int)` | `Boolean` | v1.0.4+. Set the glasses speaker volume level. Value range **0–15** (officially documented). |
+
+> Source: [custom.rokid.com CXR-L SDK Introduction](https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/us/663f26766e7348059905815bc022e1f7.html) (fetched 2026-08-30), which supersedes the previous "value range undocumented (inferred from binary diff)" note. The method signatures themselves (`(level: Int): Boolean`) remain as reconstructed from the v1.0.3→v1.0.4 binary diff — the official doc confirms the value range and the "no scene building required" prerequisite but does not publish full Kotlin/Java signatures.
 
 ### Service Info
 
@@ -375,17 +380,17 @@ cxrLink.disconnect()
 
 ## Session Types and Capability Matrix
 
-The SDK operates in one of two session modes set before calling `connect`. Capabilities differ by session:
+The SDK operates in one of two session modes set before calling `connect`. Capabilities differ by session. As of v1.0.4, the official docs also track **Brightness** and **Volume** (the Device Controls capability) in this matrix — note that, unlike the other three capabilities, they become available as soon as the link is connected and do **not** require scene building:
 
-| Session / State | Audio | Photo | Custom Command |
-|-----------------|-------|-------|----------------|
-| Unauthenticated / no token | No | No | No |
-| Authenticated but not connected | No | No | No |
-| Connected but scene not ready (View not opened / app not launched) | No | No | No |
-| `CUSTOMVIEW` + custom view opened | Yes | Yes | No |
-| `CUSTOMAPP` + glasses-side app opened | Yes | Yes | Yes (requires same `CXRLink` instance) |
+| Session / State | Audio | Photo | Custom Command | Brightness | Volume |
+|-----------------|-------|-------|----------------|------------|--------|
+| Unauthenticated / no token | No | No | No | No | No |
+| Authenticated but not connected | No | No | No | No | No |
+| Connected but scene not ready (View not opened / app not launched) | No | No | No | Yes | Yes |
+| `CUSTOMVIEW` + custom view opened | Yes | Yes | No | Yes | Yes |
+| `CUSTOMAPP` + glasses-side app opened | Yes | Yes | Yes (requires same `CXRLink` instance) | Yes | Yes |
 
-> Source: `custom.rokid.com` CXR-L SDK intro page (Chinese), fetched 2026-06-03.
+> Source: `custom.rokid.com` CXR-L SDK Introduction doc, docId `663f26766e7348059905815bc022e1f7` (English, fetched 2026-08-30; supersedes the prior docId `9adcfb07939846e5945e79dfbd923f63` fetched 2026-06-03). See [intro.md](intro.md#capability-availability-matrix) for the full capability tables.
 
 ## Notes
 
@@ -437,7 +442,8 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 
 - **Session lifecycle callbacks.** New `ICXRSessionCbk` interface with four methods: `onSessionAvailable`, `onSessionStart`, `onSessionPause`, `onSessionUnavailable` — each receives a `CXRSessionReason` enum value. Register via the new 2-arg `configCXRSession(session, callback)` overload before calling `connect()`.
 - **`getCXRSessionState()` added.** Returns the current `CXRSessionState` (Available / Start / Pause / Unavailable) without needing a callback.
-- **`setGlassBrightness(int)` and `setGlassVolume(int)` added.** Programmatic control of glasses display brightness and speaker volume from the mobile-side SDK. Value ranges are undocumented in the binary; consult official docs when released.
+- **`setGlassBrightness(int)` and `setGlassVolume(int)` added.** Programmatic control of glasses display brightness and speaker volume from the mobile-side SDK. **Value range 0–15 for both, now officially documented** (see [Device Controls](#device-controls-v104) above and [intro.md](intro.md#core-capabilities)) — previously listed here as undocumented/inferred from the binary; confirmed against the official Introduction doc fetched 2026-08-30. That doc also states this capability requires no scene building, unlike audio/photo/custom commands.
+- **Official Android sample renamed.** The `client-l` reference sample shipped alongside the official docs is now `RenewCXRLSample` (`com.rokid.renewcxrlsample`), superseding the previously-referenced `CXRLSample` (`com.rokid.cxrlsample`); minimum required Rokid AI App (domestic) is now **1.9.0**. See [intro.md](intro.md#sample-projects).
 - **`CXRSessionReason` enum added** with 9 reason codes covering glass state, link state, AI events, and scene takeovers.
 - **`CXRSessionState` enum added** with 4 state values mirroring the `ICXRSessionCbk` callback names.
 - **`targetSdkVersion` removed from AAR manifest.** The `<uses-sdk>` element in the AAR no longer declares `targetSdkVersion`. Host apps are unaffected — their own `targetSdkVersion` in `build.gradle` takes precedence.
