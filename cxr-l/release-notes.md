@@ -1,8 +1,20 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet. v1.1.0–v1.1.2 existence confirmed via Maven metadata (fetched 2026-08-30); no official changelog and no binary diff have been performed for these releases yet — see the placeholder entry below._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.1.0 – v1.1.2 — release dates unconfirmed
+
+> **Registry entry only — not a changelog.** `com.rokid.cxr:client-l` has advanced to release **1.1.2** on Maven, with **1.1.0** and **1.1.1** also published in between v1.0.4 and 1.1.2.
+>
+> Source: `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/maven-metadata.xml`, fetched and confirmed 2026-08-30 — `<release>1.1.2</release>`, `<lastUpdated>20260828083628</lastUpdated>`, with `<versions>` listing `1.1.0`, `1.1.X-SNAPSHOT`, `1.1.1`, `1.1.2` in sequence after `1.0.4`. The metadata's single `lastUpdated` timestamp covers the whole file and cannot be attributed to any one version; individual per-version publish dates are not available from this endpoint.
+>
+> As of this check, the official doc portal (`https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/us/`) still shows "Version 1.0.4" and has not been updated to reflect 1.1.0–1.1.2. No official Rokid changelog exists for any of these three releases.
+>
+> **No API-level changes are documented here.** Unlike the v1.0.4 entry above, this entry is *not* backed by a binary diff — only by the existence of the version numbers in Maven metadata. Do not infer feature content from the version bump.
+>
+> **[TODO]** Perform a binary diff of the `client-l` AARs for 1.0.4 → 1.1.0 → 1.1.1 → 1.1.2 (all available from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`) to reconstruct what actually changed across these three releases, following the same methodology used for the v1.0.4 entry below. Until that diff is done, treat 1.1.0–1.1.2 as version-registry entries only.
 
 ## v1.0.4 — published 2026-06-18
 
