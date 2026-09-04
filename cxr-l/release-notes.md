@@ -1,8 +1,63 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for that release. v1.1.0 / v1.1.1 / v1.1.2 entries sourced from a binary diff of Maven AARs (downloaded 2026-09-04 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`); `developerdoc.rokid.com/sdk` and `open.rokid.com/sdk` are React SPAs that render no server-side changelog content and could not be checked for an official write-up of these releases as of 2026-09-04._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+
+## v1.1.2 — published 2026-08-28
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.1.1` and `client-l:1.1.2` AARs (downloaded 2026-09-04). AAR size: 171,307 bytes vs 171,369 bytes for v1.1.1 (−0.04 %).
+
+Byte-identical class inventory to v1.1.1 (same 142 `.class` files, same package layout) and an identical POM (same dependency versions). No API-surface change detected. Likely an internal bugfix / resource-only patch release.
+
+## v1.1.1 — published 2026-08-14
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.1.0` and `client-l:1.1.1` AARs (downloaded 2026-09-04). AAR size: 171,369 bytes vs 1,286,574 bytes for v1.1.0 (−86.7 %; see packaging change below).
+
+**Theme: packaging cleanup after the v1.1.0 session-API drop.** No changes to the classic `com.rokid.cxr.link` (`CXRLink`) API surface or to the new `com.rokid.cxr.session` API introduced in v1.1.0.
+
+**Packaging changes:**
+
+- **Native libraries un-bundled.** v1.1.0 shipped `jni/{arm64-v8a,armeabi-v7a}/lib{caps,cxr-bridge-jni,cxr-sock-proto-jni,flora-cli,mutils}.so` directly inside the AAR. v1.1.1 removes the `jni/` directory entirely — natives are once again pulled in transitively via the `cxr-service-bridge` dependency, which is re-added to the POM (see below). This explains most of the AAR size drop.
+- **`cxr-service-bridge` dependency restored.** Re-added to the POM at a newer snapshot build (`1.0-20260715.121510-107`, vs `1.0-20260522.063600-105` used through v1.0.4). It had been dropped from the POM in v1.1.0, whose AAR instead embedded the bridge classes (`com.rokid.cxr.CXRServiceBridge`, `CXRSocketProtocol`, `Caps`, `RLog`, `BuildConfig`) directly — those embedded copies are removed in v1.1.1.
+- **ProGuard rules added.** New `proguard.txt` at the AAR root (first appeared in v1.1.0, retained here).
+- **AIDL stub inner classes obfuscated.** The `$Stub$a` proxy inner classes for the eight `com.rokid.sprite.aiapp.externalapp.I*Callback` / `IMediaStreamService` AIDL interfaces are renamed to single-letter classes `a.class`–`h.class` (ProGuard name-shrinking artifact, not an API change).
+- **Manifest package attribute changed** from `com.rokid.cxr.client.extend` to `com.rokid.cxr.link` (cosmetic; matches the `BuildConfig` class's actual package).
+
+**Dependency changes vs v1.1.0:**
+
+| Dependency | v1.1.0 | v1.1.1 |
+|------------|--------|--------|
+| `cxr-service-bridge` | *(not declared; embedded in AAR)* | `1.0-20260715.121510-107` |
+| `kotlin-stdlib` | `1.6.0` | `1.9.0` |
+| `gson` | `2.10.1` | `2.10.1` |
+| `kotlinx-coroutines-android` | `1.6.4` | `1.9.0` |
+
+## v1.1.0 — published 2026-07-02
+
+> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.4` and `client-l:1.1.0` AARs (downloaded 2026-09-04). AAR size: 1,286,574 bytes vs 70,543 bytes for v1.0.4 (+1724%; driven mostly by bundled native libraries, see below). Neither `developerdoc.rokid.com/sdk` nor `open.rokid.com/sdk` rendered a changelog for this release as of 2026-09-04 (both are client-rendered SPAs; no server-side content to scrape from this environment).
+
+**Theme: new coroutine/StateFlow-based session API, additive alongside the existing `CXRLink` API.**
+
+This release adds an entirely new `com.rokid.cxr.session` package (~94 new classes) implementing a higher-level, Kotlin-coroutine-friendly session facade. It is **additive**: every class in the existing `com.rokid.cxr.link` package (`CXRLink`, `ICXRLinkCbk`, `CxrDefs`, `GlassInfo`, etc., documented in [api-reference.md](api-reference.md)) is still present, byte-identical in the class list, in v1.1.0. Binary evidence (`CapabilityBroker` holds a `com.rokid.sprite.aiapp.externalapp.example.ExternalAppClient` field) confirms the new session API is a facade built on top of the same `ExternalAppClient` AIDL transport that `CXRLink` uses — it does not replace the transport layer described in the [architectural mental model](../CLAUDE.md).
+
+See [api-reference.md § Session API (v1.1.0+)](api-reference.md#session-api-v110) for the reconstructed public surface (`CxrSessionManager`, `CxrSession`, callback interfaces, and supporting data/enum types).
+
+**Packaging changes:**
+
+- **Native libraries bundled directly in the AAR** for the first time: `jni/arm64-v8a/` and `jni/armeabi-v7a/`, each containing `libcaps.so`, `libcxr-bridge-jni.so`, `libcxr-sock-proto-jni.so`, `libflora-cli.so`, `libmutils.so`. (Reverted in v1.1.1 — see above.)
+- **`proguard.txt` added** at the AAR root (first appearance).
+- **`cxr-service-bridge` dropped from the POM.** Its classes (`CXRServiceBridge`, `CXRSocketProtocol`, `Caps`, `RLog`) are instead embedded directly in `classes.jar` under `com.rokid.cxr.*` in this release. (Reverted in v1.1.1.)
+- **`kotlinx-coroutines-android:1.6.4` added** as a new runtime dependency — required by the `StateFlow`-based `CxrSession.getStateFlow()` API.
+
+**Dependency changes vs v1.0.4:**
+
+| Dependency | v1.0.4 | v1.1.0 |
+|------------|--------|--------|
+| `cxr-service-bridge` | `1.0-20260522.063600-105` | *(not declared; embedded in AAR)* |
+| `kotlin-stdlib` | `1.6.0` | `1.6.0` |
+| `gson` | `2.10.1` | `2.10.1` |
+| `kotlinx-coroutines-android` | *(none)* | `1.6.4` |
 
 ## v1.0.4 — published 2026-06-18
 
