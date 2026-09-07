@@ -346,11 +346,11 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
-| **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
-| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
-| **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
-| **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.1.2` (uploaded 2026-08-28) |
+| **Size** | 171,307 bytes (1.1.2 AAR); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Min SDK** | 28 (all versions through 1.1.2 per AAR manifest) |
+| **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 onward |
+| **Dependencies (1.1.1–1.1.2)** | cxr-service-bridge 1.0-20260715.121510-107, Kotlin stdlib 1.9.0, kotlinx-coroutines-android 1.9.0 (new), Gson 2.10.1 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
 **Entry Point:**
@@ -358,7 +358,7 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 class CXRLink(context: Context) : ExternalAppClient(context)
 ```
 
-`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
+`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration. Since v1.1.x, an additional Kotlin coroutine/`StateFlow`-based entry point exists: `com.rokid.cxr.session.CxrSessionManager` / `CxrSession`, layered on top of the same `ExternalAppClient` binding — see [release notes](cxr-l/release-notes.md) for the reverse-engineered class inventory (no official changelog published yet).
 
 > [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 
