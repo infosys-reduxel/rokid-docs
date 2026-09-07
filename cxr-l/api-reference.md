@@ -1,17 +1,17 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4, v1.1.1, and v1.1.2 entries are reconstructed from binary diffs of the corresponding AARs; no official Rokid changelog has been published for any release past v1.0.3 as of 2026-09-07. See [release-notes.md](release-notes.md) for the full changelogs, including the new `com.rokid.cxr.session` Kotlin coroutine API added in v1.1.x.
 
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.1.2` (uploaded 2026-08-28; portal changelog still pins 1.0.4 as of 2026-09-07)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
-- **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
+- **minSdk**: 28 across all versions through v1.1.2 (per AAR manifest; note the SDK's own doc pages have at times referenced `minSdk 31` — treat the AAR manifest as authoritative)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
-- **Dependencies (1.0.3–1.0.4)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
+- **Dependencies (v1.1.1/v1.1.2)**: `kotlin-stdlib:1.9.0`, `kotlinx-coroutines-android:1.9.0` (new in v1.1.x), `gson:2.10.1`, `cxr-service-bridge:1.0-20260715.121510-107`
 - **Companion app requirement (1.0.3+)**: Rokid AI App (domestic) ≥ 1.7.14
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
@@ -21,9 +21,14 @@ CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rok
 ```
 ExternalAppClient (com.rokid.sprite.aiapp.externalapp.example)
   └── CXRLink (com.rokid.cxr.link)
+
+CxrSessionManager / CxrSession (com.rokid.cxr.session)   -- added v1.1.x, see below
+  (internally wraps an ExternalAppClient instance via CapabilityBroker)
 ```
 
-`CXRLink` is the entry point. It extends `ExternalAppClient` which contains all methods. `ExternalAppClient` binds to `IMediaStreamService` via Android AIDL.
+`CXRLink` is the original entry point. It extends `ExternalAppClient` which contains all methods. `ExternalAppClient` binds to `IMediaStreamService` via Android AIDL.
+
+Since v1.1.x, a second, higher-level entry point exists: `com.rokid.cxr.session.CxrSessionManager` (obtained via `CxrSessionManager.Companion.getInstance(context)`), which produces `CxrSession` objects exposing the same capabilities through a Kotlin coroutine/`StateFlow`-friendly surface (`SessionResult<T>` return values, a `StateFlow<SessionState>`, and structured sealed/data-class types instead of raw `Boolean`/`Int`). It does not replace `CXRLink` — both coexist in the AAR — but is likely the forward-looking API for new Kotlin-based integrations. See [release-notes.md § v1.1.1](release-notes.md#v111--uploaded-2026-08-14-provisional--corrects-an-anomalous-v110) for the full class/method inventory (reverse-inferred from bytecode; no official docs published yet).
 
 ## CXRLink
 
