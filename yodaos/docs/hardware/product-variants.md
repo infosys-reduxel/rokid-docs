@@ -1,5 +1,11 @@
 # Product Variants
 
+> For the full Rokid Glasses hardware specification table (SoC, RAM/ROM, battery, camera,
+> optics, dimensions, connectivity, etc.), see [Device Specifications — Rokid Glasses](../sprite-overview.md#device-specifications--rokid-glasses)
+> in `sprite-overview.md`, sourced from `https://developerdoc.rokid.com/sprite` (live-verified
+> 2026-07-10; matches the upstream spec table exactly — no drift). This file covers only the
+> OEM ID / model variant mapping, not the full spec sheet.
+
 From `vendor/etc/init/hw/init.rokid_oem_define.rc`:
 
 | OEM ID | Model | Panel | Description |
