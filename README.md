@@ -346,13 +346,13 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.1` (published 2026-08-14, diffed 2026-08-19 via binary diff — supersedes the short-lived `1.1.0` from 2026-07-02; no official changelog for either — see [cxr-l/release-notes.md](cxr-l/release-notes.md)) |
-| **Size** | 171,369 bytes (1.1.1 AAR); 1,286,574 bytes (1.1.0 AAR, +1,724% vs 1.0.4, later reverted); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
-| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.1) |
+| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.2` (Maven `lastUpdated` 2026-09-10, diffed 2026-09-13 via binary diff — supersedes `1.1.1` from 2026-08-14; no official changelog for 1.1.0, 1.1.1, or 1.1.2 — see [cxr-l/release-notes.md](cxr-l/release-notes.md)). Packaging/toolchain-only vs 1.1.1, but `GlassInfo.sn` was removed — see release notes. |
+| **Size** | 171,307 bytes (1.1.2 AAR); 171,369 bytes (1.1.1 AAR); 1,286,574 bytes (1.1.0 AAR, +1,724% vs 1.0.4, later reverted); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.2) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
 | **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
 | **Dependencies (1.1.0, superseded)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); cxr-service-bridge was bundled in the AAR instead of an external dependency — fixed in 1.1.1 |
-| **Dependencies (1.1.1)** | cxr-service-bridge 1.0-20260715.121510-107 (restored as external dependency), Kotlin stdlib 1.9.0, Gson 2.10.1, kotlinx-coroutines-android 1.9.0 |
+| **Dependencies (1.1.1–1.1.2, unchanged)** | cxr-service-bridge 1.0-20260715.121510-107 (restored as external dependency), Kotlin stdlib 1.9.0, Gson 2.10.1, kotlinx-coroutines-android 1.9.0 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
 **Entry Point (v1.0.x API):**

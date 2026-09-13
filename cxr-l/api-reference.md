@@ -1,19 +1,20 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 device-control APIs (`setGlassBrightness`/`setGlassVolume`) are now confirmed by an official Rokid changelog published 2026-06-29 (fetched 2026-07-03); the v1.0.4 session-lifecycle additions (`ICXRSessionCbk`, `CxrDefs.CXRSessionReason`, `CxrDefs.CXRSessionState`) remain reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25) and are not covered by the official changelog. `client-l:1.1.0` (uploaded to Maven 2026-07-02, fetched/diffed 2026-07-04) adds a bundled native CXR wire-protocol stack (`com.rokid.cxr.Caps`/`CXRSocketProtocol`/`CXRServiceBridge`) and an entirely new `com.rokid.cxr.session` coroutine/`StateFlow`-based session API, documented in the [CxrSession API (v1.1.0+)](#cxrsession-api-v110) section below — this is a **provisional binary-diff reconstruction**, not covered by any official changelog. `client-l:1.1.1` (published 2026-08-14, diffed 2026-08-19) supersedes 1.1.0: it removes the bundled native wire-protocol stack and restores `cxr-service-bridge` as an external dependency, while leaving the `com.rokid.cxr.session` API (and the entire v1.0.x `CXRLink` API) unchanged — see the "v1.1.1" callouts inline below and [release-notes.md](release-notes.md#v111--published-2026-08-14-provisional-binary-diff-reconstruction--no-official-changelog). See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 device-control APIs (`setGlassBrightness`/`setGlassVolume`) are now confirmed by an official Rokid changelog published 2026-06-29 (fetched 2026-07-03); the v1.0.4 session-lifecycle additions (`ICXRSessionCbk`, `CxrDefs.CXRSessionReason`, `CxrDefs.CXRSessionState`) remain reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25) and are not covered by the official changelog. `client-l:1.1.0` (uploaded to Maven 2026-07-02, fetched/diffed 2026-07-04) adds a bundled native CXR wire-protocol stack (`com.rokid.cxr.Caps`/`CXRSocketProtocol`/`CXRServiceBridge`) and an entirely new `com.rokid.cxr.session` coroutine/`StateFlow`-based session API, documented in the [CxrSession API (v1.1.0+)](#cxrsession-api-v110) section below — this is a **provisional binary-diff reconstruction**, not covered by any official changelog. `client-l:1.1.1` (published 2026-08-14, diffed 2026-08-19) supersedes 1.1.0: it removes the bundled native wire-protocol stack and restores `cxr-service-bridge` as an external dependency, while leaving the `com.rokid.cxr.session` API (and the entire v1.0.x `CXRLink` API) unchanged — see the "v1.1.1" callouts inline below and [release-notes.md](release-notes.md#v111--published-2026-08-14-provisional-binary-diff-reconstruction--no-official-changelog). `client-l:1.1.2` (Maven `lastUpdated` 2026-09-10, diffed 2026-09-13) is a packaging/toolchain-only release with no dependency or manifest changes; the only functional binary-diff finding is that `GlassInfo` drops its `sn` field (see the [GlassInfo](#glassinfo-v103) section below and [release-notes.md](release-notes.md#v112--maven-lastupdated-2026-09-10-provisional-binary-diff-reconstruction--no-official-changelog)). See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest documented release)**: `com.rokid.cxr:client-l:1.1.1` (published 2026-08-14, diffed 2026-08-19) — supersedes the short-lived `1.1.0` (2026-07-02). No official changelog exists for either. See [CxrSession API (v1.1.0+)](#cxrsession-api-v110) for the API surface (unchanged between 1.1.0 and 1.1.1) and the v1.1.1 entry in [release-notes.md](release-notes.md#v111--published-2026-08-14-provisional-binary-diff-reconstruction--no-official-changelog) for the packaging fix.
+- **Maven (latest documented release)**: `com.rokid.cxr:client-l:1.1.2` (Maven `lastUpdated` 2026-09-10, diffed 2026-09-13) — supersedes `1.1.1` (2026-08-14). No official changelog exists for 1.1.0, 1.1.1, or 1.1.2. See [CxrSession API (v1.1.0+)](#cxrsession-api-v110) for the API surface (unchanged across 1.1.0–1.1.2) and the v1.1.2 entry in [release-notes.md](release-notes.md#v112--maven-lastupdated-2026-09-10-provisional-binary-diff-reconstruction--no-official-changelog) for what changed (packaging/toolchain only, plus a `GlassInfo.sn` field removal).
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`; the AAR manifest itself still declares `minSdkVersion="28"` through 1.1.1)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
 - **Dependencies (1.0.3–1.0.4)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `cxr-service-bridge:1.0-20260522.063600-105`
 - **Dependencies (1.1.0)**: `kotlin-stdlib:1.6.0`, `gson:2.10.1`, `kotlinx-coroutines-android:1.6.4` (new). `cxr-service-bridge` is no longer a POM dependency — its classes and 5 native `.so` libraries are bundled directly inside `client-l`'s own AAR (see [release-notes.md](release-notes.md#v110--uploaded-to-maven-2026-07-02-provisional-binary-diff-reconstruction--no-official-changelog)). **This bundling was a defect, fixed in 1.1.1 below.**
 - **Dependencies (1.1.1)**: `kotlin-stdlib:1.9.0`, `gson:2.10.1`, `kotlinx-coroutines-android:1.9.0`, `cxr-service-bridge:1.0-20260715.121510-107` (restored as an external dependency; the bundled native libs and `com.rokid.cxr.{Caps,CXRSocketProtocol,CXRServiceBridge,RLog}` classes from 1.1.0 are removed).
+- **Dependencies (1.1.2)**: unchanged from 1.1.1 (`.pom` diff shows only the `<version>` bump).
 - **Companion app requirement (1.0.3+)**: Rokid AI App (domestic) ≥ 1.7.14. v1.1.0+ exposes this as a public constant, `AuthorizationHelper.minRokidAppRequired = 10090000` (a versionCode).
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
@@ -390,7 +391,7 @@ class GlassesInfo(
 )
 ```
 
-Note this is a distinct type from `com.rokid.cxr.link.utils.GlassInfo` (v1.0.3+, used by the `ExternalAppClient`/`ICXRLinkCbk` API) — different package, different field set (`GlassesInfo` adds `freeMemoryMb`, `displayWidth`/`displayHeight`, `screenOn`; it drops `deviceName`/`sn`/`wearingStatus` from the older `GlassInfo`). The two are not interchangeable.
+Note this is a distinct type from `com.rokid.cxr.link.utils.GlassInfo` (v1.0.3+, used by the `ExternalAppClient`/`ICXRLinkCbk` API) — different package, different field set (`GlassesInfo` adds `freeMemoryMb`, `displayWidth`/`displayHeight`, `screenOn`; relative to `GlassInfo` as it stood through v1.1.1 it also drops `deviceName`/`sn`/`wearingStatus` — `sn` was itself removed from `GlassInfo` in v1.1.2, so as of v1.1.2 neither struct exposes a serial number). The two are not interchangeable.
 
 ### RokidAppStatus (sealed hierarchy)
 
@@ -550,7 +551,7 @@ class CxrDefs {
 
 ### GlassInfo (v1.0.3+)
 
-> **Provisional — reconstructed from binary diff of 1.0.3 AAR.**
+> **Provisional — reconstructed from binary diff of 1.0.3 AAR.** **`sn` removed in v1.1.2** (binary-diffed 2026-09-13; see [release-notes.md](release-notes.md#v112--maven-lastupdated-2026-09-10-provisional-binary-diff-reconstruction--no-official-changelog)) — no official changelog covers the removal, and no replacement field was added. Every other field is unchanged since v1.0.3.
 
 ```kotlin
 package com.rokid.cxr.link.utils
@@ -562,8 +563,8 @@ data class GlassInfo(
     val brightness: Int,        // Display brightness level
     val systemVersion: String,  // Glasses firmware / OS version string
     val ischarging: Boolean,    // Whether the glasses are on charge
-    val sn: String,             // Device serial number
     val wearingStatus: String   // Wearing-state descriptor (raw; see ICXRLinkCbk.onGlassWearingStatus)
+    // val sn: String            // Device serial number — REMOVED in v1.1.2, present in v1.0.3–v1.1.1
 )
 ```
 
