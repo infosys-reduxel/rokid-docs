@@ -316,7 +316,8 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (base decompile)** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (latest release)** | `com.rokid.cxr:cxr-service-bridge:1.4` (2026-09-22; no official changelog published for 1.1–1.4) |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**

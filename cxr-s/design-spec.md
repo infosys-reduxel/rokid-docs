@@ -12,6 +12,8 @@
 >
 > **SDK version this document was derived from:** CXR-S SDK `com.rokid.cxr:cxr-service-bridge:1.0`
 > (cross-referenced with bare-metal guide v0.0.1, 2026-03-01)
+>
+> **Version note (2026-09-23):** Maven now lists `cxr-service-bridge` release `1.4` (see [sdk-import.md](sdk-import.md) for the full version-history note); no official changelog for 1.1–1.4 has been located, so the UI layout constraints below have not been re-verified against a newer source and should be treated as derived from the 1.0 baseline until a newer authoritative doc surfaces.
 
 This chapter describes the UI layout constraints and design guidelines that apply when building
 on-device (glasses-side) applications with the CXR-S SDK on YodaOS-Sprite.
