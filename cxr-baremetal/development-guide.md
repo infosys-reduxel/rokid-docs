@@ -1,8 +1,8 @@
 # Rokid Glasses Bare-Metal Development Guide
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29). `custom.rokid.com` has since gone offline (broken as of 2026-06-28); the version bump below is confirmed via the "更新内容" (Changelog) accordion on the SDK landing page at `https://developerdoc.rokid.com/sdk` (裸机开发 card, fetched 2026-09-23), which does not host the full prose content, only the changelog summary.
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0 (2026-06-05)**, up from v0.0.1 (2026-03-01). Official changelog for v1.0.0: (1) documentation restructured, (2) sample project source code added. No further content changes were surfaced by the changelog summary; the prose below has not been re-verified against a full v1.0.0 page fetch (source page is currently unreachable — see above), so treat structural/procedural details as pending confirmation.
 
 This guide describes how to build plain Android apps that run directly on Rokid Glasses (YodaOS-Sprite) **without using any CXR SDK**. These are side-loaded standalone apps that handle their own input, audio, and camera. For apps that integrate with the on-device Rokid AI app or the mobile companion, see the [CXR-L](../cxr-l/), [CXR-S](../cxr-s/), and [CXR-M](../cxr-m/) SDK docs instead.
 

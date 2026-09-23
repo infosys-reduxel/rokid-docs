@@ -316,7 +316,8 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (base decompile)** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (latest release)** | `com.rokid.cxr:cxr-service-bridge:1.4` (2026-09-22; no official changelog published for 1.1–1.4) |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**
@@ -346,7 +347,7 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.1.2` (2026-09-08) — session-management architecture rewrite, see [release notes](cxr-l/release-notes.md) |
 | **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
@@ -386,7 +387,7 @@ For apps that run directly on the glasses **without any CXR SDK** -- plain, side
 | **Target** | YodaOS-Sprite (Android 12, Go-edition) |
 | **Display viewport** | 480 × 640 px |
 | **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
-| **Doc version** | v0.0.1 (2026-03-01) |
+| **Doc version** | v1.0.0 (2026-06-05) |
 
 YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
 

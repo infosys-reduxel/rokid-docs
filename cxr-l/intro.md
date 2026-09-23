@@ -1,6 +1,6 @@
 # CXR-L SDK Introduction
 
-_Source: <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/9adcfb07939846e5945e79dfbd923f63.html> (Chinese, fetched 2026-06-20). Content version: SDK v1.0.6 (per `window.relatedVersion` in the page HTML shell). Translation produced from Firecrawl-cached markdown; static.rokidcdn.com JS assets are not reachable from this environment._
+_Source: <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/9adcfb07939846e5945e79dfbd923f63.html> (Chinese, fetched 2026-06-20). Content version: SDK v1.0.6 (per `window.relatedVersion` in the page HTML shell). Translation produced from Firecrawl-cached markdown; static.rokidcdn.com JS assets are not reachable from this environment. `custom.rokid.com` has since gone offline (broken as of 2026-06-28); the conceptual flow below still holds, but as of v1.1.2 (2026-09-08) the concrete entry points are `CxrSessionManager` / `SessionConfig` / `ISessionLifecycleCbk` rather than the raw `CXRLink.connect()` shown here — see [API Reference § v1.1.2 Session Management Rewrite](api-reference.md#v112-session-management-rewrite) and [Release Notes](release-notes.md) for the current, officially-sourced integration pattern._
 
 ## Positioning
 

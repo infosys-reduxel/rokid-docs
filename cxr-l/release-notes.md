@@ -1,14 +1,37 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-09-23; official Rokid changelog, retrieved via the in-page "更新内容" (Changelog) accordion for the CXR-L card). Earlier v1.0.4 entry was originally sourced from a binary diff of Maven AARs (2026-06-25); the official changelog text for v1.0.4 has since been retrieved and reconciled below — see the note under v1.0.4._
 
-The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
+The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into your own app to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
-## v1.0.4 — published 2026-06-18
+## v1.1.2 — published 2026-09-08
 
-> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Rokid has not published a portal changelog for this release as of 2026-06-25. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L card, fetched 2026-09-23).
 
-**Theme: structured session lifecycle callbacks and direct device controls.**
+**Theme: session-management architecture rewrite.**
+
+1. Android `client-l` upgraded to 1.1.2; fixes a `LINK_TIMEOUT` issue where the first `CUSTOM_VIEW` session connection could time out.
+2. **Architecture change:** the mobile side no longer connects directly to the glasses. All traffic now routes through the Rokid AI app (authorize → establish link → invoke capability).
+3. **Session creation and connection are decoupled.** A new five-state session state machine replaces the earlier session model: `Idle` / `Starting` / `Started` / `Paused` / `Terminating`.
+4. **Authorization is now scope-based** (`GlassPermission`); the previous all-or-nothing authorization grant has been removed.
+5. **`CUSTOM_APP` sessions gain a `glassesApkPath` configuration** — the on-device APK is installed automatically when the glasses-side connection is made. The default AI-interception mode has also changed to foreground mode.
+6. **Audio and photo capture formats standardized:** audio is now uniformly PCM, 16 kHz, mono, 16-bit; photo capture is now uniformly WebP-encoded.
+7. **Sample project rewritten** as `CxrlSample` (MVVM architecture, single Activity), distributed via an OSS download archive. iOS sample upgraded to `RGCxrClient 1.1.1.1`.
+
+See the [API Reference](api-reference.md#v112-session-management-rewrite) for the new `CxrSessionManager` / `SessionConfig` / `ISessionLifecycleCbk` surface introduced by this release.
+
+> **Reconciliation note on v1.0.4 below.** This repo's earlier v1.0.4 entry (added 2026-06-25) was reconstructed from a binary diff and described a 4-method `ICXRSessionCbk` / `configCXRSession(session, cb)` session-lifecycle mechanism. The official changelog for v1.0.4, now retrieved, credits that release with only volume and brightness control. The session-lifecycle machinery visible in the 1.0.4 AAR was evidently unshipped/preview code — the officially documented, public session-lifecycle API is the five-state `ISessionLifecycleCbk` model introduced in v1.1.2 above, not the v1.0.4-era `ICXRSessionCbk`. Treat the v1.0.4 `ICXRSessionCbk` material as historical/superseded rather than as current guidance.
+
+## v1.0.4 — published 2026-06-25
+
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L card, fetched 2026-09-23). This replaces the previously provisional binary-diff-derived entry; see the reconciliation note above.
+
+**Official changelog:**
+
+1. Added volume control (`setGlassVolume`).
+2. Added brightness control (`setGlassBrightness`).
+
+> **Superseded — historical record only.** The paragraphs below reflect this repo's original 2026-06-25 binary-diff reconstruction of the v1.0.4 AAR. Per the reconciliation note above, the session-lifecycle interfaces described here were not part of v1.0.4's official public API and were superseded by the `ISessionLifecycleCbk` five-state model shipped in v1.1.2. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
 
 **New interfaces:**
 

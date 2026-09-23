@@ -1,13 +1,13 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries were originally reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); the official v1.0.4 changelog has since been retrieved and only covers volume/brightness controls — see the [v1.1.2 session-management rewrite](#v112-session-management-rewrite) and [release-notes.md](release-notes.md) for the reconciliation. See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.1.2` (2026-09-08)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
@@ -15,6 +15,8 @@ CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rok
 - **Companion app requirement (1.0.3+)**: Rokid AI App (domestic) ≥ 1.7.14
 - **Network**: Allows cleartext HTTP traffic (via `network_security_config.xml`)
 - **Target packages**: `com.rokid.sprite.aiapp` (primary) and `com.rokid.sprite.global.aiapp` (added in v1.0.3 for new hardware variant / region)
+
+> **v1.1.2 (2026-09-08) headline change:** the SDK's connection and session architecture was rewritten around a `CxrSessionManager` singleton, a `SessionConfig` object, and a five-state session state machine (`Idle` / `Starting` / `Started` / `Paused` / `Terminating`) surfaced through `ISessionLifecycleCbk`. This supersedes the `configCXRSession(CxrDefs.CXRSession, ICXRSessionCbk)` / `CXRSessionState` model documented below for v1.0.4, which the official changelog never actually credited (see the reconciliation note in [release-notes.md](release-notes.md)). Full method-level decompiled signatures for v1.1.2 are not yet available in this repo — the summary below is sourced from the official quick-start code sample, not a binary diff; do not treat it as an exhaustive method reference. See [§ v1.1.2 Session Management Rewrite](#v112-session-management-rewrite) below.
 
 ## Class Hierarchy
 
@@ -442,3 +444,153 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 - **`CXRSessionState` enum added** with 4 state values mirroring the `ICXRSessionCbk` callback names.
 - **`targetSdkVersion` removed from AAR manifest.** The `<uses-sdk>` element in the AAR no longer declares `targetSdkVersion`. Host apps are unaffected — their own `targetSdkVersion` in `build.gradle` takes precedence.
 - **No dependency changes.** POM is identical to v1.0.3: `cxr-service-bridge:1.0-20260522.063600-105`, `kotlin-stdlib:1.6.0`, `gson:2.10.1`.
+
+> **Reconciliation (2026-09-23):** the official v1.0.4 changelog, retrieved this cycle, credits v1.0.4 with only `setGlassVolume`/`setGlassBrightness` (items 3 above). The `ICXRSessionCbk` / `CXRSessionReason` / `CXRSessionState` surface documented above was present in the 1.0.4 AAR but was not part of the public v1.0.4 release — the officially shipped, documented session-lifecycle API is the `ISessionLifecycleCbk` five-state model introduced in v1.1.2 (see below). Treat the interfaces above as historical/superseded, not as current integration guidance.
+
+## v1.1.2 Session Management Rewrite
+
+> Source: official Rokid changelog and quick-start integration sample at `https://developerdoc.rokid.com/sdk` (CXR-L card, fetched 2026-09-23). Unlike the entries above, this section is **not** a binary-diff reconstruction — it is transcribed/translated from Rokid's own quick-start code sample and changelog prose. Exact method signatures (parameter names, overloads, nullability) should be treated as best-effort until a binary diff of the 1.1.2 AAR is performed; where the official sample is unambiguous, the signature is given directly.
+
+**Theme:** session creation and connection are decoupled, and the earlier `CXRSession` / `ICXRSessionCbk` model (v1.0.3–v1.0.4) is replaced by a `CxrSessionManager` singleton driving a five-state machine: `Idle` → `Starting` → `Started` → `Paused` → `Terminating`.
+
+### CxrSessionManager
+
+```kotlin
+package com.rokid.cxr.link
+
+object CxrSessionManager {
+    fun getInstance(context: Context): CxrSessionManager
+}
+```
+
+Singleton entry point (Android). Do not construct multiple instances per process — reuse the singleton returned by `getInstance()`.
+
+### SessionConfig
+
+```kotlin
+package com.rokid.cxr.link
+
+data class SessionConfig(
+    val sessionType: SessionType,               // e.g. SessionType.CUSTOM_VIEW
+    val aiInterceptMode: AiInterceptMode,        // e.g. AiInterceptMode.ALLOW_WITH_PAUSE
+    val timeouts: SessionTimeouts = SessionTimeouts(),
+    val viewData: String? = null,                // glasses-side view JSON, CUSTOM_VIEW sessions only
+    val glassesApkPath: String? = null,           // v1.1.2+; CUSTOM_APP sessions — auto-installed on connect
+)
+```
+
+> **New in v1.1.2:** `glassesApkPath` (auto-install the on-device APK on connect, CUSTOM_APP sessions) and the default `aiInterceptMode` changing to foreground mode. Exact `AiInterceptMode` / `SessionType` enum member lists are not yet fully confirmed from the official sample; `SessionType.CUSTOM_VIEW` and `AiInterceptMode.ALLOW_WITH_PAUSE` are the values shown in the official quick-start snippet.
+
+### Session lifecycle
+
+```kotlin
+val manager = CxrSessionManager.getInstance(context.applicationContext)
+val session = manager.create(config)   // config: SessionConfig
+session.connect(token)                  // token from the existing authorization flow
+```
+
+`session.connect(token)` returning does **not** mean the session is ready — capability APIs (photo, audio, custom commands) must wait for the `onSessionStarted()` lifecycle callback, consistent with the "scene construction" rule described in [intro.md](intro.md).
+
+### ISessionLifecycleCbk
+
+```kotlin
+package com.rokid.cxr.link.callbacks
+
+interface ISessionLifecycleCbk {
+    /** Session construction complete — audio/photo/custom-command APIs may now be called. */
+    fun onSessionStarted()
+
+    /** Session paused (e.g. another scene took over the display). */
+    fun onSessionPaused(reason: PausedReason)
+
+    /** Session resumed after a pause. */
+    fun onSessionResumed()
+
+    /** Session is being torn down; capability calls should stop within gracePeriodMs. */
+    fun onSessionTerminating(reason: TerminatingReason, gracePeriodMs: Long)
+
+    /** Session fully closed — back to Idle. */
+    fun onSessionClosed(reason: CloseReason)
+}
+```
+
+Register via `manager.create(config)` combined with `session.addLifecycleCallback(callback)` (see the usage pattern below). `PausedReason`, `TerminatingReason`, and `CloseReason` enum member lists were not enumerated in the official quick-start sample; consult the full CXR-L documentation (behind "查看文档 →" on the SDK landing page) or a future binary diff for the complete set.
+
+### Usage pattern (official quick-start, Android)
+
+```kotlin
+// Singleton entry point
+val manager = CxrSessionManager.getInstance(context.applicationContext)
+
+// Create a session (CUSTOM_VIEW example; viewData is the glasses-side view JSON — see docs)
+val config = SessionConfig(
+    sessionType = SessionType.CUSTOM_VIEW,
+    aiInterceptMode = AiInterceptMode.ALLOW_WITH_PAUSE,
+    timeouts = SessionTimeouts(),
+    viewData = viewDataJson,
+)
+val session = manager.create(config)
+
+// Connect after authorization has produced a token
+session.connect(token)
+```
+
+```kotlin
+// Wait for onSessionStarted before calling capability APIs (photo, audio, etc.)
+session.addLifecycleCallback(object : ISessionLifecycleCbk {
+    override fun onSessionStarted() {
+        // Session construction complete — audio/photo APIs are now callable
+        // Note: custom commands are NOT available in a CUSTOM_VIEW session
+    }
+    override fun onSessionPaused(reason: PausedReason) { /* handle pause */ }
+    override fun onSessionResumed() { /* handle resume */ }
+    override fun onSessionTerminating(reason: TerminatingReason, gracePeriodMs: Long) { /* handle teardown */ }
+    override fun onSessionClosed(reason: CloseReason) { /* back to Idle */ }
+})
+```
+
+**Common pitfalls (per official docs):**
+
+- `minSdk` must be **≥ 28** (the SDK relies on Android 9+ APIs).
+- Reuse the `CxrSessionManager.getInstance()` singleton — do not create it repeatedly per screen/page.
+- A successful `connect()` call does **not** mean the session is usable; wait for `onSessionStarted()`.
+- Custom commands are unavailable in `CUSTOM_VIEW` sessions — use a `CUSTOM_APP` session if you need them.
+
+### iOS (RGCxrClient 1.1.1.1, conceptual)
+
+```swift
+// Podfile
+pod 'RGCxrClient', '1.1.1.1'
+```
+
+```swift
+// Forward the auth callback URL in AppDelegate / SceneDelegate
+func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    if CxrClient.shared.handleOpenURL(URLContexts.first?.url) {
+        // URL handled by the SDK
+    }
+}
+```
+
+```swift
+// Authorize, then create a session (CUSTOM_VIEW example)
+let link = CxrClient.makeLink(appDisplayName: "YourApp")
+
+link.authenticate(scopes: [.camera, .media, .microphone, .deviceManage]) { result in
+    switch result {
+    case .success(let auth):
+        let token = auth.token
+        let session = link.makeCustomViewSession()   // or makeCustomAppSession(packageName:)
+        // Subscribe to statePublisher; wait for available/started before calling capability APIs
+    case .failure(let error):
+        // handle error
+        break
+    }
+}
+```
+
+> **Note:** `CxrClient.makeLink(appDisplayName:)` is a **class method**, not `CxrClient.shared.makeLink`. The iOS state machine mirrors Android's four/five-state model (available / started / paused / unavailable), with the same capability gating (photo, audio, and custom commands all require session construction to be complete first).
+
+### Dependency / manifest notes (v1.1.2)
+
+- Companion `cxr-service-bridge` dependency version was not confirmed from the official changelog page for this release; Maven's `cxr-service-bridge` artifact has advanced to `1.4` as of 2026-09-22 (see [cxr-s/sdk-import.md](../cxr-s/sdk-import.md)), but this repo has not verified which `cxr-service-bridge` version `client-l:1.1.2` actually depends on. Treat the pairing as **unconfirmed** until a binary diff or POM inspection is done.
