@@ -1,8 +1,8 @@
 # Button Broadcasts (Bare-Metal)
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29). `custom.rokid.com` has since gone offline (broken as of 2026-06-28).
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0 (2026-06-05)**, up from v0.0.1 (2026-03-01) — see the [Development Guide](./development-guide.md) for the changelog details. The action-string reference below has not been re-verified against upstream this cycle; the version bump is a documentation restructure per the official changelog, not a confirmed content change to the broadcast contract.
 
 This page covers the system-function buttons on Rokid Glasses and how a bare-metal Android app intercepts them. See the [Bare-Metal Development Guide](./development-guide.md) for context and the list of system interactions you **cannot** override (long-press touchpad → AI module, double-click right button → back, top button → camera).
 

@@ -1,8 +1,8 @@
 # Audio Recording (Bare-Metal)
 
-> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
+> Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29). `custom.rokid.com` has since gone offline (broken as of 2026-06-28).
 >
-> **Doc version: v0.0.1 (2026-03-01)**
+> **Doc version: v1.0.0 (2026-06-05)**, up from v0.0.1 (2026-03-01) — see the [Development Guide](./development-guide.md) for the changelog details. The audio configuration below has not been re-verified against upstream this cycle; the version bump is a documentation restructure per the official changelog, not a confirmed content change to the channel layout.
 
 This page covers 8-channel microphone capture on Rokid Glasses from a bare-metal Android app. For the broader context (dev environment, ADB enablement, reserved system gestures), see the [Bare-Metal Development Guide](./development-guide.md). The reference implementation reuses the `KeyReceiver` from [Button Broadcasts](./key-broadcasts.md) to start and stop recording on a side-button click.
 
