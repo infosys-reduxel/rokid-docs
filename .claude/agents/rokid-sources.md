@@ -912,8 +912,23 @@ At the start of this run, `.claude/agents/rokid-sources.md` already had an UNCOM
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-09-14
+  last_checked: 2026-09-26
   last_known_version: |
+    RE-VERIFIED 2026-09-26 (this run -- Firecrawl scrape of maven-metadata.xml for all
+    3 artifacts): client-l: release/latest STILL 1.1.2, lastUpdated STILL 20260910022017
+    -- unchanged since 09-13/09-14, already fully actioned on this branch (see
+    cxr-l/release-notes.md v1.1.2 entry). client-m: release/latest STILL 1.2.2 -- unchanged,
+    still a known/documented provisional gap, no new action. cxr-service-bridge:
+    **release/latest JUMPED 1.0 -> 1.4, lastUpdated 20260728074326 -> 20260922073949 (2026-09-22)
+    -- NEW, since the 09-13/09-14 baseline explicitly confirmed this was still 1.0.**
+    Four minor releases (1.1, 1.2, 1.3, 1.4) landed on Maven with no accompanying entry on
+    developerdoc.rokid.com/sdk (which has no changelog surface for this artifact at all --
+    it's not one of the 3 cards on the SDK picker). Local cxr-s/sdk-import.md still pins
+    `cxr-service-bridge:1.0-20260522.063600-105`. This is a genuine, newly-verified P1 --
+    the shared Caps/wire-protocol bridge underlying CXR-S is now 4 releases undocumented.
+    No official changelog exists; will need binary-diff reconstruction (AAR/JAR diff across
+    1.0 -> 1.4) the same way cxr-l/release-notes.md documents its provisional bumps.
+    Evidence: .firecrawl/maven-cxr-service-bridge.md (2026-09-26 fetch).
     RE-VERIFIED 2026-09-14 (this run -- WebFetch of maven-metadata.xml for all
     3 artifacts): client-l: release/latest still 1.1.2/1.2.X-SNAPSHOT,
     lastUpdated still 20260910022017 (2026-09-10) -- unchanged since
