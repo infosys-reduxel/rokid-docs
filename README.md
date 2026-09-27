@@ -349,7 +349,7 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.2` (Maven `lastUpdated` 2026-09-10, diffed 2026-09-13 via binary diff — supersedes `1.1.1` from 2026-08-14; no official changelog for 1.1.0, 1.1.1, or 1.1.2 — see [cxr-l/release-notes.md](cxr-l/release-notes.md)). Packaging/toolchain-only vs 1.1.1, but `GlassInfo.sn` was removed — see release notes. |
+| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.2` (published 2026-09-08 per the official changelog recovered 2026-09-27, corroborating the 2026-09-13 binary diff — supersedes `1.1.1` from 2026-08-14; no official changelog exists for 1.1.0 or 1.1.1 — see [cxr-l/release-notes.md](cxr-l/release-notes.md)). Official changelog: AI-App-relayed connection architecture, 5-state session lifecycle, scoped-only `GlassPermission` auth. Binary diff also found `GlassInfo.sn` removed — see release notes. |
 | **Size** | 171,307 bytes (1.1.2 AAR); 171,369 bytes (1.1.1 AAR); 1,286,574 bytes (1.1.0 AAR, +1,724% vs 1.0.4, later reverted); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.2) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
