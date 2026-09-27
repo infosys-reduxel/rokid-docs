@@ -108,7 +108,9 @@ rokid-docs/
 │   ├── manage-device-connection.md # Connection management
 │   ├── message-subscription.md     # Receiving messages from mobile
 │   ├── message-sending.md          # Sending messages to mobile
-│   └── data-structure.md           # Caps serialization format
+│   ├── data-structure.md           # Caps serialization format
+│   ├── design-spec.md              # UI design specs
+│   └── release-notes.md            # SDK changelog (v1.0 -> v1.4, provisional)
 │
 ├── cxr-l/                          # CXR-L SDK documentation (Standalone)
 │   ├── api-reference.md            # Complete API reference
@@ -316,8 +318,8 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
-| **Classes** | 16 classes, 6 decompiled files |
+| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.4` (Maven `release`, `lastUpdated` 2026-09-22; jumped from `1.0` with no official changelog — see [cxr-s/release-notes.md](cxr-s/release-notes.md) for a provisional binary-diff reconstruction of 1.0 → 1.4) |
+| **Classes** | 27 classes as of v1.4 (16 in the previously-documented v1.0 baseline), 6 decompiled files (LFS pointer stubs, not fetched in this environment) |
 
 **Capabilities:**
 - **Connection Monitoring** -- Real-time Android/iOS connection/disconnection status
@@ -338,6 +340,7 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 | [message-sending.md](cxr-s/message-sending.md) | Sending messages |
 | [data-structure.md](cxr-s/data-structure.md) | Caps serialization format |
 | [design-spec.md](cxr-s/design-spec.md) | UI design specs (480 × 640 px viewport, Android Go constraints) |
+| [release-notes.md](cxr-s/release-notes.md) | SDK changelog (v1.0 → v1.4, provisional binary-diff reconstruction — no official changelog exists for this artifact) |
 
 ### CXR-L SDK (Standalone)
 
@@ -346,19 +349,21 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
-| **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
-| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
+| **Maven Artifact (latest documented)** | `com.rokid.cxr:client-l:1.1.2` (published 2026-09-08 per the official changelog recovered 2026-09-27, corroborating the 2026-09-13 binary diff — supersedes `1.1.1` from 2026-08-14; no official changelog exists for 1.1.0 or 1.1.1 — see [cxr-l/release-notes.md](cxr-l/release-notes.md)). Official changelog: AI-App-relayed connection architecture, 5-state session lifecycle, scoped-only `GlassPermission` auth. Binary diff also found `GlassInfo.sn` removed — see release notes. |
+| **Size** | 171,307 bytes (1.1.2 AAR); 171,369 bytes (1.1.1 AAR); 1,286,574 bytes (1.1.0 AAR, +1,724% vs 1.0.4, later reverted); 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
+| **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+, per official docs; AAR manifest itself still says 28 through 1.1.2) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
 | **Dependencies (1.0.3–1.0.4)** | cxr-service-bridge 1.0-20260522.063600-105, Kotlin stdlib 1.6.0, Gson 2.10.1 |
+| **Dependencies (1.1.0, superseded)** | Kotlin stdlib 1.6.0, Gson 2.10.1, kotlinx-coroutines-android 1.6.4 (new); cxr-service-bridge was bundled in the AAR instead of an external dependency — fixed in 1.1.1 |
+| **Dependencies (1.1.1–1.1.2, unchanged)** | cxr-service-bridge 1.0-20260715.121510-107 (restored as external dependency), Kotlin stdlib 1.9.0, Gson 2.10.1, kotlinx-coroutines-android 1.9.0 |
 | **Repository** | `https://maven.rokid.com/repository/maven-public/` |
 
-**Entry Point:**
+**Entry Point (v1.0.x API):**
 ```kotlin
 class CXRLink(context: Context) : ExternalAppClient(context)
 ```
 
-`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
+`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration. Since v1.1.0, the SDK additionally exposes a higher-level coroutine/`StateFlow`-based `CxrSession` API (`com.rokid.cxr.session`, entry point `CxrSessionManager.getInstance(context)`) layered over the same transport — see [CxrSession API (v1.1.0+)](cxr-l/api-reference.md#cxrsession-api-v110).
 
 > [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 
@@ -386,17 +391,17 @@ For apps that run directly on the glasses **without any CXR SDK** -- plain, side
 | **Target** | YodaOS-Sprite (Android 12, Go-edition) |
 | **Display viewport** | 480 × 640 px |
 | **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
-| **Doc version** | v0.0.1 (2026-03-01) |
+| **Doc version** | Mixed -- see per-document versions below |
 
 YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
 
 **Documentation:**
 
-| Document | Description |
-|----------|-------------|
-| [development-guide.md](cxr-baremetal/development-guide.md) | Reserved interactions, dev environment, and side-load workflow |
-| [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) | Hardware-button system Intents and the `BroadcastReceiver` pattern |
-| [audio-recording.md](cxr-baremetal/audio-recording.md) | 8-channel mic recording (`ChannelMask = 0x6000FC`, 16 kHz, 16-bit PCM) |
+| Document | Description | Doc version |
+|----------|-------------|-------------|
+| [development-guide.md](cxr-baremetal/development-guide.md) | Reserved interactions, dev environment, and side-load workflow | v1.0.0 (2026-06-05) |
+| [key-broadcasts.md](cxr-baremetal/key-broadcasts.md) | Hardware-button system Intents and the `BroadcastReceiver` pattern | v0.0.1 (2026-03-01), refresh pending |
+| [audio-recording.md](cxr-baremetal/audio-recording.md) | 8-channel mic recording (`ChannelMask = 0x6000FC`, 16 kHz, 16-bit PCM) | v0.0.1 (2026-03-01), refresh pending |
 
 ---
 
@@ -492,6 +497,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | Standalone app replacement (CXR-L API) | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
+| CXR-S SDK changelog | [cxr-s/release-notes.md](cxr-s/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
 | Bare-metal Android dev on Glasses | [cxr-baremetal/development-guide.md](cxr-baremetal/development-guide.md) |
 | Hardware-button broadcast Intents | [cxr-baremetal/key-broadcasts.md](cxr-baremetal/key-broadcasts.md) |
@@ -521,6 +527,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 6. [message-sending.md](cxr-s/message-sending.md) -- Sending messages
 7. [data-structure.md](cxr-s/data-structure.md) -- Caps data structure
 8. [design-spec.md](cxr-s/design-spec.md) -- UI design specs (480 × 640 px viewport, Android Go constraints)
+9. [release-notes.md](cxr-s/release-notes.md) -- SDK changelog (provisional)
 
 **CXR-L SDK (Standalone)**
 1. [intro.md](cxr-l/intro.md) -- SDK introduction: positioning, core capabilities, prerequisite matrix, sample projects

@@ -1,5 +1,7 @@
 # Message Sending
 
+> **SDK v1.1+ note:** `CXRServiceBridge` now requires a `Context` argument in its constructor (`CXRServiceBridge(context)`, shown below), replacing the no-argument constructor from SDK v1.0. The `sendMessage` methods documented here are unchanged from v1.0 through the current v1.4 — see [release-notes.md](release-notes.md) for the full binary-diff changelog.
+
 The CXR-S SDK provides two message-sending methods, allowing glasses-side applications to send data to connected mobile devices:
 
 Basic Message Sending: Sending structured data (in Caps format)
@@ -27,7 +29,7 @@ Return Values:
 
 ```kotlin
 // Assuming CXRServiceBridge is initialized and available
-val cxrServiceBridge = CXRServiceBridge()
+val cxrServiceBridge = CXRServiceBridge(context)
  
 fun sendExampleMessage() {
     // 1. Create a Caps object and populate it with data
@@ -75,7 +77,7 @@ Return Values:
 
 ```kotlin
 // Assuming CXRServiceBridge is initialized and available
-val cxrServiceBridge = CXRServiceBridge()
+val cxrServiceBridge = CXRServiceBridge(context)
  
 fun sendExampleMessage() {
     // 1. Create a Caps object and populate it with data

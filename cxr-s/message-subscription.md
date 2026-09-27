@@ -1,4 +1,7 @@
 # Message Subscription
+
+> **SDK v1.1+ note:** `CXRServiceBridge` now requires a `Context` argument in its constructor (`CXRServiceBridge(context)`, shown below), replacing the no-argument constructor from SDK v1.0. The `subscribe`/`MsgCallback`/`MsgReplyCallback`/`Reply` APIs documented here are unchanged from v1.0 through the current v1.4 — see [release-notes.md](release-notes.md) for the full binary-diff changelog.
+
 The CXR-S SDK provides two message subscription modes, allowing glasses-side applications to receive messages from mobile devices:
 
 Regular Message Subscription: One-way message reception
@@ -37,7 +40,7 @@ value: Additional binary data, which may be
 ### 1.3 Example Code
 
 ```kotlin
-private val cxrBridge = CXRServiceBridge()
+private val cxrBridge = CXRServiceBridge(context)
 // Implement the callback interface
 private val msgCallback = object : CXRServiceBridge.MsgCallback {
     override fun onReceive(name: String, args: Caps, value: ByteArray?) {
@@ -86,7 +89,7 @@ Developers can return response data using the reply.end(Caps ret) method.
 ### 2.3 Example Code
 
 ```kotlin
-private val cxrBridge = CXRServiceBridge()
+private val cxrBridge = CXRServiceBridge(context)
 // Implement the callback interface
 public val replyCallback = object : CXRServiceBridge.MsgReplyCallback {
     override fun onReceive(name: String, args: Caps, value: ByteArray?, reply: Reply?) {

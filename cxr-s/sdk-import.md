@@ -37,7 +37,9 @@ dependencyResolutionManagement {
 rootProject.name = "CXRServiceDemo"
 include(":app")
 Dependency Import
-CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105”).
+CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.4”).
+
+> **Version note:** as of 2026-09-26, Maven's `<release>` for `cxr-service-bridge` is `1.4` (previously `1.0`, or the timestamped snapshot build `1.0-20260522.063600-105` this doc cited before this update). There is no official Rokid changelog for this artifact — see [release-notes.md](release-notes.md) for a provisional binary-diff reconstruction of what changed across 1.0 → 1.1 → 1.2 → 1.3 → 1.4, including a **breaking change**: the `CXRServiceBridge()` no-argument constructor used throughout this doc set's examples was replaced by `CXRServiceBridge(Context)` starting in v1.1.
 
 Add the dependency in the dependencies node of the build.gradle.kts file.
 
@@ -55,5 +57,5 @@ android {
 }
 dependencies {
    //...Other Settings
-    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105")
+    implementation("com.rokid.cxr:cxr-service-bridge:1.4")
 }
