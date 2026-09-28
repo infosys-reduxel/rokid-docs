@@ -108,7 +108,8 @@ rokid-docs/
 │   ├── manage-device-connection.md # Connection management
 │   ├── message-subscription.md     # Receiving messages from mobile
 │   ├── message-sending.md          # Sending messages to mobile
-│   └── data-structure.md           # Caps serialization format
+│   ├── data-structure.md           # Caps serialization format
+│   └── release-notes.md            # SDK changelog (v1.0 -> v1.4)
 │
 ├── cxr-l/                          # CXR-L SDK documentation (Standalone)
 │   ├── api-reference.md            # Complete API reference
@@ -316,8 +317,9 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
-| **Classes** | 16 classes, 6 decompiled files |
+| **Maven Artifact (base decompile)** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (latest)** | `com.rokid.cxr:cxr-service-bridge:1.4` (2026-09-22) |
+| **Classes** | 16 classes, 6 decompiled files (1.0 baseline); 27 classes from 1.1 onward |
 
 **Capabilities:**
 - **Connection Monitoring** -- Real-time Android/iOS connection/disconnection status
@@ -338,6 +340,7 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 | [message-sending.md](cxr-s/message-sending.md) | Sending messages |
 | [data-structure.md](cxr-s/data-structure.md) | Caps serialization format |
 | [design-spec.md](cxr-s/design-spec.md) | UI design specs (480 × 640 px viewport, Android Go constraints) |
+| [release-notes.md](cxr-s/release-notes.md) | SDK changelog (v1.0 → v1.4) |
 
 ### CXR-L SDK (Standalone)
 
@@ -492,6 +495,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 | Standalone app replacement (CXR-L API) | [cxr-l/api-reference.md](cxr-l/api-reference.md) |
 | CXR-L SDK changelog | [cxr-l/release-notes.md](cxr-l/release-notes.md) |
 | CXR-M SDK changelog | [cxr-m/release-notes.md](cxr-m/release-notes.md) |
+| CXR-S SDK changelog | [cxr-s/release-notes.md](cxr-s/release-notes.md) |
 | YodaOS-Sprite developer portal | [yodaos/docs/sprite-overview.md](yodaos/docs/sprite-overview.md) |
 | Bare-metal Android dev on Glasses | [cxr-baremetal/development-guide.md](cxr-baremetal/development-guide.md) |
 | Hardware-button broadcast Intents | [cxr-baremetal/key-broadcasts.md](cxr-baremetal/key-broadcasts.md) |
@@ -521,6 +525,7 @@ Each application in `yodaos/DECOMPILED-APPS/` is decompiled using both APKtool a
 6. [message-sending.md](cxr-s/message-sending.md) -- Sending messages
 7. [data-structure.md](cxr-s/data-structure.md) -- Caps data structure
 8. [design-spec.md](cxr-s/design-spec.md) -- UI design specs (480 × 640 px viewport, Android Go constraints)
+9. [release-notes.md](cxr-s/release-notes.md) -- SDK changelog
 
 **CXR-L SDK (Standalone)**
 1. [intro.md](cxr-l/intro.md) -- SDK introduction: positioning, core capabilities, prerequisite matrix, sample projects
