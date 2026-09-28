@@ -12,6 +12,12 @@
 >
 > **SDK version this document was derived from:** CXR-S SDK `com.rokid.cxr:cxr-service-bridge:1.0`
 > (cross-referenced with bare-metal guide v0.0.1, 2026-03-01)
+>
+> **Version note (2026-09-28):** `cxr-service-bridge` has since progressed to `1.4` (see
+> [release-notes.md](release-notes.md)). Those releases changed the `CXRServiceBridge` class's
+> message/audio API surface but did not touch anything relevant to this chapter (screen
+> dimensions, layout constraints) — no upstream design-spec content changed as far as this pass
+> could determine.
 
 This chapter describes the UI layout constraints and design guidelines that apply when building
 on-device (glasses-side) applications with the CXR-S SDK on YodaOS-Sprite.

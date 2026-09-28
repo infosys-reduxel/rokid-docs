@@ -37,7 +37,7 @@ dependencyResolutionManagement {
 rootProject.name = "CXRServiceDemo"
 include(":app")
 Dependency Import
-CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105”).
+CXR-S SDK Package (“com.rokid.cxr:cxr-service-bridge:1.4”).
 
 Add the dependency in the dependencies node of the build.gradle.kts file.
 
@@ -55,5 +55,7 @@ android {
 }
 dependencies {
    //...Other Settings
-    implementation("com.rokid.cxr:cxr-service-bridge:1.0-20260522.063600-105")
+    implementation("com.rokid.cxr:cxr-service-bridge:1.4")
 }
+
+> **Version note (2026-09-28):** the example above pins the latest published release, `1.4` (per `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/cxr-service-bridge/`). The snapshot previously shown here (`1.0-20260522.063600-105`) still works but predates several breaking changes — most notably, `CXRServiceBridge`'s constructor now requires an Android `Context` argument, and `startAudioStream`/`startBTPairing` gained new parameters. See [release-notes.md](release-notes.md) for the full v1.0 → v1.4 changelog before upgrading.

@@ -2,12 +2,14 @@
 
 Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
 
+> **v1.1.0+ note:** starting with `client-l:1.1.0` (2026-07-02), the AAR also ships a parallel `com.rokid.cxr.session` package (`CxrSession` / `CxrSessionManager`) alongside the `CXRLink` hierarchy documented below. As of this pass, Rokid has not published guidance on how the two relate. See the "v1.1.0" entry in [release-notes.md](release-notes.md) for the full reverse-engineered surface of the new session API; this page still documents only the `CXRLink`/`ExternalAppClient` hierarchy.
+
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.1.2` (2026-08-28)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
