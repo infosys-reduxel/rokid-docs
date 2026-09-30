@@ -20,7 +20,7 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-06-30
+  last_checked: 2026-09-30
   last_known_version: CXR-L 1.0.3 (portal still shows 1.0.3 as of 2026-06-28; Maven has 1.0.4)
   notes: |
     React SPA. As of 2026-06-28 the /sdk route now renders the open.rokid.com developer
@@ -33,7 +33,7 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: cxr-m, cxr-s, cxr-l, yodaos
   monitor_id:
-  last_checked: 2026-06-30
+  last_checked: 2026-09-30
   last_known_version: CXR-L 1.0.3 (2026-06-02), CXR-M 1.1.0 (portal lags Maven 1.2.2), 眼镜端裸机开发 0.0.1 (2026-03-01)
   notes: |
     SDK landing page scraped 2026-06-28. /sdk still shows CXR-L 1.0.3 changelog; /sprite
@@ -58,18 +58,18 @@ Scout reads this file to know which upstream documentation sources to monitor. L
   kind: developer-portal
   covers: yodaos, hardware
   monitor_id:
-  last_checked: 2026-06-30
+  last_checked: 2026-09-30
   notes: As of 2026-06-29, developer.rokid.com redirects to open.rokid.com (confirmed identical content to ar.rokid.com redirect). Legacy Speech/HomeBase GitBook content may still be at developer.rokid.com/docs/rokid-homebase-docs/v2/. No in-scope Sprite/AR Glasses content surfaced. Low priority.
 
 - url: https://maven.rokid.com/repository/maven-public/
   kind: sdk-maven
   covers: cxr-m, cxr-s, cxr-l
   monitor_id:
-  last_checked: 2026-06-30
+  last_checked: 2026-09-30
   last_known_version: |
-    client-l 1.0.4 (release; metadata lastUpdated 20260625070819 — new release 1.0.4 found 2026-06-28; portal still shows 1.0.3, official changelog not yet published)
-    client-m 1.2.2 (release; metadata lastUpdated 20260608030211 — unchanged)
-    cxr-service-bridge 1.0 (release; metadata lastUpdated 20260522063622 — unchanged)
+    client-l 1.1.2 (release; lastUpdated 20260910022017; verified live 2026-09-30)
+    client-m 1.2.2 (release; lastUpdated 20260902061433; verified live 2026-09-30)
+    cxr-service-bridge 1.4 (release; lastUpdated 20260922073949; verified live 2026-09-30)
   notes: |
     Public Maven for CXR SDK JARs/AARs. Direct browse path is
     https://maven.rokid.com/service/rest/repository/browse/maven-public/com/rokid/cxr/
