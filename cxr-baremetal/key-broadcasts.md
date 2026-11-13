@@ -3,6 +3,8 @@
 > Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
 >
 > **Doc version: v0.0.1 (2026-03-01)**
+>
+> **Version notice (2026-11-13).** Upstream has since published bare-metal documentation **v1.0.0** (portal changelog dated 2026-06-05: "documentation restructured; sample project source code added"), now hosted at <https://custom.rokid.com/prod/rokid_web/ff28c865a9634876be98cbc293588460/pc/cn/index.html>. This page still reflects v0.0.1 and has not yet been refreshed.
 
 This page covers the system-function buttons on Rokid Glasses and how a bare-metal Android app intercepts them. See the [Bare-Metal Development Guide](./development-guide.md) for context and the list of system interactions you **cannot** override (long-press touchpad → AI module, double-click right button → back, top button → camera).
 
