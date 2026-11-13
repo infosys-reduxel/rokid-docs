@@ -2,12 +2,15 @@
 
 Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
 
+> **Version notice (2026-11-13).** This page describes the CXR-L **v1.0.x** API. Upstream is now at `com.rokid.cxr:client-l:1.1.2` (portal changelog dated 2026-09-08), and v1.1.0 restructured the SDK: the entry point is `CxrSessionManager`, sessions follow a five-state model (Idle / Starting / Started / Paused / Terminating), authorization is scope-based, and the app-management APIs (`openApp` / `closeApp` / `startApp` / `stopApp` / `uninstallApp`) were removed. This page has not yet been refreshed against the v1.1.2 documentation — see the [release notes](release-notes.md) for the official v1.1.x changelog and migration notes.
+
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release documented on this page)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release upstream)**: `com.rokid.cxr:client-l:1.1.2` (not covered by this page)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)

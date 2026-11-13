@@ -2,6 +2,8 @@
 
 _Source: <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/9adcfb07939846e5945e79dfbd923f63.html> (Chinese, fetched 2026-06-20). Content version: SDK v1.0.6 (per `window.relatedVersion` in the page HTML shell). Translation produced from Firecrawl-cached markdown; static.rokidcdn.com JS assets are not reachable from this environment._
 
+> **Version notice (2026-11-13).** This page describes the CXR-L **v1.0.x** API. Upstream is now at `com.rokid.cxr:client-l:1.1.2` (portal changelog dated 2026-09-08), and v1.1.0 restructured the SDK: the entry point is `CxrSessionManager`, sessions follow a five-state model (Idle / Starting / Started / Paused / Terminating), authorization is scope-based, and the app-management APIs (`openApp` / `closeApp` / `startApp` / `stopApp` / `uninstallApp`) were removed. This page has not yet been refreshed against the v1.1.2 documentation — see the [release notes](release-notes.md) for the official v1.1.x changelog and migration notes.
+
 ## Positioning
 
 The CXR-L SDK runs on the **mobile (companion)** side and works in conjunction with **Rokid Glasses** and the **Rokid AI app** to handle authorization, session establishment, and capabilities such as custom View scenes, on-device (glasses-side) app control, audio, photo capture, and custom commands.
