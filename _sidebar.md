@@ -23,6 +23,7 @@
   - [Data structure (Caps)](/cxr-s/data-structure.md)
 
 - **CXR-L SDK (Standalone)**
+  - [Introduction](/cxr-l/intro.md)
   - [API reference](/cxr-l/api-reference.md)
   - [Release notes](/cxr-l/release-notes.md)
 

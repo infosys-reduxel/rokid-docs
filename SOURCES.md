@@ -35,7 +35,7 @@ Reverse-engineered YodaOS content is derived from the following shipped build
 ## Upstream sources
 
 The following upstream sources are monitored for changes. Versions noted are the
-last known as of **2026-05-29**.
+last known as of **2026-11-13**.
 
 | Source | Kind | Covers | Notes |
 |---|---|---|---|
@@ -51,10 +51,10 @@ last known as of **2026-05-29**.
 
 | Artifact | Maven (shipped) | Portal landing |
 |---|---|---|
-| `com.rokid.cxr:client-m` | 1.2.1 | 1.1.0 |
-| `com.rokid.cxr:client-l` | 1.0.2 | 1.0.1 |
-| `com.rokid.cxr:cxr-service-bridge` | 1.0 | — |
-| 眼镜端裸机开发 (baremetal) | — | 0.0.1 (2026-03-01) |
+| `com.rokid.cxr:client-m` | 1.2.2 | 1.1.0 (2026-04-01) |
+| `com.rokid.cxr:client-l` | 1.1.2 | 1.1.2 (2026-09-08) |
+| `com.rokid.cxr:cxr-service-bridge` | 1.8 | — |
+| 眼镜端裸机开发 (baremetal) | — | 1.0.0 (2026-06-05) |
 
 > The canonical machine-readable registry that drives upstream monitoring lives
 > at `.claude/agents/rokid-sources.md` in this repository.
