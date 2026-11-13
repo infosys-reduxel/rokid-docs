@@ -75,7 +75,7 @@ See: [CXR-S SDK overview](../../cxr-s/brief.md)
 
 ## FAQ
 
-> This FAQ was updated from the upstream `developerdoc.rokid.com/sprite` page (fetched 2026-06-08). The upstream page focuses on CXR-L and bare-metal development; the earlier CXR-M/CXR-S Q&As have been replaced by the content below. Maven `client-l` is at 1.0.4 as of 2026-06-25; the portal FAQ has not yet been updated to reflect this.
+> This FAQ was updated from the upstream `developerdoc.rokid.com/sprite` page (fetched 2026-06-08). The upstream page focuses on CXR-L and bare-metal development; the earlier CXR-M/CXR-S Q&As have been replaced by the content below. Maven `client-l` was at 1.0.4 as of 2026-06-25. As of 2026-11-13 both Maven and the portal are at `client-l` 1.1.2, which restructured the API (see the [CXR-L release notes](../../cxr-l/release-notes.md)); the answers below still use v1.0.x API names and have not yet been refreshed.
 
 **Q: What are the main capabilities of the CXR-L SDK?**
 

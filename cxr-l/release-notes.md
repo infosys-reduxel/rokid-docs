@@ -1,12 +1,114 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese; official Rokid changelog, CXR-L card, fetched 2026-11-13) and the "Version History" (版本历史) chapter of the CXR-L v1.1.2 documentation at <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/fa92e9303bc848e6b4a20c062f2c792b.html?documentId=2b189da5908f4e48b2d1b749a38888a5> (Chinese, fetched 2026-11-13). The v1.0.4 technical detail is additionally sourced from a binary diff of Maven AARs (2026-06-25)._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
+## Current versions (as of 2026-11-13)
+
+The CXR-L SDK ships as two independent release lines, Android and iOS. Their version numbers evolve separately and are **not aligned** with each other.
+
+| Platform | Dependency coordinates | Current version | Upstream documentation baseline |
+|----------|------------------------|-----------------|---------------------------------|
+| Android | `com.rokid.cxr:client-l` | `1.1.2` (recommended) | `1.1.0` |
+| iOS | `RGCxrClient` (CocoaPods) | `1.1.1.1` | `1.1.1.1` |
+
+> **Version mismatch note (upstream).** Android and iOS version numbers do not correspond to each other — Android `1.1.2` and iOS `1.1.1.1` are each the latest release on their own line, and the relative size of the numbers says nothing about which is newer. Follow each platform's own version history for feature evolution.
+
+```kotlin
+implementation("com.rokid.cxr:client-l:1.1.2")
+```
+
+iOS: `pod 'RGCxrClient', '1.1.1.1'` (the Rokid private specs source is also required).
+
+Maven cross-check (`maven-metadata.xml` for `com.rokid.cxr:client-l`, read 2026-11-13): `<release>` is `1.1.2`; the published versions after `1.0.4` are `1.1.0`, `1.1.1`, and `1.1.2`; `lastUpdated` is `20261105064636`.
+
+> **The local [Introduction](intro.md) and [API Reference](api-reference.md) still describe the v1.0.x API** (`CXRLink` / `ExternalAppClient`). v1.1.0 restructured the SDK around `CxrSessionManager` and a five-state session model, and removed the app-management APIs — see the migration notes below. Those two pages have not yet been refreshed against the v1.1.2 documentation.
+
+## v1.1.2 — portal changelog dated 2026-09-08
+
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L card, "V1.1.2", updated 2026.09.08) and the v1.1.2 documentation's Version History chapter, both fetched 2026-11-13.
+
+**Official changelog (portal).** The portal publishes a single entry for the v1.1.x line under the V1.1.2 heading:
+
+1. Android `client-l` upgraded to 1.1.2; fixes a connection timeout (`LINK_TIMEOUT`) on the first `CUSTOM_VIEW` session.
+2. Architecture refactor: the mobile side no longer connects to the glasses directly; everything is relayed through the Rokid AI app (authorization → link establishment → capability calls).
+3. Session creation and connection are decoupled, and a five-state state machine is introduced (Idle / Starting / Started / Paused / Terminating).
+4. Authorization becomes scope-based (`GlassPermission`); blanket authorization is removed.
+5. The `CUSTOM_APP` scene gains a `glassesApkPath` setting, and the on-device (glasses-side) APK is installed automatically on connect; the default AI intercept mode changes to foreground mode.
+6. Audio is unified to PCM 16 kHz / mono / 16-bit; photo capture is unified to WebP encoding.
+7. The sample project is restructured as `CxrlSample` (MVVM, single Activity) and offered as an OSS download; iOS is upgraded to `RGCxrClient` 1.1.1.1.
+
+**Version History chapter — 1.1.2:**
+
+- Fixes a `LINK_TIMEOUT` (connection timeout) that could occur the first time a session is created with the `CUSTOM_VIEW` scene.
+- Projects on `1.1.0` / `1.1.1` are advised to upgrade to `1.1.2`. If you cannot upgrade yet, a temporary workaround is to complete one connection with the `CUSTOM_APP` scene first and then switch to `CUSTOM_VIEW`.
+
+## v1.1.1
+
+> Source: Version History chapter of the v1.1.2 documentation (fetched 2026-11-13). Upstream gives no release date for this version.
+
+Changes relative to 1.1.0:
+
+- The `CUSTOM_APP` scene configuration gains a `glassesApkPath` field (path of the APK on the mobile side).
+- `CUSTOM_VIEW` icon delivery now goes through the `viewData` data chain; the old icon API is removed.
+- The default AI intercept mode changes from "background mode" to "foreground mode".
+
+## v1.1.0
+
+> Source: Version History chapter of the v1.1.2 documentation (fetched 2026-11-13). The chapter gives the release time as "2026.6.25" — the same date the portal changelog assigns to V1.0.4. The discrepancy is upstream's and is reproduced here as published.
+
+Changes relative to v1.0.4.
+
+**Changes to the mental model:**
+
+1. **Direct glasses connection removed.** The "app connects directly to the glasses" path is no longer used; everything is relayed through the Rokid AI app (authorization → link establishment → capability calls).
+2. **Simpler session creation.** Session creation is decoupled from connection (create first, connect afterwards).
+3. **Tighter authorization scope.** Authorization is scope-based (`GlassPermission`); blanket authorization is removed.
+4. **Sample project restructured.** Capability pages talk to the SDK session directly rather than through an intermediate layer; session instances are created and released with the page lifecycle.
+5. **Explicit capability gating.** The differences in capability support between `CUSTOM_VIEW` and `CUSTOM_APP` are called out in each chapter.
+
+**Per-platform details** (table reproduced as published upstream):
+
+| Dimension | Android | iOS |
+|-----------|---------|-----|
+| State machine | Five states: Idle / Starting / Started / Paused / Terminating | (single cell upstream; applies to both columns) |
+| Authorization | `authenticate(scopes:completion:)` scope-based authorization | Same as Android |
+| `CUSTOM_VIEW` | `viewData` JSON data chain + icon delivery | Same as Android |
+| `CUSTOM_APP` | On-device (glasses-side) APK installed automatically (`glassesApkPath`) | Same as Android |
+| Audio | PCM 16 kHz / mono / 16-bit, single stream | Same as Android |
+| Photo capture | Returned WebP-encoded | Same as Android |
+| Buttons | Reported through the on-device CXR-S side (`rk_custom_key`) | Same as Android |
+
+### Migration notes (v1.0.x → v1.1.0)
+
+- The mobile side no longer connects to the glasses directly: install and authorize the Rokid AI app first, then let it relay through the SDK.
+- The `authenticated(token:)` case of `authStatePublisher` carries both the token and `expiresAt`; adapt your code to handle expiry.
+- The app-management APIs (`openApp` / `closeApp` / `startApp` / `stopApp` / `uninstallApp` and similar) are no longer provided. Use "`glassesApkPath` preset + automatic install on connect" instead.
+- Photo output is unified from JPEG to WebP; the reading and display side must decode WebP.
+
+### Known implementation quirks (confirmed upstream)
+
+- Audio capture is unified to PCM 16 kHz / mono / 16-bit (verified on a real device); configuring a sample-rate parameter does not change the actual format.
+- Photos are WebP-encoded (verified on a real device); the file-name suffix may not match the encoding, so trust the decode result.
+- Rokid AI app v1.9.0 may wrongly display the connection state as connected; rely on the SDK state callbacks for the actual behavior.
+- For `LINK_LOST` recovery, the uniformly recommended and most robust path is to re-authorize.
+
+### Earlier versions as summarized upstream (v1.0.x excerpt)
+
+The v1.1.2 Version History chapter summarizes the v1.0.x line as follows. Note that it attributes the sample projects differently from the portal changelog entries reproduced further down this page (which list both samples under V1.0.3); both are reproduced as published.
+
+| Version | Change |
+|---------|--------|
+| v1.0.4 | On-device (glasses-side) sample project `CXRSWithCXRLSample` first published with the documentation |
+| v1.0.3 | `RenewCXRLSample` sample project published |
+| v1.0.1 | CXR-L SDK first release (Android / iOS) |
+
 ## v1.0.4 — published 2026-06-18
 
-> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Rokid has not published a portal changelog for this release as of 2026-06-25. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+> **Official changelog (portal, "V1.0.4", updated 2026.06.25; fetched 2026-11-13):** 1. Adds volume control. 2. Adds brightness control. This confirms the `setGlassVolume` / `setGlassBrightness` additions found in the binary diff below; the remaining detail in this entry is still reconstructed rather than official.
+
+> **Provisional detail — not from an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
 
 **Theme: structured session lifecycle callbacks and direct device controls.**
 

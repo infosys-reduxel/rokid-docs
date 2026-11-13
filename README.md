@@ -111,8 +111,9 @@ rokid-docs/
 │   └── data-structure.md           # Caps serialization format
 │
 ├── cxr-l/                          # CXR-L SDK documentation (Standalone)
-│   ├── api-reference.md            # Complete API reference
-│   └── release-notes.md            # SDK changelog
+│   ├── intro.md                    # SDK introduction (v1.0.x)
+│   ├── api-reference.md            # Complete API reference (v1.0.x)
+│   └── release-notes.md            # SDK changelog (v1.0.1 -> v1.1.2)
 │
 ├── cxr-baremetal/                  # Bare-metal Android dev on Rokid Glasses (no CXR SDK)
 │   ├── development-guide.md        # Reserved interactions + dev environment
@@ -316,7 +317,8 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (documented)** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:cxr-service-bridge:1.8` (Maven metadata `lastUpdated` 2026-10-30; no official changelog) |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**
@@ -346,7 +348,8 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
+| **Maven Artifact (latest documented in API reference)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
+| **Maven Artifact (latest upstream)** | `com.rokid.cxr:client-l:1.1.2` (portal changelog 2026-09-08); iOS `RGCxrClient` 1.1.1.1 |
 | **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
@@ -360,7 +363,9 @@ class CXRLink(context: Context) : ExternalAppClient(context)
 
 `CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
 
-> [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
+> **v1.1.x note:** the entry point and tables above describe the v1.0.x API. v1.1.0 restructured the SDK around `CxrSessionManager` and a five-state session model; the API reference has not yet been refreshed. See the [release notes](cxr-l/release-notes.md) for the official v1.1.x changelog and migration notes.
+
+> [Introduction](cxr-l/intro.md) · [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 
 ### SDK Communication Architecture
 
@@ -386,7 +391,8 @@ For apps that run directly on the glasses **without any CXR SDK** -- plain, side
 | **Target** | YodaOS-Sprite (Android 12, Go-edition) |
 | **Display viewport** | 480 × 640 px |
 | **Connectivity** | ADB over the dedicated developer cable (the in-box charge cable is charge-only); enable ADB via the Rokid AI mobile app |
-| **Doc version** | v0.0.1 (2026-03-01) |
+| **Doc version (local pages)** | v0.0.1 (2026-03-01) |
+| **Doc version (upstream)** | v1.0.0 (2026-06-05) — restructured, sample project `GlassesBareDevSample` added; local pages not yet refreshed |
 
 YodaOS-Sprite reserves some interactions that bare-metal apps **cannot** override (long-press the touchpad to enter the AI module, double-click for back, top button for photo, long-press top button for video). All other buttons and touchpad gestures are delivered as system broadcast Intents.
 
