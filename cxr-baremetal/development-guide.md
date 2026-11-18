@@ -3,6 +3,8 @@
 > Source: <https://custom.rokid.com/prod/rokid_web/57e35cd3ae294d16b1b8fc8dcbb1b7c7/pc/cn/13083daf77dd40bf84cf5c59711e987a.html> (Chinese, fetched 2026-05-29)
 >
 > **Doc version: v0.0.1 (2026-03-01)**
+>
+> **Upstream status (2026-11-18).** The SDK landing page at <https://developerdoc.rokid.com/sdk> now lists on-device bare-metal development at **V1.0.0** (updated 2026-06-05) with the changelog "1. Restructured the documentation; 2. Added sample project source code". The detail page this guide was translated from still presented the v0.0.1 content when re-read on 2026-11-18, and the V1.0.0 detail pages could not be located, so this guide has not been re-translated. The landing page additionally lists these prerequisites: use the **developer cable** (not the ordinary charging cable) to connect the glasses; ADB debugging must be enabled on the glasses through the Rokid AI App; the display area is 480 × 640 with a content area of y ∈ [80, 560], following the "single-green wireframe, black is transparent" rendering rule; bare-metal development is based on YodaOS-Sprite (AOSP Android Go, API 31).
 
 This guide describes how to build plain Android apps that run directly on Rokid Glasses (YodaOS-Sprite) **without using any CXR SDK**. These are side-loaded standalone apps that handle their own input, audio, and camera. For apps that integrate with the on-device Rokid AI app or the mobile companion, see the [CXR-L](../cxr-l/), [CXR-S](../cxr-s/), and [CXR-M](../cxr-m/) SDK docs instead.
 
