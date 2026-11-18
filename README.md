@@ -316,7 +316,8 @@ The **CXR-S SDK** is the on-device development toolkit running on YodaOS-Sprite,
 
 | Property | Value |
 |----------|-------|
-| **Maven Artifact** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (documented / decompiled)** | `com.rokid.cxr:cxr-service-bridge:1.0` |
+| **Maven Artifact (latest, undocumented)** | `com.rokid.cxr:cxr-service-bridge:1.8` (Maven `<release>` as of 2026-11-18; no changelog published) |
 | **Classes** | 16 classes, 6 decompiled files |
 
 **Capabilities:**
@@ -346,7 +347,8 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 | Property | Value |
 |----------|-------|
 | **Maven Artifact (current decompile)** | `com.rokid.cxr:client-l:1.0.1` |
-| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
+| **Maven Artifact (latest)** | `com.rokid.cxr:client-l:1.1.2` (official changelog 2026-09-08) — re-architected API (`CxrSessionManager`); see [release notes](cxr-l/release-notes.md) |
+| **Maven Artifact (latest v1.0.x)** | `com.rokid.cxr:client-l:1.0.4` (2026-06-18) |
 | **Size** | 70,543 bytes (1.0.4 AAR); 65,494 bytes (1.0.3 AAR) |
 | **Min SDK** | 28 (1.0.1–1.0.2) / **31** (1.0.3+) |
 | **Target SDK** | 28 (1.0.1–1.0.3); not declared in AAR from 1.0.4 |
@@ -358,7 +360,7 @@ The **CXR-L SDK** is for building **standalone apps that replace the default Rok
 class CXRLink(context: Context) : ExternalAppClient(context)
 ```
 
-`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration.
+`CXRLink` extends `ExternalAppClient`, which binds to `IMediaStreamService` via Android AIDL for media streaming and AI app integration. This describes the v1.0.x API; v1.1.x replaces the entry point with `CxrSessionManager` and is so far documented here only through the official changelog and quick start in the release notes.
 
 > [Full API reference](cxr-l/api-reference.md) · [Release notes](cxr-l/release-notes.md)
 

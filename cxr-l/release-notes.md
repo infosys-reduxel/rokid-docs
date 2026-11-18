@@ -1,12 +1,146 @@
 # CXR-L SDK Release Notes
 
-_Source: https://developerdoc.rokid.com/sdk (Chinese, fetched 2026-06-11; official Rokid changelog). v1.0.4 entry sourced from binary diff of Maven AARs (2026-06-25); no official changelog has been published for this release yet._
+_Source: https://developerdoc.rokid.com/sdk (Chinese; official Rokid changelog, CXR-L card with the "更新内容" panel expanded). v1.1.2 and the official v1.0.4 entry were fetched 2026-11-18; v1.0.1–v1.0.3 were fetched 2026-06-11. The detailed v1.0.4 API tables come from a binary diff of Maven AARs (2026-06-25) and are marked as such._
 
 The CXR-L SDK (Android/iOS) is a developer toolkit for extending the scenarios of the Rokid AI app. The Rokid AI app establishes the connection to Rokid Glasses; developers integrate the CXR-L SDK into their own apps to access the Glasses' I/O capabilities — image, audio, display, and command channels — through the Rokid AI app.
 
+## v1.1.2 — published 2026-09-08
+
+> Source: official Rokid changelog and quick-start panel at `https://developerdoc.rokid.com/sdk` (CXR-L card, fetched 2026-11-18). `com.rokid.cxr:client-l:1.1.2` is the current `<release>` in `maven-metadata.xml` (`lastUpdated` 20261105064636, fetched 2026-11-18).
+
+**Official changelog:**
+
+1. Android `client-l` upgraded to 1.1.2; fixes the link timeout (`LINK_TIMEOUT`) on the first `CUSTOM_VIEW` session connection.
+2. Architecture refactor: the mobile (companion) side no longer connects directly to the glasses — everything is relayed through the Rokid AI App (authorization → link establishment → capability calls).
+3. Session creation is decoupled from connection, and a five-state state machine is introduced (`Idle` / `Starting` / `Started` / `Paused` / `Terminating`).
+4. Authorization is now scope-based (`GlassPermission`); blanket (all-permission) authorization has been removed.
+5. The `CUSTOM_APP` scenario adds a `glassesApkPath` setting — the on-device (glasses-side) APK is installed automatically on connect. The default AI intercept mode is changed to foreground mode.
+6. Audio is unified to PCM 16 kHz / mono / 16-bit; photo capture is unified to WebP encoding.
+7. The sample project is restructured as `CxrlSample` (MVVM, single Activity) and is available as an OSS download; iOS is upgraded to `RGCxrClient` 1.1.1.1.
+
+> **This is a breaking, re-architected API.** The v1.1.x entry point is `CxrSessionManager` / `SessionConfig` / `ISessionLifecycleCbk`, not the `CXRLink` + `configCXRSession` surface documented for v1.0.x in [api-reference.md](api-reference.md) and [intro.md](intro.md). Those two documents still describe v1.0.x. Only the quick start below has been captured for v1.1.x; the full v1.1.x detail documentation has not yet been retrieved or translated, and no v1.1.x AAR has been decompiled in this repository.
+
+### Quick start (Android, v1.1.2)
+
+Add the Rokid Maven repository in `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven { url = uri("https://maven.rokid.com/repository/maven-public/") }
+    }
+}
+```
+
+Add the SDK dependency in `app/build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("com.rokid.cxr:client-l:1.1.2")
+}
+```
+
+Create a session and connect (authorization must be completed first to obtain a `token`):
+
+```kotlin
+// Singleton entry point
+val manager = CxrSessionManager.getInstance(context.applicationContext)
+
+// Create a session, using the CustomView scenario as an example
+// (viewData is the on-device view JSON; see the upstream docs)
+val config = SessionConfig(
+    sessionType = SessionType.CUSTOM_VIEW,
+    aiInterceptMode = AiInterceptMode.ALLOW_WITH_PAUSE,
+    timeouts = SessionTimeouts(),
+    viewData = viewDataJson,
+)
+val session = manager.create(config)
+
+// Connect after authorization has returned a token
+session.connect(token)
+```
+
+**Wait for the session to be ready (important):** a successful `connect` does **not** mean photo capture or streaming is available. Wait for the lifecycle callback:
+
+```kotlin
+// Call capability APIs only after onSessionStarted
+session.addLifecycleCallback(object : ISessionLifecycleCbk {
+    override fun onSessionStarted() {
+        // Session construction complete; audio / photo capabilities can be called
+        // Custom commands are not available in the CUSTOM_VIEW scenario
+    }
+    override fun onSessionPaused(reason: PausedReason) { /* handle pause */ }
+    override fun onSessionResumed() { /* resume */ }
+    override fun onSessionTerminating(reason: TerminatingReason, gracePeriodMs: Long) { /* handle termination */ }
+    override fun onSessionClosed(reason: CloseReason) { /* back to Idle */ }
+})
+```
+
+**Common pitfalls:**
+
+- **`minSdk` must be ≥ 28** (the SDK uses Android 9+ features internally). Note that this is what the v1.1.2 quick start states; the v1.0.3 documentation required `minSdk` 31.
+- **Reuse the singleton entry point** `CxrSessionManager.getInstance()`; do not create it repeatedly per screen.
+- A successful connection must still wait for the `onSessionStarted` callback — the return value of `connect()` does not indicate that the session is usable.
+- Custom commands are not available in the `CUSTOM_VIEW` scenario; use the `CUSTOM_APP` scenario if you need them.
+
+### Quick start (iOS, conceptual)
+
+After integrating the Pod or the bundled source module, the flow is authentication → link establishment → session. Upstream notes that exact class names and signatures should be taken from the sample source.
+
+Declare the dependency in the `Podfile` (`RGCxrClient` requires the Rokid private specs source, or use the source module bundled with the sample):
+
+```ruby
+pod 'RGCxrClient', '1.1.1.1'
+```
+
+Forward the URL callback (authentication return) from `AppDelegate` / `SceneDelegate`:
+
+```swift
+func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    if CxrClient.shared.handleOpenURL(URLContexts.first?.url) {
+        // URL was handled by the SDK
+    }
+}
+```
+
+Authenticate and create a session (CustomView scenario shown; after connecting, subscribe to `statePublisher` and wait for the session to become available):
+
+```swift
+let link = CxrClient.makeLink(appDisplayName: "YourApp")
+
+link.authenticate(scopes: [.camera, .media, .microphone, .deviceManage]) { result in
+    switch result {
+    case .success(let auth):
+        let token = auth.token
+        // Create a CustomView session (makeCustomAppSession(packageName:) is also available)
+        let session = link.makeCustomViewSession()
+        // Subscribe to statePublisher; wait for available / started before calling capability APIs
+    case .failure(let error):
+        // Handle the error
+        break
+    }
+}
+```
+
+**Notes:**
+
+- Upstream states that the iOS and Android state machines are consistent, and describes the iOS one as four states (`available` / `started` / `paused` / `unavailable`), with the same capability gating (photo, audio, and custom commands require session construction to be complete). The Android changelog above describes five states; both statements are reproduced as published.
+- `CxrClient.makeLink(appDisplayName:)` is a **class method**, not `CxrClient.shared.makeLink`.
+
+## v1.1.0 / v1.1.1 — no changelog published
+
+`maven-metadata.xml` for `com.rokid.cxr:client-l` (fetched 2026-11-18) lists releases `1.1.0` and `1.1.1` between `1.0.4` and `1.1.2`. The portal changelog jumps directly from V1.0.4 to V1.1.2, so there is no official description of these two releases, and they have not been diffed in this repository.
+
 ## v1.0.4 — published 2026-06-18
 
-> **Provisional — not an official Rokid changelog.** Reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`). Rokid has not published a portal changelog for this release as of 2026-06-25. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
+> Source: official Rokid changelog at `https://developerdoc.rokid.com/sdk` (CXR-L card, fetched 2026-11-18), which dates this release 2026-06-25.
+
+**Official changelog:**
+
+1. Added volume control.
+2. Added brightness control.
+
+> **The detail below is not from the official changelog.** It was reconstructed from a binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (downloaded 2026-06-25 from `https://maven.rokid.com/repository/maven-public/com/rokid/cxr/client-l/`), before Rokid published the two-line changelog above. The official changelog confirms the volume and brightness controls; the session lifecycle additions are not mentioned in it. The 2026-06-18 date in the heading was recorded with that binary diff. AAR size: 70,543 bytes vs 65,494 bytes for v1.0.3 (+7.7 %).
 
 **Theme: structured session lifecycle callbacks and direct device controls.**
 
