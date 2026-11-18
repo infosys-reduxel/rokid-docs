@@ -1,13 +1,16 @@
 # CXR-L SDK API Reference
 
-Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); no official Rokid changelog has been published for v1.0.4. See [release-notes.md](release-notes.md) for the full changelogs.
+> **This reference covers the v1.0.x API (`CXRLink`).** As of 2026-11-18 the current release is `com.rokid.cxr:client-l:1.1.2` (official changelog dated 2026-09-08), which Rokid describes as an architecture refactor with a new entry point (`CxrSessionManager` / `SessionConfig` / `ISessionLifecycleCbk`), scope-based authorization, and a five-state session state machine. The v1.1.x API has not been decompiled or fully documented here yet; see the [v1.1.2 release notes](release-notes.md#v112--published-2026-09-08) for the official changelog and quick start.
+
+Base API decompiled from `com.rokid.cxr:client-l:1.0.1` AAR. v1.0.3 additions (new callbacks, `GlassInfo`, CUSTOMAPP session) are noted inline; v1.0.3 entries are reconstructed from a binary diff of the 1.0.2 and 1.0.3 AARs, cross-referenced against the official Rokid changelog published 2026-06-02. v1.0.4 entries are reconstructed from a binary diff of the 1.0.3 and 1.0.4 AARs (2026-06-25); the official v1.0.4 changelog published later lists only volume and brightness control. See [release-notes.md](release-notes.md) for the full changelogs.
 
 ## Overview
 
 CXR-L is the mobile-side SDK for extending the Rokid AI app's use cases. The Rokid AI app manages the connection to Rokid Glasses; integrate the CXR-L SDK into your app to access the glasses' I/O capabilities — image, audio, display, and command channel — through the Rokid AI app via AIDL bound service.
 
 - **Maven (base decompile)**: `com.rokid.cxr:client-l:1.0.1`
-- **Maven (latest release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
+- **Maven (latest release)**: `com.rokid.cxr:client-l:1.1.2` (portal changelog dated 2026-09-08; Maven `<release>` as of 2026-11-18) — not covered by this reference, see the notice above
+- **Maven (latest v1.0.x release)**: `com.rokid.cxr:client-l:1.0.4` (2026-06-18)
 - **Repository**: `https://maven.rokid.com/repository/maven-public/`
 - **minSdk (1.0.1–1.0.2)**: 28 | **minSdk (1.0.3+)**: 31 (per official docs at `developerdoc.rokid.com`)
 - **targetSdk**: not declared in AAR manifest from v1.0.4 onward (was 28 in v1.0.1–1.0.3)
@@ -433,7 +436,7 @@ The SDK operates in one of two session modes set before calling `connect`. Capab
 
 ### v1.0.4 additions (Android — provisional, binary diff)
 
-> Source: binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (2026-06-25). No official changelog published.
+> Source: binary diff of `client-l:1.0.3` and `client-l:1.0.4` AARs (2026-06-25). Rokid has since published a two-line official changelog for V1.0.4 (dated 2026-06-25, fetched 2026-11-18): "added volume control" and "added brightness control". It confirms `setGlassVolume` / `setGlassBrightness` but does not mention the session lifecycle additions, which remain binary-diff findings.
 
 - **Session lifecycle callbacks.** New `ICXRSessionCbk` interface with four methods: `onSessionAvailable`, `onSessionStart`, `onSessionPause`, `onSessionUnavailable` — each receives a `CXRSessionReason` enum value. Register via the new 2-arg `configCXRSession(session, callback)` overload before calling `connect()`.
 - **`getCXRSessionState()` added.** Returns the current `CXRSessionState` (Available / Start / Pause / Unavailable) without needing a callback.

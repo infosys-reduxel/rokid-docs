@@ -2,6 +2,8 @@
 
 _Source: <https://custom.rokid.com/prod/rokid_web/84feb39f8ef141b0ad0326f902ab881f/pc/cn/9adcfb07939846e5945e79dfbd923f63.html> (Chinese, fetched 2026-06-20). Content version: SDK v1.0.6 (per `window.relatedVersion` in the page HTML shell). Translation produced from Firecrawl-cached markdown; static.rokidcdn.com JS assets are not reachable from this environment._
 
+> **Version note (2026-11-18).** This introduction describes the v1.0.x SDK (`CXRLink`, `CUSTOMAPP` / `CUSTOMVIEW` sessions). The current release is `client-l:1.1.2` (2026-09-08), a re-architected API. The upstream page this document was translated from now shows a restructured chapter list (Introduction, Quick Start, Development Flow and State Machine, Terms and Abbreviations, Feature Development, Version History), but its body content could not be retrieved in the 2026-11-18 check, so this document has not been re-translated. See the [v1.1.2 release notes](release-notes.md#v112--published-2026-09-08).
+
 ## Positioning
 
 The CXR-L SDK runs on the **mobile (companion)** side and works in conjunction with **Rokid Glasses** and the **Rokid AI app** to handle authorization, session establishment, and capabilities such as custom View scenes, on-device (glasses-side) app control, audio, photo capture, and custom commands.
